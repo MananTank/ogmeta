@@ -46,25 +46,11 @@ function TwitterPreview({ title, description, image, url }: Props) {
     <div>
       <Label>X (Twitter)</Label>
 
-      {/* Tweet chrome — max 600px like the real feed column */}
+      {/* Tweet — max 600px like the real feed column */}
       <div className="w-full font-sans" style={{ maxWidth: 600 }}>
 
-        {/* X app chrome bar */}
-        <div className="rounded-t-xl border border-border border-b-0 bg-[oklch(0.06_0_0)] px-4 py-2 flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-[oklch(0.25_0_0)]" />
-            <div className="w-2 h-2 rounded-full bg-[oklch(0.25_0_0)]" />
-            <div className="w-2 h-2 rounded-full bg-[oklch(0.25_0_0)]" />
-          </div>
-          {/* X logo */}
-          <svg viewBox="0 0 24 24" className="w-4 h-4 fill-foreground opacity-60" aria-label="X">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-          </svg>
-          <div className="w-12" />
-        </div>
-
         {/* Tweet body */}
-        <div className="border-x border-border bg-[oklch(0.04_0_0)] px-4 pt-3 pb-0">
+        <div className="border border-border rounded-xl bg-[oklch(0.04_0_0)] px-4 pt-3 pb-0">
           <div className="flex gap-3">
             {/* Avatar */}
             <div className="shrink-0">
@@ -126,18 +112,6 @@ function TwitterPreview({ title, description, image, url }: Props) {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Bottom chrome bar */}
-        <div className="rounded-b-xl border border-border border-t border-t-border bg-[oklch(0.06_0_0)] px-4 py-2 flex justify-around text-muted-foreground">
-          {/* Home */}
-          <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current opacity-50"><path d="M12 1.696L.622 9.947l1.04 1.434L3 10.36V19.5C3 20.881 4.119 22 5.5 22h4a1 1 0 001-1v-4h3v4a1 1 0 001 1h4c1.381 0 2.5-1.119 2.5-2.5V10.36l1.338.998 1.04-1.366L12 1.696zM17 20h-2v-4a1 1 0 00-1-1h-4a1 1 0 00-1 1v4H7v-9.987l5-3.528 5 3.528V20z"/></svg>
-          {/* Search */}
-          <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current opacity-50"><path d="M10.25 3.75c-3.59 0-6.5 2.91-6.5 6.5s2.91 6.5 6.5 6.5c1.795 0 3.419-.726 4.596-1.904 1.178-1.177 1.904-2.801 1.904-4.596 0-3.59-2.91-6.5-6.5-6.5zm-8.5 6.5c0-4.694 3.806-8.5 8.5-8.5s8.5 3.806 8.5 8.5c0 1.986-.682 3.815-1.814 5.262l4.276 4.276-1.414 1.414-4.276-4.276c-1.447 1.132-3.276 1.814-5.272 1.814-4.694 0-8.5-3.806-8.5-8.5z"/></svg>
-          {/* Notifications */}
-          <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current opacity-50"><path d="M11.996 2c-4.062 0-7.49 3.021-7.999 7.051L2.866 13H1v2h3.882l.891-1.051c.456-.537.94-1.489 1.23-2.94.291-1.452.489-2.731.489-3.509C7.492 5.17 9.533 4 11.996 4s4.504 1.17 4.504 3.5c0 .778.198 2.057.49 3.51.29 1.45.773 2.402 1.229 2.939l.89 1.051H23v-2h-1.866l-1.131-3.949C19.494 5.021 16.058 2 11.996 2zM9 19c0 1.105.896 2 2 2h2c1.104 0 2-.895 2-2H9z"/></svg>
-          {/* Profile */}
-          <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current opacity-50"><path d="M5.651 19h12.698c-.337-1.8-1.023-2.15-2.28-2.984C14.974 15.416 13.526 15 12 15c-1.526 0-2.974.416-4.069 1.016-1.257.834-1.943 1.185-2.28 2.984zm.486-5.56C7.627 11.85 9.648 11 12 11s4.373.85 5.863 2.44c1.477 1.581 2.137 3.846 2.137 6.56v1H4v-1c0-2.714.66-4.979 2.137-6.56zM12 10c-2.206 0-4-1.794-4-4s1.794-4 4-4 4 1.794 4 4-1.794 4-4 4zm0-2c1.103 0 2-.897 2-2s-.897-2-2-2-2 .897-2 2 .897 2 2 2z"/></svg>
         </div>
 
       </div>
