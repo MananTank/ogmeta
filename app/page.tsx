@@ -1,85 +1,85 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { OGPreview } from "@/components/og-preview";
-import { PlatformPreviews } from "@/components/platform-previews";
-import { OGPreviewSkeleton } from "@/components/og-preview-skeleton";
-import { PlatformPreviewsSkeleton } from "@/components/platform-previews-skeleton";
-import { Input } from "../components/ui/input";
+import { useState, useEffect, useRef } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { OGPreview } from '@/components/og-preview'
+import { PlatformPreviews } from '@/components/platform-previews'
+import { OGPreviewSkeleton } from '@/components/og-preview-skeleton'
+import { PlatformPreviewsSkeleton } from '@/components/platform-previews-skeleton'
+import { Input } from '../components/ui/input'
 
-const DEFAULT_URL = "https://vercel.com";
+const DEFAULT_URL = 'https://vercel.com'
 
 interface OGData {
-  title: string;
-  description: string;
-  image: string;
-  url: string;
-  siteName?: string;
-  type?: string;
+  title: string
+  description: string
+  image: string
+  url: string
+  siteName?: string
+  type?: string
 }
 
 async function fetchOGData(url: string): Promise<OGData> {
-  let finalUrl = url.trim();
-  if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
-    finalUrl = "https://" + finalUrl;
+  let finalUrl = url.trim()
+  if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+    finalUrl = 'https://' + finalUrl
   }
 
-  const response = await fetch(`/api/og?url=${encodeURIComponent(finalUrl)}`);
+  const response = await fetch(`/api/og?url=${encodeURIComponent(finalUrl)}`)
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || "Failed to fetch metadata");
+    const errorData = await response.json()
+    throw new Error(errorData.error || 'Failed to fetch metadata')
   }
 
-  return response.json();
+  return response.json()
 }
 
 export default function Home() {
-  const [url, setUrl] = useState(DEFAULT_URL);
-  const [debouncedUrl, setDebouncedUrl] = useState(DEFAULT_URL);
-  const debounceTimerRef = useRef<NodeJS.Timeout>(null);
+  const [url, setUrl] = useState(DEFAULT_URL)
+  const [debouncedUrl, setDebouncedUrl] = useState(DEFAULT_URL)
+  const debounceTimerRef = useRef<NodeJS.Timeout>(null)
 
   const {
     data: ogData,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["og", debouncedUrl],
+    queryKey: ['og', debouncedUrl],
     queryFn: () => fetchOGData(debouncedUrl),
     enabled: !!debouncedUrl.trim(),
-  });
+  })
 
-  console.log({ ogData });
+  console.log({ ogData })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newUrl = e.target.value;
-    setUrl(newUrl);
+    const newUrl = e.target.value
+    setUrl(newUrl)
 
     if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
+      clearTimeout(debounceTimerRef.current)
     }
 
     debounceTimerRef.current = setTimeout(() => {
-      setDebouncedUrl(newUrl);
-    }, 500);
-  };
+      setDebouncedUrl(newUrl)
+    }, 500)
+  }
 
   useEffect(() => {
     return () => {
       if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
+        clearTimeout(debounceTimerRef.current)
       }
-    };
-  }, []);
+    }
+  }, [])
 
   return (
     <main className="min-h-screen">
       {/* Header & Input - Constrained */}
-      <div className="max-w-3xl mx-auto px-5 sm:px-8 py-16 md:py-24">
+      <div className="mx-auto max-w-3xl px-5 py-16 sm:px-8 md:py-24">
         <header className="mb-12">
           <h1 className="text-3xl font-medium tracking-tight">OG Meta</h1>
-          <p className="text-muted-foreground text-3xl tracking-tight font-medium">
+          <p className="text-muted-foreground text-3xl font-medium tracking-tight">
             Visualize your link on various platforms
           </p>
         </header>
@@ -93,9 +93,9 @@ export default function Home() {
             placeholder="https://example.com"
           />
           {error && (
-            <p className="text-destructive text-sm mt-3 flex items-center gap-2">
+            <p className="text-destructive mt-3 flex items-center gap-2 text-sm">
               <svg
-                className="w-4 h-4"
+                className="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -109,7 +109,7 @@ export default function Home() {
               </svg>
               {error instanceof Error
                 ? error.message
-                : "Failed to fetch metadata"}
+                : 'Failed to fetch metadata'}
             </p>
           )}
         </div>
@@ -143,5 +143,5 @@ export default function Home() {
         ) : null}
       </section>
     </main>
-  );
+  )
 }

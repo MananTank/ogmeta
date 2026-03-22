@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function OGPreviewSkeleton() {
   return (
@@ -7,9 +7,9 @@ export function OGPreviewSkeleton() {
         <Skeleton className="h-3 w-32" />
       </div>
 
-      <Skeleton className="w-full aspect-[1.91/1] rounded-xl" />
+      <Skeleton className="aspect-[1.91/1] w-full rounded-xl" />
 
-      <div className="grid gap-4 p-5 bg-card/50 rounded-xl border border-border/50">
+      <div className="bg-card/50 border-border/50 grid gap-4 rounded-xl border p-5">
         <div className="space-y-2">
           <Skeleton className="h-4 w-3/4" />
         </div>
@@ -22,5 +22,5 @@ export function OGPreviewSkeleton() {
         </div>
       </div>
     </div>
-  );
+  )
 }

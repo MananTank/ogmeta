@@ -1,17 +1,17 @@
-"use client";
+'use client'
 
 interface OGPreviewProps {
-  title: string;
-  description: string;
-  image: string;
-  url: string;
+  title: string
+  description: string
+  image: string
+  url: string
 }
 
 function extractDomain(url: string) {
   try {
-    return new URL(url).hostname.replace("www.", "");
+    return new URL(url).hostname.replace('www.', '')
   } catch {
-    return url;
+    return url
   }
 }
 
@@ -20,20 +20,20 @@ export function OGPreview({ title, description, image, url }: OGPreviewProps) {
     <div className="space-y-6">
       {/* Image Preview */}
       {image ? (
-        <div className="rounded-xl overflow-hidden border border-border bg-card">
+        <div className="border-border bg-card overflow-hidden rounded-xl border">
           <img
             src={image}
             alt="OG image"
-            className="w-full h-auto block"
+            className="block h-auto w-full"
             onError={(e) => {
-              e.currentTarget.style.display = "none";
+              e.currentTarget.style.display = 'none'
             }}
           />
         </div>
       ) : (
-        <div className="w-full aspect-[1.91/1] rounded-xl bg-card border border-dashed border-border-bright flex flex-col items-center justify-center gap-2">
+        <div className="bg-card border-border-bright flex aspect-[1.91/1] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed">
           <svg
-            className="w-8 h-8 text-muted-foreground/40"
+            className="text-muted-foreground/40 h-8 w-8"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -45,28 +45,28 @@ export function OGPreview({ title, description, image, url }: OGPreviewProps) {
               d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
             />
           </svg>
-          <span className="text-xs text-muted-foreground/60">
+          <span className="text-muted-foreground/60 text-xs">
             No og:image found
           </span>
         </div>
       )}
 
       {/* Metadata Details */}
-      <div className="grid gap-3 p-5 bg-card/50 rounded-xl border border-border/50">
-        <p className="text-base font-medium text-foreground leading-snug">
+      <div className="bg-card/50 border-border/50 grid gap-3 rounded-xl border p-5">
+        <p className="text-foreground text-base leading-snug font-medium">
           {title || (
             <span className="text-muted-foreground italic">No title</span>
           )}
         </p>
         {description && (
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-muted-foreground text-sm leading-relaxed">
             {description}
           </p>
         )}
-        <p className="text-sm text-muted-foreground/70 font-mono truncate">
+        <p className="text-muted-foreground/70 truncate font-mono text-sm">
           {url}
         </p>
       </div>
     </div>
-  );
+  )
 }

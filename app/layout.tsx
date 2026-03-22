@@ -4,25 +4,26 @@ import { Analytics } from '@vercel/analytics/next'
 import { Providers } from '@/components/providers'
 import './globals.css'
 
-const geist = Geist({ 
-  subsets: ["latin"],
+const geist = Geist({
+  subsets: ['latin'],
   variable: '--font-geist',
-});
+})
 
-const geistMono = Geist_Mono({ 
-  subsets: ["latin"],
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
   variable: '--font-geist-mono',
-});
+})
 
-const instrumentSerif = Instrument_Serif({ 
+const instrumentSerif = Instrument_Serif({
   weight: '400',
-  subsets: ["latin"],
+  subsets: ['latin'],
   variable: '--font-instrument-serif',
-});
+})
 
 export const metadata: Metadata = {
   title: 'OG Meta - Check OpenGraph Tags',
-  description: 'Preview how your URLs appear when shared on social media and messaging apps. Check OpenGraph metadata for any website.',
+  description:
+    'Preview how your URLs appear when shared on social media and messaging apps. Check OpenGraph metadata for any website.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -49,11 +50,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`dark ${geist.variable} ${geistMono.variable} ${instrumentSerif.variable}`}>
-      <body className="font-sans antialiased bg-background text-foreground min-h-screen">
-        <Providers>
-          {children}
-        </Providers>
+    <html
+      lang="en"
+      className={`dark ${geist.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
+    >
+      <body className="bg-background text-foreground min-h-screen font-sans antialiased">
+        <Providers>{children}</Providers>
         <Analytics />
       </body>
     </html>
