@@ -6,7 +6,7 @@ import { PlatformPreviews } from '@/components/platform-previews';
 import { OGPreviewSkeleton } from '@/components/og-preview-skeleton';
 import { PlatformPreviewsSkeleton } from '@/components/platform-previews-skeleton';
 
-const DEFAULT_URL = 'https://v0.dev';
+const DEFAULT_URL = 'https://vercel.com';
 
 interface OGData {
   title: string;
