@@ -79,7 +79,7 @@ function TwitterPreview({ title, description, image, url }: Props) {
                   <OGImage src={image} className="w-full h-auto block" />
                   {title && (
                     <div className="absolute bottom-3 left-3 right-3">
-                      <span className="inline-block text-foreground text-[13px] font-semibold px-3 py-1.5 rounded-full line-clamp-1 max-w-full" style={{ backgroundColor: 'rgba(0,0,0,0.77)', backdropFilter: 'blur(8px)' }}>
+                      <span className="block text-foreground text-[13px] font-semibold px-3 py-1.5 rounded-full overflow-hidden whitespace-nowrap text-ellipsis" style={{ backgroundColor: 'rgba(0,0,0,0.77)', backdropFilter: 'blur(8px)' }}>
                         {title}
                       </span>
                     </div>
