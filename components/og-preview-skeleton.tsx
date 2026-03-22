@@ -3,8 +3,8 @@ export function OGPreviewSkeleton() {
     <div className="space-y-4">
       <div className="h-3 w-16 bg-muted rounded animate-pulse" />
 
-      {/* Image */}
-      <div className="w-full h-64 rounded-md bg-muted animate-pulse" />
+      {/* Image — standard OG aspect ratio 1.91:1 */}
+      <div className="w-full aspect-[1.91/1] rounded-md bg-muted animate-pulse" />
 
       {/* Metadata rows */}
       <div className="border border-border rounded-md divide-y divide-border overflow-hidden">

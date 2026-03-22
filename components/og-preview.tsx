@@ -20,7 +20,7 @@ export function OGPreview({ title, description, image, url }: OGPreviewProps) {
           <img
             src={image}
             alt="OG image"
-            className="w-full h-auto max-h-80 object-cover"
+            className="w-full h-auto block"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
             }}
