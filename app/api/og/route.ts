@@ -5,6 +5,7 @@ interface OGMetadata {
   title: string
   description: string
   image: string
+  isValidImage: boolean
   url: string
   siteName?: string
   type?: string
@@ -43,7 +44,7 @@ export async function GET(request: NextRequest) {
     }
 
     const html = await response.text()
-    const metadata = parseOGMetadata(html, url)
+    const metadata = await parseOGMetadata(html, url)
 
     return NextResponse.json(metadata)
   } catch (error) {
@@ -55,7 +56,29 @@ export async function GET(request: NextRequest) {
   }
 }
 
-function parseOGMetadata(html: string, url: string): OGMetadata {
+async function validateImage(imageUrl: string): Promise<boolean> {
+  if (!imageUrl) return false
+
+  try {
+    const response = await fetch(imageUrl, {
+      method: 'HEAD',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; OG-Preview/1.0)',
+      },
+    })
+
+    if (!response.ok) return false
+
+    const contentType = response.headers.get('content-type')
+    if (!contentType) return false
+
+    return contentType.startsWith('image/')
+  } catch {
+    return false
+  }
+}
+
+async function parseOGMetadata(html: string, url: string): Promise<OGMetadata> {
   const $ = cheerio.load(html)
 
   const getMetaContent = (selectors: string[]): string => {
@@ -108,10 +131,14 @@ function parseOGMetadata(html: string, url: string): OGMetadata {
     }
   }
 
+  // Validate image
+  const isValidImage = await validateImage(resolvedImage)
+
   return {
     title,
     description,
     image: resolvedImage,
+    isValidImage,
     url,
     siteName,
     type,

@@ -2,10 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { OGPreview } from '@/components/og-preview'
 import { PlatformPreviews } from '@/components/platform-previews'
-import { OGPreviewSkeleton } from '@/components/og-preview-skeleton'
-import { PlatformPreviewsSkeleton } from '@/components/platform-previews-skeleton'
 import { Input } from '../components/ui/input'
 
 const DEFAULT_URL = 'https://vercel.com'
@@ -14,6 +11,7 @@ interface OGData {
   title: string
   description: string
   image: string
+  isValidImage: boolean
   url: string
   siteName?: string
   type?: string
@@ -48,6 +46,7 @@ export default function Home() {
     queryKey: ['og', debouncedUrl],
     queryFn: () => fetchOGData(debouncedUrl),
     enabled: !!debouncedUrl.trim(),
+    retry: false,
   })
 
   console.log({ ogData })
@@ -75,11 +74,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-      {/* Header & Input - Constrained */}
-      <div className="mx-auto max-w-3xl px-5 py-16 sm:px-8 md:py-24">
+      <div className="mx-auto max-w-2xl px-4 py-16">
         <header className="mb-12">
           <h1 className="text-3xl font-medium tracking-tight">OG Meta</h1>
-          <p className="text-muted-foreground text-3xl font-medium tracking-tight">
+          <p className="text-muted-foreground text-base tracking-wide">
             Visualize your link on various platforms
           </p>
         </header>
@@ -113,35 +111,16 @@ export default function Home() {
             </p>
           )}
         </div>
-
-        {/* OG Metadata Section - Constrained */}
-        <section>
-          {isLoading ? (
-            <OGPreviewSkeleton />
-          ) : ogData ? (
-            <OGPreview
-              title={ogData.title}
-              description={ogData.description}
-              image={ogData.image}
-              url={ogData.url}
-            />
-          ) : null}
-        </section>
       </div>
-
-      {/* Platform Previews - Full Width */}
-      <section>
-        {isLoading ? (
-          <PlatformPreviewsSkeleton />
-        ) : ogData ? (
-          <PlatformPreviews
-            title={ogData.title}
-            description={ogData.description}
-            image={ogData.image}
-            url={ogData.url}
-          />
-        ) : null}
-      </section>
+      <PlatformPreviews
+        title={ogData?.title ?? ''}
+        description={ogData?.description ?? ''}
+        image={ogData?.image ?? ''}
+        isValidImage={ogData?.isValidImage ?? false}
+        url={ogData?.url ?? debouncedUrl}
+        isLoading={isLoading}
+        isError={!!error}
+      />
     </main>
   )
 }
