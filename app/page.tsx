@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { OGPreview } from '@/components/og-preview';
 import { PlatformPreviews } from '@/components/platform-previews';
 import { OGPreviewSkeleton } from '@/components/og-preview-skeleton';
@@ -21,6 +21,7 @@ export default function Home() {
   const [ogData, setOgData] = useState<OGData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout>();
 
   const fetchOG = useCallback(async (urlToFetch: string) => {
     if (!urlToFetch.trim()) {
@@ -59,13 +60,18 @@ export default function Home() {
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUrl(e.target.value);
-  };
+    const newUrl = e.target.value;
+    setUrl(newUrl);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      fetchOG(url);
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
     }
+
+    // Set new timer for debounced fetch
+    debounceTimerRef.current = setTimeout(() => {
+      fetchOG(newUrl);
+    }, 500); // 500ms debounce
   };
 
   // Fetch OG data on mount with default URL
@@ -88,23 +94,13 @@ export default function Home() {
 
         {/* Input Section */}
         <div className="mb-12">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={url}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              placeholder="Enter a URL to preview..."
-              className="flex-1 px-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <button
-              onClick={() => fetchOG(url)}
-              disabled={loading}
-              className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
-            >
-              {loading ? 'Loading...' : 'Preview'}
-            </button>
-          </div>
+          <input
+            type="text"
+            value={url}
+            onChange={handleInputChange}
+            placeholder="Enter a URL to preview..."
+            className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          />
           {error && <p className="text-destructive text-sm mt-2">{error}</p>}
         </div>
 
