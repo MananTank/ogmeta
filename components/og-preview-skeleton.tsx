@@ -1,16 +1,25 @@
+import { Skeleton } from "@/components/ui/skeleton";
+
 export function OGPreviewSkeleton() {
   return (
-    <div className="space-y-4">
-      <div className="h-3 w-16 bg-muted rounded animate-pulse" />
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Skeleton className="h-3 w-32" />
+      </div>
 
-      {/* Image — standard OG aspect ratio 1.91:1 */}
-      <div className="w-full aspect-[1.91/1] rounded-md bg-muted animate-pulse" />
+      <Skeleton className="w-full aspect-[1.91/1] rounded-xl" />
 
-      {/* Title & description */}
-      <div className="space-y-2">
-        <div className="h-3.5 w-2/3 bg-muted rounded animate-pulse" />
-        <div className="h-3 w-full bg-muted rounded animate-pulse" />
-        <div className="h-3 w-4/5 bg-muted rounded animate-pulse" />
+      <div className="grid gap-4 p-5 bg-card/50 rounded-xl border border-border/50">
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-3/4" />
+        </div>
+        <div className="space-y-2">
+          <Skeleton className="h-3 w-full" />
+          <Skeleton className="h-3 w-4/5" />
+        </div>
+        <div className="space-y-2">
+          <Skeleton className="h-3 w-2/3" />
+        </div>
       </div>
     </div>
   );

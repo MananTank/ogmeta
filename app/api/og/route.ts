@@ -1,106 +1,111 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
+import * as cheerio from "cheerio";
 
 interface OGMetadata {
   title: string;
   description: string;
   image: string;
   url: string;
+  siteName?: string;
   type?: string;
 }
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const url = searchParams.get('url');
+    const url = searchParams.get("url");
 
     if (!url) {
       return NextResponse.json(
-        { error: 'URL parameter is required' },
-        { status: 400 }
+        { error: "URL parameter is required" },
+        { status: 400 },
       );
     }
 
-    // Validate URL format
     try {
       new URL(url);
     } catch {
       return NextResponse.json(
-        { error: 'Invalid URL format' },
-        { status: 400 }
+        { error: "Invalid URL format" },
+        { status: 400 },
       );
     }
 
-    // Fetch the URL content
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; OG-Preview/1.0)',
+        "User-Agent": "Mozilla/5.0 (compatible; OG-Preview/1.0)",
       },
-      redirect: 'follow',
+      redirect: "follow",
     });
 
     if (!response.ok) {
       return NextResponse.json(
         { error: `Failed to fetch URL: ${response.statusText}` },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
     const html = await response.text();
-
-    // Parse OG metadata from HTML
     const metadata = parseOGMetadata(html, url);
 
     return NextResponse.json(metadata);
   } catch (error) {
-    console.error('[v0] OG fetch error:', error);
+    console.error("[og-api] Fetch error:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch or parse URL' },
-      { status: 500 }
+      { error: "Failed to fetch or parse URL" },
+      { status: 500 },
     );
   }
 }
 
 function parseOGMetadata(html: string, url: string): OGMetadata {
-  const ogRegex = /<meta\s+(?:name|property)=["']og:([^"']+)["']\s+content=["']([^"']*)["']/gi;
-  const metadata: Record<string, string> = {};
+  const $ = cheerio.load(html);
 
-  let match;
-  while ((match = ogRegex.exec(html)) !== null) {
-    const key = match[1].toLowerCase();
-    const value = match[2];
-    if (!metadata[key]) {
-      metadata[key] = value;
+  const getMetaContent = (selectors: string[]): string => {
+    for (const selector of selectors) {
+      const content = $(selector).attr("content");
+      if (content) return content;
     }
-  }
+    return "";
+  };
 
-  // Extract title from og:title or <title>
-  let title = metadata['title'] || '';
-  if (!title) {
-    const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-    title = titleMatch ? titleMatch[1] : 'No title found';
-  }
+  const title =
+    getMetaContent([
+      'meta[property="og:title"]',
+      'meta[name="og:title"]',
+      'meta[name="twitter:title"]',
+    ]) ||
+    $("title").text() ||
+    "No title found";
 
-  // Extract description
-  let description = metadata['description'] || '';
-  if (!description) {
-    const metaDescMatch = html.match(
-      /<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i
-    );
-    description = metaDescMatch ? metaDescMatch[1] : '';
-  }
+  const description = getMetaContent([
+    'meta[property="og:description"]',
+    'meta[name="og:description"]',
+    'meta[name="twitter:description"]',
+    'meta[name="description"]',
+  ]);
 
-  // Extract image
-  const image = metadata['image'] || '';
+  const image = getMetaContent([
+    'meta[property="og:image"]',
+    'meta[name="og:image"]',
+    'meta[name="twitter:image"]',
+    'meta[name="twitter:image:src"]',
+  ]);
 
-  // Extract type
-  const type = metadata['type'] || 'website';
+  const siteName = getMetaContent([
+    'meta[property="og:site_name"]',
+    'meta[name="og:site_name"]',
+  ]);
+
+  const type =
+    getMetaContent(['meta[property="og:type"]', 'meta[name="og:type"]']) ||
+    "website";
 
   // Resolve relative image URLs
   let resolvedImage = image;
-  if (image && !image.startsWith('http')) {
+  if (image && !image.startsWith("http")) {
     try {
-      const baseUrl = new URL(url);
-      resolvedImage = new URL(image, baseUrl).href;
+      resolvedImage = new URL(image, url).href;
     } catch {
       resolvedImage = image;
     }
@@ -111,6 +116,7 @@ function parseOGMetadata(html: string, url: string): OGMetadata {
     description,
     image: resolvedImage,
     url,
+    siteName,
     type,
   };
 }

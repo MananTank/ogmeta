@@ -1,113 +1,122 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useEffect, useRef } from 'react';
-import { OGPreview } from '@/components/og-preview';
-import { PlatformPreviews } from '@/components/platform-previews';
-import { OGPreviewSkeleton } from '@/components/og-preview-skeleton';
-import { PlatformPreviewsSkeleton } from '@/components/platform-previews-skeleton';
+import { useState, useEffect, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { OGPreview } from "@/components/og-preview";
+import { PlatformPreviews } from "@/components/platform-previews";
+import { OGPreviewSkeleton } from "@/components/og-preview-skeleton";
+import { PlatformPreviewsSkeleton } from "@/components/platform-previews-skeleton";
+import { Input } from "../components/ui/input";
 
-const DEFAULT_URL = 'https://vercel.com';
+const DEFAULT_URL = "https://vercel.com";
 
 interface OGData {
   title: string;
   description: string;
   image: string;
   url: string;
+  siteName?: string;
   type?: string;
+}
+
+async function fetchOGData(url: string): Promise<OGData> {
+  let finalUrl = url.trim();
+  if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
+    finalUrl = "https://" + finalUrl;
+  }
+
+  const response = await fetch(`/api/og?url=${encodeURIComponent(finalUrl)}`);
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Failed to fetch metadata");
+  }
+
+  return response.json();
 }
 
 export default function Home() {
   const [url, setUrl] = useState(DEFAULT_URL);
-  const [ogData, setOgData] = useState<OGData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const debounceTimerRef = useRef<NodeJS.Timeout>();
+  const [debouncedUrl, setDebouncedUrl] = useState(DEFAULT_URL);
+  const debounceTimerRef = useRef<NodeJS.Timeout>(null);
 
-  const fetchOG = useCallback(async (urlToFetch: string) => {
-    if (!urlToFetch.trim()) {
-      setError('Please enter a URL');
-      setOgData(null);
-      return;
-    }
+  const {
+    data: ogData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["og", debouncedUrl],
+    queryFn: () => fetchOGData(debouncedUrl),
+    enabled: !!debouncedUrl.trim(),
+  });
 
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Ensure URL has protocol
-      let finalUrl = urlToFetch.trim();
-      if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-        finalUrl = 'https://' + finalUrl;
-      }
-
-      const response = await fetch(
-        `/api/og?url=${encodeURIComponent(finalUrl)}`
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch metadata');
-      }
-
-      const data = await response.json();
-      setOgData(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch metadata');
-      setOgData(null);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  console.log({ ogData });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newUrl = e.target.value;
     setUrl(newUrl);
 
-    // Clear existing timer
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
 
-    // Set new timer for debounced fetch
     debounceTimerRef.current = setTimeout(() => {
-      fetchOG(newUrl);
-    }, 500); // 500ms debounce
+      setDebouncedUrl(newUrl);
+    }, 500);
   };
 
-  // Fetch OG data on mount with default URL
   useEffect(() => {
-    fetchOG(DEFAULT_URL);
-  }, [fetchOG]);
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
   return (
-    <main className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6">
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-1 text-left font-sans">
-            OG Preview
-          </h1>
-          <p className="text-sm text-muted-foreground text-left">
-            See how your URL appears when shared across the web.
+    <main className="min-h-screen">
+      {/* Header & Input - Constrained */}
+      <div className="max-w-3xl mx-auto px-5 sm:px-8 py-16 md:py-24">
+        <header className="mb-12">
+          <h1 className="text-3xl font-medium tracking-tight">OG Meta</h1>
+          <p className="text-muted-foreground text-3xl tracking-tight font-medium">
+            Visualize your link on various platforms
           </p>
-        </div>
+        </header>
 
-        {/* Input Section */}
-        <div className="mb-10">
-          <input
+        <div className="mb-16">
+          <Input
             type="text"
             value={url}
+            aria-label="URL"
             onChange={handleInputChange}
             placeholder="https://example.com"
-            className="w-full px-4 py-2.5 bg-card border border-border rounded-md text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring transition-colors font-mono"
           />
-          {error && <p className="text-destructive text-xs mt-2">{error}</p>}
+          {error && (
+            <p className="text-destructive text-sm mt-3 flex items-center gap-2">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              {error instanceof Error
+                ? error.message
+                : "Failed to fetch metadata"}
+            </p>
+          )}
         </div>
 
-        {/* Content Sections */}
-        <div className="space-y-16">
-          {/* OG Metadata Section */}
-          {loading ? (
+        {/* OG Metadata Section - Constrained */}
+        <section>
+          {isLoading ? (
             <OGPreviewSkeleton />
           ) : ogData ? (
             <OGPreview
@@ -117,20 +126,22 @@ export default function Home() {
               url={ogData.url}
             />
           ) : null}
-
-          {/* Platform Previews Section */}
-          {loading ? (
-            <PlatformPreviewsSkeleton />
-          ) : ogData ? (
-            <PlatformPreviews
-              title={ogData.title}
-              description={ogData.description}
-              image={ogData.image}
-              url={ogData.url}
-            />
-          ) : null}
-        </div>
+        </section>
       </div>
+
+      {/* Platform Previews - Full Width */}
+      <section>
+        {isLoading ? (
+          <PlatformPreviewsSkeleton />
+        ) : ogData ? (
+          <PlatformPreviews
+            title={ogData.title}
+            description={ogData.description}
+            image={ogData.image}
+            url={ogData.url}
+          />
+        ) : null}
+      </section>
     </main>
   );
 }

@@ -1,79 +1,84 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Solid black — Vercel dark aesthetic */
-  --background: oklch(0 0 0);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.08 0 0);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.08 0 0);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.98 0 0);
-  --primary-foreground: oklch(0 0 0);
-  --secondary: oklch(0.13 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.13 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.13 0 0);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.6 0.22 25);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.18 0 0);
-  --input: oklch(0.13 0 0);
-  --ring: oklch(0.35 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.375rem;
-  --sidebar: oklch(0.08 0 0);
-  --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.98 0 0);
-  --sidebar-primary-foreground: oklch(0 0 0);
-  --sidebar-accent: oklch(0.13 0 0);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.18 0 0);
+  --background: #171717;
+  --foreground: oklch(0.95 0 0);
+  --card: oklch(0.16 0 0);
+  --card-foreground: oklch(0.95 0 0);
+  --popover: oklch(0.16 0 0);
+  --popover-foreground: oklch(0.95 0 0);
+  --primary: oklch(0.95 0 0);
+  --primary-foreground: oklch(0.13 0 0);
+  --secondary: oklch(0.18 0 0);
+  --secondary-foreground: oklch(0.95 0 0);
+  --muted: oklch(0.2 0 0);
+  --muted-foreground: oklch(0.6 0 0);
+  --accent: oklch(0.18 0 0);
+  --accent-foreground: oklch(0.95 0 0);
+  --destructive: oklch(0.65 0.22 25);
+  --destructive-foreground: oklch(0.95 0 0);
+  --border: oklch(0.22 0 0);
+  --input: #262626;
+  --ring: var(--accent-cyan);
+  --radius: 0.5rem;
+  --sidebar: oklch(0.16 0 0);
+  --sidebar-foreground: oklch(0.95 0 0);
+  --sidebar-primary: oklch(0.95 0 0);
+  --sidebar-primary-foreground: oklch(0.13 0 0);
+  --sidebar-accent: oklch(0.18 0 0);
+  --sidebar-accent-foreground: oklch(0.95 0 0);
+  --sidebar-border: oklch(0.22 0 0);
   --sidebar-ring: oklch(0.35 0 0);
-}
 
-.dark {
-  --background: oklch(0 0 0);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.08 0 0);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.08 0 0);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.98 0 0);
-  --primary-foreground: oklch(0 0 0);
-  --secondary: oklch(0.13 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.13 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.13 0 0);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.6 0.22 25);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.18 0 0);
-  --input: oklch(0.13 0 0);
-  --ring: oklch(0.35 0 0);
-  --radius: 0.375rem;
-  --sidebar: oklch(0.08 0 0);
-  --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.98 0 0);
-  --sidebar-primary-foreground: oklch(0 0 0);
-  --sidebar-accent: oklch(0.13 0 0);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.18 0 0);
-  --sidebar-ring: oklch(0.35 0 0);
+  /* LinkedIn Colors */
+  --linkedin-background: #f3f2ef;
+  --linkedin-card: #ffffff;
+  --linkedin-foreground: rgba(0, 0, 0, 0.9);
+  --linkedin-muted: rgba(0, 0, 0, 0.6);
+  --linkedin-border: #e0e0e0;
+  --linkedin-border-subtle: rgba(140, 140, 140, 0.2);
+  --linkedin-hover: #e9e5df;
+  --linkedin-reaction-blue: #378fe9;
+  --linkedin-reaction-orange: #df704d;
+
+  /* Facebook Colors */
+  --facebook-background: #f0f2f5;
+  --facebook-card: #ffffff;
+  --facebook-foreground: #1d2129;
+  --facebook-muted: #606770;
+  --facebook-border: #dddfe2;
+  --facebook-secondary: #f2f3f5;
+
+  /* Discord Colors */
+  --discord-background: #313338;
+  --discord-card: #2b2d31;
+  --discord-foreground: #f2f3f5;
+  --discord-muted: #b5bac1;
+  --discord-link: #00a8fc;
+  --discord-accent: #5865f2;
+
+  /* Slack Colors */
+  --slack-background: #1a1d21;
+  --slack-foreground: #ffffff;
+  --slack-muted: #d1d2d3;
+  --slack-link: #1d9bd1;
+  --slack-accent: #36c5f0;
+
+  /* iMessage Colors */
+  --imessage-background: #ffffff;
+  --imessage-card: #e9e9eb;
+  --imessage-foreground: #000000;
+  --imessage-muted: #8e8e93;
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback';
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-sans: var(--font-geist), "Geist", system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), "Geist Mono", monospace;
+  --font-display:
+    var(--font-instrument-serif), "Instrument Serif", Georgia, serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -88,9 +93,12 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-cyan-dim: var(--accent-cyan-dim);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-border-bright: var(--border-bright);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
@@ -110,6 +118,46 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* LinkedIn */
+  --color-linkedin-background: var(--linkedin-background);
+  --color-linkedin-card: var(--linkedin-card);
+  --color-linkedin-foreground: var(--linkedin-foreground);
+  --color-linkedin-muted: var(--linkedin-muted);
+  --color-linkedin-border: var(--linkedin-border);
+  --color-linkedin-border-subtle: var(--linkedin-border-subtle);
+  --color-linkedin-hover: var(--linkedin-hover);
+  --color-linkedin-reaction-blue: var(--linkedin-reaction-blue);
+  --color-linkedin-reaction-orange: var(--linkedin-reaction-orange);
+
+  /* Facebook */
+  --color-facebook-background: var(--facebook-background);
+  --color-facebook-card: var(--facebook-card);
+  --color-facebook-foreground: var(--facebook-foreground);
+  --color-facebook-muted: var(--facebook-muted);
+  --color-facebook-border: var(--facebook-border);
+  --color-facebook-secondary: var(--facebook-secondary);
+
+  /* Discord */
+  --color-discord-background: var(--discord-background);
+  --color-discord-card: var(--discord-card);
+  --color-discord-foreground: var(--discord-foreground);
+  --color-discord-muted: var(--discord-muted);
+  --color-discord-link: var(--discord-link);
+  --color-discord-accent: var(--discord-accent);
+
+  /* Slack */
+  --color-slack-background: var(--slack-background);
+  --color-slack-foreground: var(--slack-foreground);
+  --color-slack-muted: var(--slack-muted);
+  --color-slack-link: var(--slack-link);
+  --color-slack-accent: var(--slack-accent);
+
+  /* iMessage */
+  --color-imessage-background: var(--imessage-background);
+  --color-imessage-card: var(--imessage-card);
+  --color-imessage-foreground: var(--imessage-foreground);
+  --color-imessage-muted: var(--imessage-muted);
 }
 
 @layer base {
