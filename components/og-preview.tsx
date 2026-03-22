@@ -32,36 +32,17 @@ export function OGPreview({ title, description, image, url }: OGPreviewProps) {
         </div>
       )}
 
-      {/* Metadata rows */}
-      <div className="border border-border rounded-md divide-y divide-border">
-        <MetaRow label="Title" value={title || '—'} />
-        <MetaRow label="Description" value={description || '—'} clamp />
-        <MetaRow label="URL" value={url} mono />
-        {image && <MetaRow label="Image" value={image} mono />}
+      {/* Title & Description */}
+      <div className="space-y-1.5">
+        <p className="text-sm font-medium text-foreground leading-snug">
+          {title || '—'}
+        </p>
+        {description && (
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {description}
+          </p>
+        )}
       </div>
-    </div>
-  );
-}
-
-function MetaRow({
-  label,
-  value,
-  mono,
-  clamp,
-}: {
-  label: string;
-  value: string;
-  mono?: boolean;
-  clamp?: boolean;
-}) {
-  return (
-    <div className="flex gap-4 px-4 py-3">
-      <span className="text-xs text-muted-foreground w-20 shrink-0 pt-px">{label}</span>
-      <span
-        className={`text-sm text-foreground break-all leading-relaxed ${mono ? 'font-mono text-xs' : ''} ${clamp ? 'line-clamp-3' : ''}`}
-      >
-        {value}
-      </span>
     </div>
   );
 }
