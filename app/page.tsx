@@ -80,28 +80,28 @@ export default function Home() {
   }, [fetchOG]);
 
   return (
-    <main className="min-h-screen bg-background text-foreground py-8 px-4 sm:px-6">
-      <div className="max-w-4xl mx-auto">
+    <main className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6">
+      <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-2 text-left">
+        <div className="mb-8">
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-1 text-left font-sans">
             OG Preview
           </h1>
-          <p className="text-muted-foreground text-left">
-            Check how your URLs appear when shared
+          <p className="text-sm text-muted-foreground text-left">
+            See how your URL appears when shared across the web.
           </p>
         </div>
 
         {/* Input Section */}
-        <div className="mb-12">
+        <div className="mb-10">
           <input
             type="text"
             value={url}
             onChange={handleInputChange}
-            placeholder="Enter a URL to preview..."
-            className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="https://example.com"
+            className="w-full px-4 py-2.5 bg-card border border-border rounded-md text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring transition-colors font-mono"
           />
-          {error && <p className="text-destructive text-sm mt-2">{error}</p>}
+          {error && <p className="text-destructive text-xs mt-2">{error}</p>}
         </div>
 
         {/* Content Sections */}

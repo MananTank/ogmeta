@@ -1,35 +1,19 @@
 export function OGPreviewSkeleton() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-lg font-semibold text-foreground mb-4">Metadata Preview</h2>
-      </div>
-      
-      <div className="border border-border rounded-lg overflow-hidden bg-card">
-        {/* Image Skeleton */}
-        <div className="w-full h-64 bg-muted animate-pulse" />
-        
-        {/* Content Skeleton */}
-        <div className="p-6 space-y-4">
-          {/* Title */}
-          <div>
-            <div className="h-2 bg-muted rounded w-12 mb-2 animate-pulse" />
-            <div className="h-6 bg-muted rounded w-3/4 animate-pulse" />
+    <div className="space-y-4">
+      <div className="h-3 w-16 bg-muted rounded animate-pulse" />
+
+      {/* Image */}
+      <div className="w-full h-64 rounded-md bg-muted animate-pulse" />
+
+      {/* Metadata rows */}
+      <div className="border border-border rounded-md divide-y divide-border overflow-hidden">
+        {[['w-24', 'w-2/3'], ['w-20', 'w-full'], ['w-8', 'w-1/2'], ['w-12', 'w-3/4']].map(([labelW, valueW], i) => (
+          <div key={i} className="flex gap-4 px-4 py-3">
+            <div className={`h-3 ${labelW} bg-muted rounded animate-pulse mt-0.5 shrink-0`} />
+            <div className={`h-3 ${valueW} bg-muted rounded animate-pulse`} />
           </div>
-          
-          {/* Description */}
-          <div className="space-y-2">
-            <div className="h-2 bg-muted rounded w-20 mb-2 animate-pulse" />
-            <div className="h-4 bg-muted rounded w-full animate-pulse" />
-            <div className="h-4 bg-muted rounded w-5/6 animate-pulse" />
-          </div>
-          
-          {/* URL */}
-          <div>
-            <div className="h-2 bg-muted rounded w-8 mb-2 animate-pulse" />
-            <div className="h-4 bg-muted rounded w-1/2 animate-pulse" />
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

@@ -1,144 +1,145 @@
 'use client';
 
-interface PlatformPreviewsProps {
+interface Props {
   title: string;
   description: string;
   image: string;
   url: string;
 }
 
-export function PlatformPreviews({
-  title,
-  description,
-  image,
-  url,
-}: PlatformPreviewsProps) {
+function domain(url: string) {
+  try {
+    return new URL(url).hostname.replace('www.', '');
+  } catch {
+    return url;
+  }
+}
+
+function OGImage({ src, className }: { src: string; className?: string }) {
+  if (!src) return null;
   return (
-    <div className="space-y-8 w-full">
-      <h2 className="text-2xl font-semibold text-foreground">Platform Previews</h2>
+    <img
+      src={src}
+      alt="og preview"
+      className={className}
+      onError={(e) => {
+        e.currentTarget.style.display = 'none';
+      }}
+    />
+  );
+}
 
-      {/* Twitter/X Preview */}
-      <div className="border border-border rounded-lg overflow-hidden bg-card max-w-md">
-        <div className="p-3 border-b border-border space-y-2">
-          <p className="text-xs text-muted-foreground">X (Twitter)</p>
-          <div className="flex gap-3">
-            {image && (
-              <img
-                src={image}
-                alt="preview"
-                className="w-12 h-12 rounded object-cover flex-shrink-0"
-                onError={(e) => {
-                  e.currentTarget.src = '';
-                  e.currentTarget.className = 'w-12 h-12 rounded bg-muted';
-                }}
-              />
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-sm text-foreground truncate">{title}</p>
-              <p className="text-xs text-muted-foreground truncate">{description}</p>
-              <p className="text-xs text-muted-foreground truncate">
-                {new URL(url).hostname}
-              </p>
-            </div>
-          </div>
+/* ─── Twitter / X ─────────────────────────────────────────────── */
+function TwitterPreview({ title, description, image, url }: Props) {
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-muted-foreground tracking-widest uppercase">X (Twitter)</p>
+      <div className="rounded-xl border border-border overflow-hidden bg-card max-w-sm">
+        <OGImage src={image} className="w-full h-44 object-cover" />
+        <div className="px-3 py-2.5 space-y-0.5">
+          <p className="text-[11px] text-muted-foreground">{domain(url)}</p>
+          <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2">{title || '—'}</p>
+          <p className="text-[11px] text-muted-foreground line-clamp-1">{description}</p>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* LinkedIn Preview */}
-      <div className="border border-border rounded-lg overflow-hidden bg-card max-w-md">
-        <div className="p-3 space-y-2">
-          <p className="text-xs text-muted-foreground mb-2">LinkedIn</p>
-          {image && (
-            <img
-              src={image}
-              alt="preview"
-              className="w-full h-40 object-cover rounded"
-              onError={(e) => {
-                e.currentTarget.src = '';
-                e.currentTarget.className =
-                  'w-full h-40 rounded bg-muted';
-              }}
-            />
-          )}
-          <div className="space-y-1">
-            <p className="font-bold text-sm text-foreground line-clamp-2">
-              {title}
-            </p>
-            <p className="text-xs text-muted-foreground line-clamp-2">
-              {description}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {new URL(url).hostname}
-            </p>
-          </div>
+/* ─── LinkedIn ─────────────────────────────────────────────────── */
+function LinkedInPreview({ title, description, image, url }: Props) {
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-muted-foreground tracking-widest uppercase">LinkedIn</p>
+      <div className="rounded-md border border-border overflow-hidden bg-card max-w-sm">
+        <OGImage src={image} className="w-full h-44 object-cover" />
+        <div className="px-3 py-3 bg-secondary space-y-0.5">
+          <p className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">{title || '—'}</p>
+          <p className="text-[11px] text-muted-foreground">{domain(url)}</p>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Facebook Preview */}
-      <div className="border border-border rounded-lg overflow-hidden bg-card max-w-md">
-        <div className="p-3 space-y-2">
-          <p className="text-xs text-muted-foreground mb-2">Facebook</p>
-          {image && (
-            <img
-              src={image}
-              alt="preview"
-              className="w-full h-48 object-cover rounded"
-              onError={(e) => {
-                e.currentTarget.src = '';
-                e.currentTarget.className =
-                  'w-full h-48 rounded bg-muted';
-              }}
-            />
-          )}
-          <div className="space-y-1">
-            <p className="text-xs text-muted-foreground">
-              {new URL(url).hostname.replace('www.', '')}
-            </p>
-            <p className="font-bold text-sm text-foreground line-clamp-2">
-              {title}
-            </p>
-            <p className="text-xs text-muted-foreground line-clamp-2">
-              {description}
-            </p>
-          </div>
+/* ─── Facebook ─────────────────────────────────────────────────── */
+function FacebookPreview({ title, description, image, url }: Props) {
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-muted-foreground tracking-widest uppercase">Facebook</p>
+      <div className="border border-border overflow-hidden bg-card max-w-sm">
+        <OGImage src={image} className="w-full h-44 object-cover" />
+        <div className="px-3 py-2.5 bg-secondary space-y-0.5">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{domain(url)}</p>
+          <p className="text-sm font-bold text-foreground line-clamp-2 leading-snug">{title || '—'}</p>
+          <p className="text-[11px] text-muted-foreground line-clamp-2">{description}</p>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Discord Preview */}
-      <div className="border border-border rounded-lg overflow-hidden bg-card max-w-md">
-        <div className="bg-muted p-2 rounded-t flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-primary"></div>
-          <p className="text-xs text-muted-foreground font-semibold">
-            {new URL(url).hostname}
-          </p>
+/* ─── Discord ──────────────────────────────────────────────────── */
+function DiscordPreview({ title, description, image, url }: Props) {
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-muted-foreground tracking-widest uppercase">Discord</p>
+      <div className="rounded-md border border-border border-l-2 border-l-foreground/20 overflow-hidden bg-card max-w-sm p-3 space-y-2">
+        <p className="text-xs font-semibold text-foreground">{domain(url)}</p>
+        <p className="text-sm font-bold text-foreground line-clamp-2 leading-snug">{title || '—'}</p>
+        <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">{description}</p>
+        <OGImage src={image} className="w-full h-40 object-cover rounded" />
+      </div>
+    </div>
+  );
+}
+
+/* ─── Slack ────────────────────────────────────────────────────── */
+function SlackPreview({ title, description, image, url }: Props) {
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-muted-foreground tracking-widest uppercase">Slack</p>
+      <div className="rounded border border-border border-l-[3px] border-l-border overflow-hidden bg-card max-w-sm px-3 py-2.5 space-y-1">
+        <p className="text-xs font-bold text-foreground">{domain(url)}</p>
+        <p className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">{title || '—'}</p>
+        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{description}</p>
+        <OGImage src={image} className="mt-2 w-full max-w-xs h-36 object-cover rounded" />
+      </div>
+    </div>
+  );
+}
+
+/* ─── iMessage ─────────────────────────────────────────────────── */
+function IMessagePreview({ title, description, image, url }: Props) {
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-muted-foreground tracking-widest uppercase">iMessage</p>
+      <div className="rounded-2xl border border-border overflow-hidden bg-card max-w-xs">
+        <OGImage src={image} className="w-full h-40 object-cover" />
+        <div className="px-3 py-2.5 space-y-0.5">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{domain(url)}</p>
+          <p className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">{title || '—'}</p>
+          <p className="text-[11px] text-muted-foreground line-clamp-1">{description}</p>
         </div>
-        <div className="p-3 space-y-2">
-          <div className="flex gap-2">
-            {image && (
-              <img
-                src={image}
-                alt="preview"
-                className="w-24 h-24 object-cover rounded flex-shrink-0"
-                onError={(e) => {
-                  e.currentTarget.src = '';
-                  e.currentTarget.className =
-                    'w-24 h-24 rounded bg-muted flex-shrink-0';
-                }}
-              />
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-sm text-foreground line-clamp-2">
-                {title}
-              </p>
-              <p className="text-xs text-muted-foreground line-clamp-3">
-                {description}
-              </p>
-              <p className="text-xs text-muted-foreground mt-2">
-                {new URL(url).hostname}
-              </p>
-            </div>
-          </div>
-        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Root export ──────────────────────────────────────────────── */
+export function PlatformPreviews(props: Props) {
+  return (
+    <div className="space-y-4">
+      <h2 className="text-xs font-medium tracking-widest text-muted-foreground uppercase">
+        Platform Previews
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <TwitterPreview {...props} />
+        <LinkedInPreview {...props} />
+        <FacebookPreview {...props} />
+        <DiscordPreview {...props} />
+        <SlackPreview {...props} />
+        <IMessagePreview {...props} />
       </div>
     </div>
   );
