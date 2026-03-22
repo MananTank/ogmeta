@@ -73,14 +73,21 @@ function TwitterPreview({ title, description, image, url }: Props) {
                 This is an example of a twitter post
               </p>
 
-              {/* OG Card */}
-              <div className="mt-3 rounded-2xl border border-border overflow-hidden" style={{ maxWidth: 516 }}>
-                <OGImage src={image} className="w-full h-auto block" />
-                <div className="px-3 py-2.5 space-y-0.5 bg-[oklch(0.06_0_0)]">
-                  <p className="text-[12px] text-muted-foreground">{domain(url)}</p>
-                  <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2">{title || '—'}</p>
-                  {description && <p className="text-[12px] text-muted-foreground line-clamp-2 leading-relaxed">{description}</p>}
+              {/* OG Card — image fills card, title badge overlaid on bottom, domain below */}
+              <div className="mt-3" style={{ maxWidth: 516 }}>
+                <div className="rounded-2xl border border-border overflow-hidden relative">
+                  <OGImage src={image} className="w-full h-auto block" />
+                  {title && (
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <span className="inline-block bg-[oklch(0.12_0_0)/90%] backdrop-blur-sm text-foreground text-[13px] font-semibold px-3 py-1.5 rounded-full line-clamp-1 max-w-full">
+                        {title}
+                      </span>
+                    </div>
+                  )}
                 </div>
+                <p className="text-[13px] text-muted-foreground mt-1.5 ml-0.5">
+                  From {domain(url)}
+                </p>
               </div>
 
               {/* Action bar */}
