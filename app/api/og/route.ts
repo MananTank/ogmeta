@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('[og-api] Fetch error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch or parse URL' },
+      { error: 'Failed to fetch open graph metadata' },
       { status: 500 }
     )
   }

@@ -20,7 +20,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #171717;
+  --background: #070706;
   --foreground: oklch(0.95 0 0);
   --card: oklch(0.16 0 0);
   --card-foreground: oklch(0.95 0 0);
@@ -48,49 +48,6 @@
   --sidebar-accent-foreground: oklch(0.95 0 0);
   --sidebar-border: oklch(0.22 0 0);
   --sidebar-ring: oklch(0.35 0 0);
-
-  /* Twitter Colors */
-  --twitter-link: rgb(29, 155, 240);
-
-  /* LinkedIn Colors */
-  --linkedin-background: #f3f2ef;
-  --linkedin-card: #ffffff;
-  --linkedin-foreground: rgba(0, 0, 0, 0.9);
-  --linkedin-muted: rgba(0, 0, 0, 0.6);
-  --linkedin-border: #e0e0e0;
-  --linkedin-border-subtle: rgba(140, 140, 140, 0.2);
-  --linkedin-hover: #e9e5df;
-  --linkedin-reaction-blue: #378fe9;
-  --linkedin-reaction-orange: #df704d;
-
-  /* Facebook Colors */
-  --facebook-background: #f0f2f5;
-  --facebook-card: #ffffff;
-  --facebook-foreground: #1d2129;
-  --facebook-muted: #606770;
-  --facebook-border: #dddfe2;
-  --facebook-secondary: #f2f3f5;
-
-  /* Discord Colors */
-  --discord-background: #313338;
-  --discord-card: #2b2d31;
-  --discord-foreground: #f2f3f5;
-  --discord-muted: #b5bac1;
-  --discord-link: #00a8fc;
-  --discord-accent: #5865f2;
-
-  /* Slack Colors */
-  --slack-background: #1a1d21;
-  --slack-foreground: #ffffff;
-  --slack-muted: #d1d2d3;
-  --slack-link: #1d9bd1;
-  --slack-accent: #36c5f0;
-
-  /* iMessage Colors */
-  --imessage-background: #ffffff;
-  --imessage-card: #e9e9eb;
-  --imessage-foreground: #000000;
-  --imessage-muted: #8e8e93;
 }
 
 @theme inline {
@@ -138,49 +95,81 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-link: var(--link);
+  --color-secondary: var(--secondary);
+}
 
-  /* Twitter */
-  --color-twitter-link: var(--twitter-link);
+.twitter {
+  --background: #000000;
+  --border: oklch(0.25 0 0);
+  --foreground: oklch(0.95 0 0);
+  --muted-foreground: oklch(0.6 0 0);
+  --link: rgb(29, 155, 240);
+}
 
-  /* LinkedIn */
-  --color-linkedin-background: var(--linkedin-background);
-  --color-linkedin-card: var(--linkedin-card);
-  --color-linkedin-foreground: var(--linkedin-foreground);
-  --color-linkedin-muted: var(--linkedin-muted);
-  --color-linkedin-border: var(--linkedin-border);
-  --color-linkedin-border-subtle: var(--linkedin-border-subtle);
-  --color-linkedin-hover: var(--linkedin-hover);
-  --color-linkedin-reaction-blue: var(--linkedin-reaction-blue);
-  --color-linkedin-reaction-orange: var(--linkedin-reaction-orange);
+.linkedin {
+  --background: #f3f2ef;
+  --card: #ffffff;
+  --foreground: rgba(0, 0, 0, 0.9);
+  --muted-foreground: rgba(0, 0, 0, 0.6);
+  --border: #e0e0e0;
+  --secondary: #e9e5df;
+  --link: #0a66c2;
+}
 
-  /* Facebook */
-  --color-facebook-background: var(--facebook-background);
-  --color-facebook-card: var(--facebook-card);
-  --color-facebook-foreground: var(--facebook-foreground);
-  --color-facebook-muted: var(--facebook-muted);
-  --color-facebook-border: var(--facebook-border);
-  --color-facebook-secondary: var(--facebook-secondary);
+.facebook {
+  --background: #f0f2f5;
+  --card: #ffffff;
+  --foreground: #1d2129;
+  --muted-foreground: #606770;
+  --border: #dddfe2;
+  --secondary: #f2f3f5;
+  --link: #1877f2;
+}
 
-  /* Discord */
-  --color-discord-background: var(--discord-background);
-  --color-discord-card: var(--discord-card);
-  --color-discord-foreground: var(--discord-foreground);
-  --color-discord-muted: var(--discord-muted);
-  --color-discord-link: var(--discord-link);
-  --color-discord-accent: var(--discord-accent);
+.discord {
+  --background: #1a1a1e;
+  --card: #242429;
+  --foreground: #f2f3f5;
+  --muted-foreground: #b5bac1;
+  --border: #323237;
+  --link: #4e96ee;
+  --secondary: #5865f2;
+}
 
-  /* Slack */
-  --color-slack-background: var(--slack-background);
-  --color-slack-foreground: var(--slack-foreground);
-  --color-slack-muted: var(--slack-muted);
-  --color-slack-link: var(--slack-link);
-  --color-slack-accent: var(--slack-accent);
+.slack {
+  --background: #1a1d21;
+  --card: #1a1d21;
+  --foreground: #ffffff;
+  --muted-foreground: #ababad;
+  --border: hsl(220deg 10% 15%);
+  --link: #1d9bd1;
+  --secondary: #36c5f0;
+}
 
-  /* iMessage */
-  --color-imessage-background: var(--imessage-background);
-  --color-imessage-card: var(--imessage-card);
-  --color-imessage-foreground: var(--imessage-foreground);
-  --color-imessage-muted: var(--imessage-muted);
+.imessage {
+  --background: #fffdff;
+  --card: #e9e9eb;
+  --border: #e6e4e6;
+  --foreground: #000000;
+  --muted-foreground: #8e8e93;
+  --border: #d1d1d6;
+  --link: #007aff;
+}
+
+.whatsapp {
+  --background: #0a0a0a;
+  --card: #242626;
+  --foreground: #fafafa;
+  --muted-foreground: #898a8a;
+  --border: #222222;
+  --link: #22bf63;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
+    url('/whatsapp-bg.png');
+  background-size: 500px;
+  background-repeat: repeat;
+  background-position: center;
 }
 
 @layer base {

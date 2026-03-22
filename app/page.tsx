@@ -2,10 +2,28 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { GlobeIcon, Search } from 'lucide-react'
 import { PlatformPreviews } from '@/components/platform-previews'
 import { Input } from '../components/ui/input'
+import { AppIcon } from '@/components/icons/app'
 
 const DEFAULT_URL = 'https://vercel.com'
+
+function isValidUrl(urlString: string): boolean {
+  if (!urlString.includes('.')) {
+    return false
+  }
+  try {
+    let testUrl = urlString.trim()
+    if (!testUrl.startsWith('http://') && !testUrl.startsWith('https://')) {
+      testUrl = 'https://' + testUrl
+    }
+    new URL(testUrl)
+    return true
+  } catch {
+    return false
+  }
+}
 
 interface OGData {
   title: string
@@ -19,6 +37,7 @@ interface OGData {
 
 async function fetchOGData(url: string): Promise<OGData> {
   let finalUrl = url.trim()
+
   if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
     finalUrl = 'https://' + finalUrl
   }
@@ -38,6 +57,8 @@ export default function Home() {
   const [debouncedUrl, setDebouncedUrl] = useState(DEFAULT_URL)
   const debounceTimerRef = useRef<NodeJS.Timeout>(null)
 
+  const urlIsValid = isValidUrl(debouncedUrl)
+
   const {
     data: ogData,
     isLoading,
@@ -45,11 +66,9 @@ export default function Home() {
   } = useQuery({
     queryKey: ['og', debouncedUrl],
     queryFn: () => fetchOGData(debouncedUrl),
-    enabled: !!debouncedUrl.trim(),
+    enabled: urlIsValid,
     retry: false,
   })
-
-  console.log({ ogData })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newUrl = e.target.value
@@ -73,38 +92,35 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="min-h-screen">
-      <div className="mx-auto max-w-2xl px-4 py-16">
-        <header className="mb-12">
-          <h1 className="text-3xl font-medium tracking-tight">OG Meta</h1>
-          <p className="text-muted-foreground text-base tracking-wide">
-            Visualize your link on various platforms
+    <main className="min-h-screen px-4">
+      <div className="mx-auto max-w-3xl pt-32 pb-24">
+        <header className="mb-8 text-center">
+          {/* <AppIcon className="text-muted-foreground mx-auto mb-8 size-[160px]" /> */}
+          <h1 className="font-sans text-5xl font-semibold tracking-tight md:text-5xl">
+            <span className="text-foreground">Preview link on</span>
+            <br />
+            <span className="text-muted-foreground">social platforms</span>
+          </h1>
+          <p className="text-muted-foreground mt-4 text-base">
+            Fast. Accurate. Open Source
           </p>
         </header>
 
-        <div className="mb-16">
-          <Input
-            type="text"
-            value={url}
-            aria-label="URL"
-            onChange={handleInputChange}
-            placeholder="https://example.com"
-          />
+        <div className="mx-auto w-full max-w-lg space-y-3">
+          <div className="relative">
+            <GlobeIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2" />
+            <Input
+              type="text"
+              value={url}
+              aria-label="URL"
+              onChange={handleInputChange}
+              placeholder="Enter a URL"
+              className="h-10 rounded-xl border-neutral-800 bg-neutral-900/50 pr-4 pl-10 placeholder:text-neutral-600 focus-visible:border-neutral-700 focus-visible:ring-0"
+            />
+          </div>
           {error && (
-            <p className="text-destructive mt-3 flex items-center gap-2 text-sm">
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+            <p className="text-destructive/90 flex items-center gap-2 text-[13px]">
+              <span className="inline-block h-1 w-1 rounded-full bg-current" />
               {error instanceof Error
                 ? error.message
                 : 'Failed to fetch metadata'}
@@ -120,6 +136,7 @@ export default function Home() {
         url={ogData?.url ?? debouncedUrl}
         isLoading={isLoading}
         isError={!!error}
+        isValidUrl={urlIsValid}
       />
     </main>
   )

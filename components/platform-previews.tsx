@@ -1,7 +1,13 @@
 'use client'
 
 import * as React from 'react'
-import { MessageCircle, Repeat2, Heart, ImageIcon } from 'lucide-react'
+import {
+  MessageCircle,
+  Repeat2,
+  Heart,
+  ImageIcon,
+  LinkIcon,
+} from 'lucide-react'
 import Avatar from 'boring-avatars'
 import { LinkedInGlobeIcon } from './icons/linkedin'
 import {
@@ -10,9 +16,11 @@ import {
   TwitterLikeIcon,
   TwitterViewsIcon,
   TwitterBookmarkIcon,
+  TwitterLogoIcon,
 } from './icons/twitter'
 import { cn } from '../lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
+import { SlackIcon } from './icons/slack'
 
 interface Props {
   title: string
@@ -22,6 +30,7 @@ interface Props {
   url: string
   isLoading?: boolean
   isError?: boolean
+  isValidUrl?: boolean
 }
 
 function domain(url: string) {
@@ -95,24 +104,32 @@ function OGImage({
 }
 
 function PlatformSectionContainer(props: {
-  bgClassName?: string
-  nameClassName?: string
+  containerClassName?: string
   name: string
   children: React.ReactNode
+  logo?: React.FC<{ className?: string }>
 }) {
   return (
-    <div className={cn('relative', props.bgClassName)}>
-      <p
-        className={cn(
-          'absolute top-6 left-6 text-sm font-medium tracking-widest uppercase',
-          props.nameClassName
-        )}
-      >
-        {props.name}
-      </p>
+    <section className="group mx-auto w-full max-w-5xl">
+      <div className="flex flex-col items-center">
+        <div
+          className={cn(
+            'bg-background relative flex min-h-[700px] w-full flex-col items-center justify-center rounded-2xl border px-4 py-32',
+            props.containerClassName
+          )}
+        >
+          {/* <h2 className="text-muted-foreground absolute top-6 left-6 text-center text-sm tracking-wide">
+            {props.name}
+          </h2> */}
+          <div className="absolute top-6 left-6 flex items-center gap-2">
+            {props.logo && <props.logo className="text-foreground size-5" />}
+            <p className="text-foreground text-base">{props.name}</p>
+          </div>
 
-      <div className={cn('mx-auto max-w-2xl px-4 py-32')}>{props.children}</div>
-    </div>
+          {props.children}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -123,14 +140,16 @@ function TwitterPreview({
   url,
   isLoading,
   isError,
+  isValidUrl,
 }: Props) {
   const hasImage = !isLoading && image && isValidImage
+  const showPreview = isValidUrl && !isError && (isLoading || hasImage)
 
   return (
     <PlatformSectionContainer
-      bgClassName="bg-black"
-      nameClassName="text-neutral-500"
       name="Twitter"
+      containerClassName="twitter"
+      logo={TwitterLogoIcon}
     >
       <div className="font-chirp flex max-w-[566px] gap-3">
         <div className="shrink-0">
@@ -139,13 +158,17 @@ function TwitterPreview({
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-sm font-bold text-white">{UserName}</span>
-            <span className="text-sm text-neutral-500">{UserHandle}</span>
-            <span className="text-sm text-neutral-500">·</span>
-            <span className="text-sm text-neutral-500">2h</span>
+            <span className="text-foreground text-[15px] font-bold">
+              {UserName}
+            </span>
+            <span className="text-muted-foreground text-[15px]">
+              {UserHandle}
+            </span>
+            <span className="text-muted-foreground text-[15px]">·</span>
+            <span className="text-muted-foreground text-[15px]">2h</span>
           </div>
 
-          <div className="mt-1 space-y-4 text-[15px] leading-snug text-white">
+          <div className="text-foreground mt-1 space-y-4 text-[15px] leading-snug">
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -153,26 +176,26 @@ function TwitterPreview({
 
             <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco</p>
 
-            {!isLoading && (!image || !isValidImage) && (
-              <p className="text-twitter-link">{url}</p>
+            {!showPreview && (
+              <p className={isValidUrl ? 'text-link' : ''}>{url}</p>
             )}
           </div>
 
-          {!isError && (
+          {showPreview && (
             <div className="mt-3">
               {(isLoading || hasImage) && (
-                <div className="relative overflow-hidden rounded-2xl border border-neutral-800">
+                <div className="relative overflow-hidden rounded-2xl border">
                   <OGImage
                     src={image}
                     isValidImage={isValidImage}
                     className="block aspect-[1.91/1] h-auto w-full object-cover"
                     isLoading={isLoading}
-                    skeletonClassName="bg-neutral-800"
+                    skeletonClassName="bg-border"
                   />
                   {!isLoading && title && (
                     <div className="absolute right-3 bottom-3 left-3">
                       <span
-                        className="inline-flex h-[20px] overflow-hidden rounded px-2 text-[13px] font-semibold text-ellipsis whitespace-nowrap text-white backdrop-blur-md"
+                        className="text-foreground inline-block max-w-full truncate rounded px-2 text-[13px] leading-[20px] font-semibold backdrop-blur-md"
                         style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
                       >
                         {title}
@@ -182,18 +205,14 @@ function TwitterPreview({
                 </div>
               )}
 
-              {isLoading ? (
-                <Skeleton className="mt-1.5 ml-0.5 h-3 w-24 bg-neutral-800" />
-              ) : hasImage ? (
-                <p className="mt-1.5 ml-0.5 text-[13px] text-neutral-500">
-                  From {domain(url)}
-                </p>
-              ) : null}
+              <p className="text-muted-foreground mt-1 text-[13px]">
+                From {domain(url)}
+              </p>
             </div>
           )}
 
           {/* buttons */}
-          <div className="mt-3 flex items-center justify-between text-neutral-500">
+          <div className="text-muted-foreground mt-3 flex items-center justify-between">
             <button className="flex items-center gap-1.5 transition-colors hover:text-sky-400">
               <TwitterReplyIcon className="size-5" />
               <span className="text-xs">24</span>
@@ -229,79 +248,74 @@ function LinkedInPreview({
   isError,
 }: Props) {
   return (
-    <PlatformSectionContainer
-      bgClassName="bg-linkedin-background"
-      nameClassName="text-linkedin-muted"
-      name="LinkedIn"
-    >
-      <div className="bg-linkedin-card w-full overflow-hidden rounded-lg shadow-sm">
+    <PlatformSectionContainer name="LinkedIn" containerClassName="linkedin">
+      <div className="bg-card w-full max-w-[550px] overflow-hidden rounded-lg shadow-sm">
         {/* Post Header */}
-        <div className="p-4 pb-0">
+        <div className="p-4">
           <div className="flex gap-2">
             <div className="shrink-0">
               <UserAvatar size={48} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-linkedin-foreground text-sm font-semibold">
+              <p className="text-foreground text-sm font-semibold">
                 {UserName}
               </p>
-              <p className="text-linkedin-muted line-clamp-1 text-xs">
+              <p className="text-muted-foreground line-clamp-1 text-xs">
                 Product Designer at Company
               </p>
-              <p className="text-linkedin-muted text-xs">
-                2h • <LinkedInGlobeIcon />
-              </p>
+              <div className="flex items-center gap-1">
+                <p className="text-muted-foreground text-xs">2h •</p>
+                <LinkedInGlobeIcon className="text-muted-foreground size-3.5" />
+              </div>
             </div>
           </div>
 
           {/* Post Content */}
-          <div className="text-linkedin-foreground mt-3 text-sm leading-relaxed">
+          <div className="text-foreground mt-3 text-sm leading-relaxed">
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
               faucibus ultrices risus.
             </p>
           </div>
-        </div>
 
-        {/* Link Preview Card */}
-        {!isError && (
-          <div className="border-linkedin-border-subtle bg-linkedin-card mx-4 mt-3 mb-2 flex overflow-hidden rounded-lg border">
-            <div className="h-[72px] w-[128px] shrink-0">
+          {/* Link Preview Card */}
+          {!isError && (
+            <div className="bg-card mt-3 flex overflow-hidden rounded-lg border p-3">
               <OGImage
                 src={image}
                 isValidImage={isValidImage}
-                className="h-full w-full object-cover"
+                className="h-[72px] w-[128px] shrink-0 rounded-md object-cover"
                 isLoading={isLoading}
-                skeletonClassName="bg-[#d0cec9]"
+                skeletonClassName="bg-secondary"
               />
+              <div className="flex min-w-0 flex-1 flex-col justify-center px-3 py-2">
+                {isLoading ? (
+                  <>
+                    <Skeleton className="bg-secondary h-4 w-3/4" />
+                    <Skeleton className="bg-secondary mt-1 h-3 w-20" />
+                  </>
+                ) : (
+                  <>
+                    <p className="text-foreground line-clamp-2 text-sm leading-snug font-semibold">
+                      {title || '—'}
+                    </p>
+                    <p className="text-muted-foreground mt-0.5 text-xs">
+                      {domain(url)}
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
-            <div className="flex min-w-0 flex-1 flex-col justify-center px-3 py-2">
-              {isLoading ? (
-                <>
-                  <Skeleton className="h-4 w-3/4 bg-[#e0dfdc]" />
-                  <Skeleton className="mt-1 h-3 w-20 bg-[#e0dfdc]" />
-                </>
-              ) : (
-                <>
-                  <p className="text-linkedin-foreground line-clamp-2 text-sm leading-snug font-semibold">
-                    {title || '—'}
-                  </p>
-                  <p className="text-linkedin-muted mt-0.5 text-xs">
-                    {domain(url)}
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Engagement Stats */}
-        <div className="text-linkedin-muted border-linkedin-border flex items-center gap-1 border-t px-4 py-2 text-xs">
+        <div className="text-muted-foreground flex items-center gap-1 border-t px-4 py-2 text-xs">
           <span className="flex -space-x-1">
-            <span className="bg-linkedin-reaction-blue flex h-4 w-4 items-center justify-center rounded-full text-[8px] text-white">
+            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#378fe9] text-[8px] text-white">
               👍
             </span>
-            <span className="bg-linkedin-reaction-orange flex h-4 w-4 items-center justify-center rounded-full text-[8px] text-white">
+            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#df704d] text-[8px] text-white">
               ❤️
             </span>
           </span>
@@ -313,8 +327,8 @@ function LinkedInPreview({
         </div>
 
         {/* Action Buttons */}
-        <div className="border-linkedin-border flex items-center justify-around border-t px-2 py-1">
-          <button className="hover:bg-linkedin-hover text-linkedin-muted flex items-center gap-1.5 rounded px-4 py-3 transition-colors">
+        <div className="flex items-center justify-around border-t px-2 py-1">
+          <button className="text-muted-foreground hover:bg-secondary flex items-center gap-1.5 rounded px-4 py-3 transition-colors">
             <svg
               className="h-5 w-5"
               fill="none"
@@ -330,15 +344,15 @@ function LinkedInPreview({
             </svg>
             <span className="text-sm font-medium">Like</span>
           </button>
-          <button className="hover:bg-linkedin-hover text-linkedin-muted flex items-center gap-1.5 rounded px-4 py-3 transition-colors">
+          <button className="text-muted-foreground hover:bg-secondary flex items-center gap-1.5 rounded px-4 py-3 transition-colors">
             <MessageCircle className="h-5 w-5" />
             <span className="text-sm font-medium">Comment</span>
           </button>
-          <button className="hover:bg-linkedin-hover text-linkedin-muted flex items-center gap-1.5 rounded px-4 py-3 transition-colors">
+          <button className="text-muted-foreground hover:bg-secondary flex items-center gap-1.5 rounded px-4 py-3 transition-colors">
             <Repeat2 className="h-5 w-5" />
             <span className="text-sm font-medium">Repost</span>
           </button>
-          <button className="hover:bg-linkedin-hover text-linkedin-muted flex items-center gap-1.5 rounded px-4 py-3 transition-colors">
+          <button className="text-muted-foreground hover:bg-secondary flex items-center gap-1.5 rounded px-4 py-3 transition-colors">
             <svg
               className="h-5 w-5"
               fill="none"
@@ -370,12 +384,8 @@ function FacebookPreview({
   isError,
 }: Props) {
   return (
-    <PlatformSectionContainer
-      bgClassName="bg-facebook-background"
-      nameClassName="text-facebook-muted"
-      name="Facebook"
-    >
-      <div className="bg-facebook-card w-full overflow-hidden rounded-lg shadow-sm">
+    <PlatformSectionContainer name="Facebook" containerClassName="facebook">
+      <div className="bg-card w-full max-w-[680px] overflow-hidden rounded-lg shadow-sm">
         {/* Post Header */}
         <div className="p-3 pb-2">
           <div className="flex gap-2">
@@ -383,15 +393,15 @@ function FacebookPreview({
               <UserAvatar size={40} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-facebook-foreground text-[15px] font-semibold">
+              <p className="text-foreground text-[15px] font-semibold">
                 {UserName}
               </p>
-              <p className="text-facebook-muted text-xs">2h · 🌐</p>
+              <p className="text-muted-foreground text-xs">2h · 🌐</p>
             </div>
           </div>
 
           {/* Post Content */}
-          <div className="text-facebook-foreground mt-2 text-[15px] leading-relaxed">
+          <div className="text-foreground mt-2 text-[15px] leading-relaxed">
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
               faucibus ultrices risus.
@@ -401,30 +411,30 @@ function FacebookPreview({
 
         {/* Link Preview Card */}
         {!isError && (
-          <div className="border-facebook-border border-t">
+          <div className="border-t">
             <OGImage
               src={image}
               isValidImage={isValidImage}
               className="aspect-[1.91/1] w-full object-cover"
               isLoading={isLoading}
-              skeletonClassName="bg-[#d0d2d6]"
+              skeletonClassName="bg-secondary"
             />
-            <div className="bg-facebook-secondary space-y-0.5 px-3 py-2.5">
+            <div className="bg-secondary space-y-0.5 px-3 py-2.5">
               {isLoading ? (
                 <>
-                  <Skeleton className="h-3 w-20 bg-[#e0e2e6]" />
-                  <Skeleton className="h-4 w-3/4 bg-[#e0e2e6]" />
-                  <Skeleton className="h-3 w-1/2 bg-[#e0e2e6]" />
+                  <Skeleton className="bg-border h-3 w-20" />
+                  <Skeleton className="bg-border h-4 w-3/4" />
+                  <Skeleton className="bg-border h-3 w-1/2" />
                 </>
               ) : (
                 <>
-                  <p className="text-facebook-muted text-[11px] tracking-wide uppercase">
+                  <p className="text-muted-foreground text-[11px] tracking-wide uppercase">
                     {domain(url)}
                   </p>
-                  <p className="text-facebook-foreground line-clamp-2 text-[15px] leading-snug font-semibold">
+                  <p className="text-foreground line-clamp-2 text-[15px] leading-snug font-semibold">
                     {title || '—'}
                   </p>
-                  <p className="text-facebook-muted line-clamp-1 text-[13px]">
+                  <p className="text-muted-foreground line-clamp-1 text-[13px]">
                     {description}
                   </p>
                 </>
@@ -434,7 +444,7 @@ function FacebookPreview({
         )}
 
         {/* Engagement Stats */}
-        <div className="text-facebook-muted border-facebook-border flex items-center border-t px-3 py-2 text-[13px]">
+        <div className="text-muted-foreground flex items-center border-t px-3 py-2 text-[13px]">
           <span className="flex -space-x-1">
             <span className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[#1877f2] text-[10px] text-white">
               👍
@@ -451,8 +461,8 @@ function FacebookPreview({
         </div>
 
         {/* Action Buttons */}
-        <div className="border-facebook-border flex items-center justify-around border-t px-2 py-1">
-          <button className="hover:bg-facebook-secondary text-facebook-muted flex flex-1 items-center justify-center gap-2 rounded py-2.5 transition-colors">
+        <div className="flex items-center justify-around border-t px-2 py-1">
+          <button className="text-muted-foreground hover:bg-secondary flex flex-1 items-center justify-center gap-2 rounded py-2.5 transition-colors">
             <svg
               className="h-5 w-5"
               fill="none"
@@ -468,11 +478,11 @@ function FacebookPreview({
             </svg>
             <span className="text-[15px] font-medium">Like</span>
           </button>
-          <button className="hover:bg-facebook-secondary text-facebook-muted flex flex-1 items-center justify-center gap-2 rounded py-2.5 transition-colors">
+          <button className="text-muted-foreground hover:bg-secondary flex flex-1 items-center justify-center gap-2 rounded py-2.5 transition-colors">
             <MessageCircle className="h-5 w-5" />
             <span className="text-[15px] font-medium">Comment</span>
           </button>
-          <button className="hover:bg-facebook-secondary text-facebook-muted flex flex-1 items-center justify-center gap-2 rounded py-2.5 transition-colors">
+          <button className="text-muted-foreground hover:bg-secondary flex flex-1 items-center justify-center gap-2 rounded py-2.5 transition-colors">
             <svg
               className="h-5 w-5"
               fill="none"
@@ -502,13 +512,12 @@ function DiscordPreview({
   url,
   isLoading,
   isError,
+  isValidUrl,
 }: Props) {
+  const showPreview = isValidUrl && !isError
+
   return (
-    <PlatformSectionContainer
-      bgClassName="bg-[#1A1A1E]"
-      nameClassName="text-[#818289]"
-      name="Discord"
-    >
+    <PlatformSectionContainer name="Discord" containerClassName="discord">
       {/* Message */}
       <div className="flex gap-4">
         <div className="shrink-0">
@@ -517,41 +526,48 @@ function DiscordPreview({
         <div className="min-w-0 flex-1">
           {/* Username and timestamp */}
           <div className="flex items-baseline gap-2">
-            <span className="text-[15px] font-medium text-[#EFEFF1]">
+            <span className="text-foreground text-[15px] font-medium">
               {UserName}
             </span>
-            <span className="text-xs text-[#818289]">7:46 PM</span>
+            <span className="text-muted-foreground text-xs">7:46 PM</span>
           </div>
 
           {/* Message content */}
-          <p className="mt-0.5 text-[15px] leading-relaxed text-[#EFEFF1]">
+          <p className="text-foreground mt-0.5 text-[15px] leading-relaxed">
             testing opengraph image for
           </p>
-          <p className="cursor-pointer text-[15px] text-[#4E96EE] hover:underline">
+          <p
+            className={cn(
+              'text-[15px]',
+              isValidUrl
+                ? 'text-link cursor-pointer hover:underline'
+                : 'text-foreground'
+            )}
+          >
             {url}
           </p>
 
           {/* Link Embed */}
-          {!isError && (
+          {showPreview && (
             <div
-              className="mt-2 overflow-hidden rounded bg-[#242429]"
+              className="bg-card mt-1.5 overflow-hidden rounded border p-4"
               style={{ maxWidth: 432 }}
             >
-              <div className="space-y-1 p-3 pb-2">
+              <div className="space-y-1">
                 {isLoading ? (
                   <>
-                    <Skeleton className="h-3 w-24 bg-[#4a4d52]" />
-                    <Skeleton className="h-4 w-3/4 bg-[#4a4d52]" />
-                    <Skeleton className="h-3 w-full bg-[#4a4d52]" />
+                    <Skeleton className="bg-border h-3 w-24" />
+                    <Skeleton className="bg-border h-4 w-3/4" />
+                    <Skeleton className="bg-border h-3 w-full" />
                   </>
                 ) : (
                   <>
-                    <p className="text-xs text-[#818289]">{siteName(url)}</p>
-                    <p className="cursor-pointer leading-snug font-semibold text-[#4E96EE] hover:underline">
-                      {title || '—'}
+                    <p className="text-foreground text-xs">{siteName(url)}</p>
+                    <p className="text-link cursor-pointer leading-snug font-semibold hover:underline">
+                      {title || 'No title'}
                     </p>
-                    <p className="line-clamp-2 text-sm leading-relaxed text-[#EFEFF1]">
-                      {description}
+                    <p className="text-foreground line-clamp-2 text-sm leading-relaxed">
+                      {description || 'No description'}
                     </p>
                   </>
                 )}
@@ -559,9 +575,9 @@ function DiscordPreview({
               <OGImage
                 src={image}
                 isValidImage={isValidImage}
-                className="aspect-[1.78/1] w-full rounded-b object-cover"
+                className="block aspect-400/210 max-h-[210px] w-full max-w-[400px] rounded-b object-cover"
                 isLoading={isLoading}
-                skeletonClassName="bg-[#4a4d52]"
+                skeletonClassName="bg-border"
               />
             </div>
           )}
@@ -579,12 +595,15 @@ function SlackPreview({
   url,
   isLoading,
   isError,
+  isValidUrl,
 }: Props) {
+  const showPreview = isValidUrl && !isError
+
   return (
     <PlatformSectionContainer
-      bgClassName="bg-[#1A1D21]"
-      nameClassName="text-[#ABABAD]"
       name="Slack"
+      containerClassName="slack"
+      logo={SlackIcon}
     >
       {/* Message */}
       <div className="flex gap-2">
@@ -594,41 +613,52 @@ function SlackPreview({
         <div className="min-w-0 flex-1">
           {/* Username and timestamp */}
           <div className="flex items-baseline gap-2">
-            <span className="text-[15px] font-bold text-white">{UserName}</span>
-            <span className="text-xs text-[#ABABAD]">8:23 PM</span>
+            <span className="text-foreground text-[15px] font-bold">
+              {UserName}
+            </span>
+            <span className="text-muted-foreground text-xs">8:23 PM</span>
           </div>
 
           {/* Message content */}
-          <p className="text-[15px] leading-relaxed text-[#D1D2D3]">Hello</p>
+          <p className="text-foreground/80 text-[15px] leading-relaxed">
+            Hello
+          </p>
 
           {/* URL */}
-          <p className="mt-0.5 cursor-pointer text-[15px] text-[#1D9BD1] hover:underline">
+          <p
+            className={cn(
+              'mt-0.5 text-[15px]',
+              isValidUrl
+                ? 'text-link cursor-pointer hover:underline'
+                : 'text-foreground/80'
+            )}
+          >
             {url}
           </p>
 
           {/* Link Embed */}
-          {!isError && (
+          {showPreview && (
             <div
-              className="mt-2 border-l-4 border-l-[#36C5F0] py-1 pl-3"
+              className="border-secondary mt-2 border-l-4 py-1 pl-3"
               style={{ maxWidth: 480 }}
             >
               {isLoading ? (
                 <>
-                  <Skeleton className="mb-1 h-4 w-20 bg-[#3a3d42]" />
-                  <Skeleton className="h-4 w-3/4 bg-[#3a3d42]" />
-                  <Skeleton className="mt-1 h-3 w-1/2 bg-[#3a3d42]" />
+                  <Skeleton className="bg-border mb-1 h-4 w-20" />
+                  <Skeleton className="bg-border h-4 w-3/4" />
+                  <Skeleton className="bg-border mt-1 h-3 w-1/2" />
                 </>
               ) : (
                 <>
                   <div className="mb-1 flex items-center gap-1.5">
-                    <span className="text-[15px] font-bold text-white">
+                    <span className="text-foreground text-[15px] font-bold">
                       {siteName(url)}
                     </span>
                   </div>
-                  <p className="cursor-pointer text-[15px] leading-snug font-medium text-[#1D9BD1] hover:underline">
+                  <p className="text-link cursor-pointer text-[15px] leading-snug font-medium hover:underline">
                     {title || '—'}
                   </p>
-                  <p className="mt-0.5 line-clamp-2 text-[15px] leading-relaxed text-[#D1D2D3]">
+                  <p className="text-foreground/80 mt-0.5 line-clamp-2 text-[15px] leading-relaxed">
                     {description}
                   </p>
                 </>
@@ -638,7 +668,7 @@ function SlackPreview({
                 isValidImage={isValidImage}
                 className="mt-2 aspect-[1.91/1] w-full max-w-[360px] rounded object-cover"
                 isLoading={isLoading}
-                skeletonClassName="bg-[#3a3d42]"
+                skeletonClassName="bg-border"
               />
             </div>
           )}
@@ -650,7 +680,7 @@ function SlackPreview({
 
 function IMessagePreview({
   title,
-  description,
+  // description,
   image,
   isValidImage,
   url,
@@ -660,36 +690,29 @@ function IMessagePreview({
   if (isError) return null
 
   return (
-    <PlatformSectionContainer
-      bgClassName="bg-imessage-background"
-      nameClassName="text-imessage-muted"
-      name="iMessage"
-    >
-      <div className="bg-imessage-card w-full overflow-hidden rounded-2xl">
+    <PlatformSectionContainer name="Messages" containerClassName="imessage">
+      <div className="bg-card w-full max-w-[300px] overflow-hidden rounded-2xl">
         <OGImage
           src={image}
           isValidImage={isValidImage}
           className="aspect-[1.91/1] w-full object-cover"
           isLoading={isLoading}
-          skeletonClassName="bg-[#d1d1d6]"
+          skeletonClassName="bg-border"
         />
-        <div className="space-y-0.5 px-3 py-2.5">
+        <div className="space-y-0.5 p-3">
           {isLoading ? (
             <>
-              <Skeleton className="h-2.5 w-16 bg-[#d1d1d6]" />
-              <Skeleton className="h-4 w-3/4 bg-[#d1d1d6]" />
-              <Skeleton className="h-3 w-1/2 bg-[#d1d1d6]" />
+              <Skeleton className="bg-border h-2.5 w-16" />
+              <Skeleton className="bg-border h-4 w-3/4" />
+              <Skeleton className="bg-border h-3 w-1/2" />
             </>
           ) : (
             <>
-              <p className="text-imessage-muted text-[10px] tracking-wide uppercase">
-                {domain(url)}
-              </p>
-              <p className="text-imessage-foreground line-clamp-2 text-sm leading-snug font-semibold">
+              <p className="text-foreground line-clamp-2 text-sm leading-snug font-semibold">
                 {title || '—'}
               </p>
-              <p className="text-imessage-muted line-clamp-1 text-[11px]">
-                {description}
+              <p className="text-muted-foreground text-xs tracking-wide">
+                {domain(url)}
               </p>
             </>
           )}
@@ -707,56 +730,43 @@ function WhatsAppPreview({
   url,
   isLoading,
   isError,
+  isValidUrl,
 }: Props) {
+  const showPreview = isValidUrl && !isError
+
   return (
-    <PlatformSectionContainer
-      bgClassName="bg-[#0B141A]"
-      nameClassName="text-[#8696A0]"
-      name="WhatsApp"
-    >
+    <PlatformSectionContainer name="WhatsApp" containerClassName="whatsapp">
       {/* Message Bubble with Link Preview */}
-      <div className="overflow-hidden rounded-lg bg-[#202C33]">
+      <div className="bg-card max-w-[230px] overflow-hidden rounded-xl p-1">
         {/* Link Preview */}
-        {!isError && (
-          <>
+        {showPreview && (
+          <div className="bg-background/50 rounded-lg">
             <OGImage
               src={image}
               isValidImage={isValidImage}
               className="aspect-[1.91/1] w-full rounded-t-lg object-cover"
               isLoading={isLoading}
-              skeletonClassName="bg-[#374248]"
+              skeletonClassName="bg-border"
             />
             <div className="space-y-1.5 p-3">
               {isLoading ? (
                 <>
-                  <Skeleton className="h-4 w-3/4 bg-[#374248]" />
-                  <Skeleton className="h-3 w-full bg-[#374248]" />
-                  <Skeleton className="h-3 w-24 bg-[#374248]" />
+                  <Skeleton className="bg-border h-4 w-3/4" />
+                  <Skeleton className="bg-border h-3 w-full" />
+                  <Skeleton className="bg-border h-3 w-24" />
                 </>
               ) : (
                 <>
-                  <p className="text-[15px] leading-snug font-semibold text-[#E9EDEF]">
+                  <p className="text-foreground text-sm leading-snug font-semibold">
                     {title || '—'}
                   </p>
-                  <p className="line-clamp-3 text-[14px] leading-relaxed text-[#8696A0]">
+                  <p className="text-muted-foreground line-clamp-5 text-xs">
                     {description}
                   </p>
-                  <div className="flex items-center justify-between pt-1">
-                    <div className="flex items-center gap-1.5">
-                      <svg
-                        className="h-3.5 w-3.5 text-[#8696A0]"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"
-                        />
-                      </svg>
-                      <span className="text-[13px] text-[#8696A0]">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <LinkIcon className="text-foreground size-2.5" />
+                      <span className="text-foreground text-xs">
                         {domain(url)}
                       </span>
                     </div>
@@ -764,21 +774,24 @@ function WhatsAppPreview({
                 </>
               )}
             </div>
-          </>
+          </div>
         )}
 
         {/* Message Text */}
-        <div className="space-y-1 px-3 py-2">
-          <p className="text-[15px] leading-relaxed text-[#E9EDEF]">
-            I was at a cross roads when I was thinking about joining and this is
-            something that helped think through career decisions.
+        <div className="space-y-1 px-2 pt-2 pb-0.5 text-sm">
+          <p className="text-foreground">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua
           </p>
-          <p className="text-[15px] text-[#53BDEB] underline">{url}</p>
-          <div className="flex items-end justify-between pt-1">
-            <p className="text-[15px] leading-relaxed text-[#E9EDEF]">
-              Don't want to bias you but good perspective
-            </p>
-            <span className="ml-2 shrink-0 text-[11px] text-[#8696A0]">
+          <p
+            className={cn(
+              isValidUrl ? 'text-link underline' : 'text-foreground'
+            )}
+          >
+            {url}
+          </p>
+          <div className="flex justify-end">
+            <span className="text-muted-foreground ml-2 shrink-0 text-[11px]">
               1:27 PM
             </span>
           </div>
@@ -790,7 +803,7 @@ function WhatsAppPreview({
 
 export function PlatformPreviews(props: Props) {
   return (
-    <>
+    <div className="flex flex-col gap-10">
       <TwitterPreview {...props} />
       <SlackPreview {...props} />
       <LinkedInPreview {...props} />
@@ -798,6 +811,6 @@ export function PlatformPreviews(props: Props) {
       <FacebookPreview {...props} />
       <WhatsAppPreview {...props} />
       <IMessagePreview {...props} />
-    </>
+    </div>
   )
 }
