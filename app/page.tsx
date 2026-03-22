@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { OGPreview } from '@/components/og-preview';
 import { PlatformPreviews } from '@/components/platform-previews';
+import { OGPreviewSkeleton } from '@/components/og-preview-skeleton';
+import { PlatformPreviewsSkeleton } from '@/components/platform-previews-skeleton';
 
 const DEFAULT_URL = 'https://v0.dev';
 
@@ -67,11 +69,9 @@ export default function Home() {
   };
 
   // Fetch OG data on mount with default URL
-  const [initialized, setInitialized] = useState(false);
-  if (!initialized) {
-    setInitialized(true);
+  useEffect(() => {
     fetchOG(DEFAULT_URL);
-  }
+  }, [fetchOG]);
 
   return (
     <main className="min-h-screen bg-background text-foreground py-8 px-4 sm:px-6">
@@ -109,25 +109,31 @@ export default function Home() {
         </div>
 
         {/* Content Sections */}
-        {ogData && (
-          <div className="space-y-16">
-            {/* OG Metadata Section */}
+        <div className="space-y-16">
+          {/* OG Metadata Section */}
+          {loading ? (
+            <OGPreviewSkeleton />
+          ) : ogData ? (
             <OGPreview
               title={ogData.title}
               description={ogData.description}
               image={ogData.image}
               url={ogData.url}
             />
+          ) : null}
 
-            {/* Platform Previews Section */}
+          {/* Platform Previews Section */}
+          {loading ? (
+            <PlatformPreviewsSkeleton />
+          ) : ogData ? (
             <PlatformPreviews
               title={ogData.title}
               description={ogData.description}
               image={ogData.image}
               url={ogData.url}
             />
-          </div>
-        )}
+          ) : null}
+        </div>
       </div>
     </main>
   );
