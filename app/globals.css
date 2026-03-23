@@ -147,13 +147,16 @@
 }
 
 .imessage {
-  --background: #fffdff;
+  --background: black;
   --card: #e9e9eb;
+  --card-foreground: #171717;
   --border: #e6e4e6;
-  --foreground: #000000;
-  --muted-foreground: #8e8e93;
+  --foreground: #ffffff;
+  --muted-foreground: #7f7f7f;
   --border: #d1d1d6;
   --link: #007aff;
+  --primary: #262626;
+  --primary-foreground: #ffffff;
 }
 
 .whatsapp {
@@ -177,5 +180,16 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+.squircle-2xl {
+  corner-shape: squircle;
+  border-radius: 1rem;
+}
+
+@supports (corner-shape: squircle) {
+  .squircle-2xl {
+    border-radius: 2rem;
   }
 }

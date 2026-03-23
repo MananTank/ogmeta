@@ -21,6 +21,64 @@ export type FetchOGDataResult =
 /** Cached OG fetches (shared by RSC + server actions). */
 const REVALIDATE_SECONDS = 60 * 5 // 5 mins
 
+function isTwitterHost(hostname: string): boolean {
+  const h = hostname.replace(/^www\./, '')
+  return h === 'twitter.com' || h === 'x.com' || h === 'mobile.twitter.com'
+}
+
+function isTwitterUrl(urlString: string): boolean {
+  try {
+    return isTwitterHost(new URL(urlString).hostname)
+  } catch {
+    return false
+  }
+}
+
+function needsTwitterSyntheticFallback(data: OGMetadata): boolean {
+  const noTitle = !data.title?.trim()
+  const noImage = !data.image?.trim() || !data.isValidImage
+  return noTitle && noImage
+}
+
+function profileHandleFromUrl(urlString: string): string {
+  try {
+    const seg = new URL(urlString).pathname.split('/').filter(Boolean)[0] ?? ''
+    return seg.replace(/^@/, '')
+  } catch {
+    return ''
+  }
+}
+
+async function syntheticTwitterProfileMetadata(
+  pageUrl: string
+): Promise<OGMetadata> {
+  const handle = profileHandleFromUrl(pageUrl)
+  const title = handle ? `@${handle} on X` : 'Profile on X'
+  const description = handle ? `X profile @${handle}` : 'X profile'
+  const base: OGMetadata = {
+    title,
+    description,
+    image: '',
+    isValidImage: false,
+    url: pageUrl,
+    siteName: 'X',
+    type: 'profile',
+  }
+  return withTwitterProfileAvatar(base, handle)
+}
+
+async function withTwitterProfileAvatar(
+  data: OGMetadata,
+  handle: string
+): Promise<OGMetadata> {
+  if (data.image || !handle) return data
+  const avatar = `https://unavatar.io/twitter/${encodeURIComponent(handle)}`
+  if (await validateImage(avatar)) {
+    return { ...data, image: avatar, isValidImage: true }
+  }
+  return data
+}
+
 async function validateImage(imageUrl: string): Promise<boolean> {
   if (!imageUrl) return false
 
@@ -83,9 +141,7 @@ async function parseOGMetadata(html: string, url: string): Promise<OGMetadata> {
       'meta[property="og:title"]',
       'meta[name="og:title"]',
       'meta[name="twitter:title"]',
-    ]) ||
-    $('title').text() ||
-    'No title found'
+    ]) || $('title').text()
 
   const description = getMetaContent([
     'meta[property="og:description"]',
@@ -195,7 +251,12 @@ async function fetchOGDataUncached(url: string): Promise<FetchOGDataResult> {
     }
 
     const html = await response.text()
-    const data = await parseOGMetadata(html, url)
+    let data = await parseOGMetadata(html, url)
+
+    if (isTwitterUrl(url) && needsTwitterSyntheticFallback(data)) {
+      data = await syntheticTwitterProfileMetadata(url)
+    }
+
     return { type: 'success', data }
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Failed to fetch metadata'
@@ -205,7 +266,7 @@ async function fetchOGDataUncached(url: string): Promise<FetchOGDataResult> {
 
 const getCachedOGData = unstable_cache(
   async (url: string) => fetchOGDataUncached(url),
-  ['og-metadata'],
+  ['og-metadata', 'twitter-fetch-then-synthetic-v1'],
   { revalidate: REVALIDATE_SECONDS, tags: ['og-metadata'] }
 )
 

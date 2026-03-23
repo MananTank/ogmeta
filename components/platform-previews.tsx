@@ -33,6 +33,10 @@ export interface Props {
   isValidUrl?: boolean
 }
 
+const PARAGRAPH_1 =
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+const PARAGRAPH_2 = 'Ut enim ad minim veniam, quis nostrud exercitation ullamco'
+
 function domain(url: string) {
   try {
     return new URL(url).hostname.replace('www.', '')
@@ -115,7 +119,7 @@ function PlatformSection(props: {
       <div className="flex flex-col items-center">
         <div
           className={cn(
-            'bg-background relative flex min-h-[700px] w-full flex-col items-center justify-center rounded-2xl border border-neutral-700/50 px-4 py-24',
+            'bg-background squircle-2xl relative flex min-h-[700px] w-full flex-col items-center justify-center border border-neutral-700/50 px-4 py-24',
             props.containerClassName
           )}
         >
@@ -172,12 +176,9 @@ export function TwitterPreview({
           </div>
 
           <div className="text-foreground mt-1 space-y-4 text-[15px] leading-snug">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
+            <p>{PARAGRAPH_1}</p>
 
-            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco</p>
+            <p>{PARAGRAPH_2}</p>
 
             {!showPreview && (
               <p className={isValidUrl ? 'text-link' : ''}>{url}</p>
@@ -271,7 +272,8 @@ export function LinkedInPreview({
   isError,
   isValidUrl,
 }: Props) {
-  const showPreview = isValidUrl && !isError
+  const showPreview = isValidUrl && !isError && image && isValidImage
+
   return (
     <PlatformSection
       name="LinkedIn"
@@ -301,12 +303,8 @@ export function LinkedInPreview({
 
           {/* Post Content */}
           <div className="text-foreground mt-3 space-y-2 text-sm leading-relaxed">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
-              faucibus ultrices risus.
-            </p>
-
-            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco</p>
+            <p>{PARAGRAPH_1}</p>
+            <p>{PARAGRAPH_2}</p>
 
             <a
               className="text-link block font-medium hover:underline"
@@ -424,7 +422,7 @@ export function FacebookPreview({
   isError,
   isValidUrl,
 }: Props) {
-  const showPreview = isValidUrl && !isError
+  const showPreview = isValidUrl && !isError && title && image && isValidImage
 
   return (
     <PlatformSection name="Facebook" containerClassName="facebook">
@@ -567,12 +565,12 @@ export function DiscordPreview({
   isError,
   isValidUrl,
 }: Props) {
-  const showPreview = isValidUrl && !isError
+  const showPreview = isValidUrl && !isError && image && isValidImage
 
   return (
     <PlatformSection name="Discord" containerClassName="discord">
       {/* Message */}
-      <div className="flex gap-4">
+      <div className="flex max-w-2xl gap-4">
         <div className="shrink-0">
           <UserAvatar size={40} />
         </div>
@@ -586,9 +584,11 @@ export function DiscordPreview({
           </div>
 
           {/* Message content */}
-          <p className="text-foreground mt-0.5 text-[15px] leading-relaxed">
-            testing opengraph image for
-          </p>
+          <div className="text-foreground mt-0.5 space-y-1.5 text-[15px] leading-relaxed">
+            <p>{PARAGRAPH_1}</p>
+            <p>{PARAGRAPH_2}</p>
+          </div>
+
           <p
             className={cn(
               'text-[15px]',
@@ -650,7 +650,7 @@ export function SlackPreview({
   isError,
   isValidUrl,
 }: Props) {
-  const showPreview = isValidUrl && !isError
+  const showPreview = isValidUrl && !isError && image && isValidImage
 
   return (
     <PlatformSection
@@ -742,39 +742,75 @@ export function IMessagePreview({
   url,
   isLoading,
   isError,
+  isValidUrl,
 }: Props) {
-  if (isError) return null
+  const showPreview = isValidUrl && !isError && image && isValidImage
 
   return (
     <PlatformSection name="Messages" containerClassName="imessage">
-      <div className="bg-card w-full max-w-[300px] overflow-hidden rounded-2xl">
-        <OGImage
-          src={image}
-          isValidImage={isValidImage}
-          className="aspect-[1.91/1] w-full object-cover"
-          isLoading={isLoading}
-          skeletonClassName="bg-border"
-        />
-        <div className="space-y-0.5 p-3">
-          {isLoading ? (
-            <>
-              <Skeleton className="bg-border h-2.5 w-16" />
-              <Skeleton className="bg-border h-4 w-3/4" />
-              <Skeleton className="bg-border h-3 w-1/2" />
-            </>
-          ) : (
-            <>
-              <p className="text-foreground line-clamp-2 text-sm leading-snug font-semibold">
-                {title || '—'}
-              </p>
-              <p className="text-muted-foreground text-xs tracking-wide">
-                {domain(url)}
-              </p>
-            </>
-          )}
-        </div>
+      <div className="flex flex-col items-start space-y-3">
+        <MessageBubble text="tempor incididunt" />
+        <MessageBubble text={PARAGRAPH_1} />
+
+        {showPreview && (
+          <div className="bg-card squircle-2xl w-full max-w-[300px] overflow-hidden">
+            <OGImage
+              src={image}
+              isValidImage={isValidImage}
+              className="aspect-[1.91/1] w-full object-cover"
+              isLoading={isLoading}
+              skeletonClassName="bg-border"
+            />
+            <div className="space-y-0.5 p-3">
+              {isLoading ? (
+                <>
+                  <Skeleton className="bg-border h-2.5 w-16" />
+                  <Skeleton className="bg-border h-4 w-3/4" />
+                  <Skeleton className="bg-border h-3 w-1/2" />
+                </>
+              ) : (
+                <>
+                  <p className="text-card-foreground line-clamp-2 text-sm leading-snug font-semibold">
+                    {title || '—'}
+                  </p>
+                  <p className="text-muted-foreground text-xs font-medium tracking-wide">
+                    {domain(url)}
+                  </p>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {!showPreview && url && <MessageBubble text={url} isLink />}
       </div>
     </PlatformSection>
+  )
+}
+
+function MessageBubble(props: { text: string; isLink?: boolean }) {
+  const type = props.text.length > 20 ? 'squircle' : 'rounded-full'
+  return (
+    <div
+      className={cn(
+        'bg-primary text-primary-foreground max-w-[300px] px-3.5 py-2.5 text-base leading-[1.3] font-medium',
+        type === 'squircle' && 'squircle-2xl',
+        type === 'rounded-full' && 'rounded-full'
+      )}
+    >
+      {props.isLink ? (
+        <a
+          href={props.text}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2"
+        >
+          {props.text}
+        </a>
+      ) : (
+        <p>{props.text}</p>
+      )}
+    </div>
   )
 }
 
@@ -788,7 +824,7 @@ export function WhatsAppPreview({
   isError,
   isValidUrl,
 }: Props) {
-  const showPreview = isValidUrl && !isError
+  const showPreview = isValidUrl && !isError && image && isValidImage
 
   return (
     <PlatformSection name="WhatsApp" containerClassName="whatsapp">
