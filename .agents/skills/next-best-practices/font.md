@@ -10,7 +10,11 @@ import { Inter } from 'next/font/google'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en" className={inter.className}>
       <body>{children}</body>
@@ -34,7 +38,11 @@ const robotoMono = Roboto_Mono({
   variable: '--font-roboto-mono',
 })
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en" className={`${inter.variable} ${robotoMono.variable}`}>
       <body>{children}</body>
@@ -44,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ```
 
 Use in CSS:
+
 ```css
 body {
   font-family: var(--font-inter);
@@ -234,7 +243,10 @@ const inter = Inter({ subsets: ['latin'] })
 import { Inter, Playfair_Display } from 'next/font/google'
 
 export const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-export const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
+export const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+})
 
 // components/Heading.tsx
 import { playfair } from '@/lib/fonts'

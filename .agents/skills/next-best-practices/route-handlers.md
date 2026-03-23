@@ -63,7 +63,7 @@ Route handlers run in a **Server Component-like environment**:
 import { renderToString } from 'react-dom/server'
 
 export async function GET() {
-  const html = renderToString(<Component />)  // Error!
+  const html = renderToString(<Component />) // Error!
   return new Response(html)
 }
 ```
@@ -133,14 +133,14 @@ return new Response(stream, {
 
 ## When to Use Route Handlers vs Server Actions
 
-| Use Case | Route Handlers | Server Actions |
-|----------|----------------|----------------|
-| Form submissions | No | Yes |
-| Data mutations from UI | No | Yes |
-| Third-party webhooks | Yes | No |
-| External API consumption | Yes | No |
-| Public REST API | Yes | No |
-| File uploads | Both work | Both work |
+| Use Case                 | Route Handlers | Server Actions |
+| ------------------------ | -------------- | -------------- |
+| Form submissions         | No             | Yes            |
+| Data mutations from UI   | No             | Yes            |
+| Third-party webhooks     | Yes            | No             |
+| External API consumption | Yes            | No             |
+| Public REST API          | Yes            | No             |
+| File uploads             | Both work      | Both work      |
 
 **Prefer Server Actions** for mutations triggered from your UI.
 **Use Route Handlers** for external integrations and public APIs.

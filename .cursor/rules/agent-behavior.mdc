@@ -1,0 +1,9 @@
+---
+description: Agent behavior preferences
+alwaysApply: true
+---
+
+# Agent Behavior
+
+- Do not use browser tools to capture screenshots
+- Do not run lint checks after making changes

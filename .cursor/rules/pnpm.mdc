@@ -1,0 +1,13 @@
+---
+description: Use pnpm as the package manager
+alwaysApply: true
+---
+
+# Package Manager
+
+This project uses **pnpm**. Always use pnpm commands:
+
+- `pnpm install` - install dependencies
+- `pnpm add <package>` - add a dependency
+- `pnpm remove <package>` - remove a dependency
+- `pnpm run <script>` - run scripts

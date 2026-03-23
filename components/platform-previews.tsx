@@ -22,7 +22,7 @@ import { cn } from '../lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SlackIcon } from './icons/slack'
 
-interface Props {
+export interface Props {
   title: string
   description: string
   image: string
@@ -132,7 +132,7 @@ function PlatformSectionContainer(props: {
   )
 }
 
-function TwitterPreview({
+export function TwitterPreview({
   title,
   image,
   isValidImage,
@@ -141,8 +141,8 @@ function TwitterPreview({
   isError,
   isValidUrl,
 }: Props) {
-  const hasImage = !isLoading && image && isValidImage
-  const showPreview = isValidUrl && !isError && (isLoading || hasImage)
+  const hasValidCard = !isLoading && title && image && isValidImage
+  const showPreview = isValidUrl && !isError && (isLoading || hasValidCard)
 
   return (
     <PlatformSectionContainer
@@ -182,7 +182,7 @@ function TwitterPreview({
 
           {showPreview && (
             <div className="mt-3">
-              {(isLoading || hasImage) && (
+              {(isLoading || hasValidCard) && (
                 <div className="relative overflow-hidden rounded-2xl border">
                   <OGImage
                     src={image}

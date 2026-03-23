@@ -17,10 +17,10 @@ In development, click the hydration error to see the server/client diff.
 
 ```tsx
 // Bad: Causes mismatch - window doesn't exist on server
-<div>{window.innerWidth}</div>
+;<div>{window.innerWidth}</div>
 
 // Good: Use client component with mounted check
-'use client'
+;('use client')
 import { useState, useEffect } from 'react'
 
 export function ClientOnly({ children }: { children: React.ReactNode }) {
@@ -36,10 +36,10 @@ Server and client may be in different timezones:
 
 ```tsx
 // Bad: Causes mismatch
-<span>{new Date().toLocaleString()}</span>
+;<span>{new Date().toLocaleString()}</span>
 
 // Good: Render on client only
-'use client'
+;('use client')
 const [time, setTime] = useState<string>()
 useEffect(() => setTime(new Date().toLocaleString()), [])
 ```
@@ -82,10 +82,7 @@ import Script from 'next/script'
 
 export default function Page() {
   return (
-    <Script
-      src="https://example.com/script.js"
-      strategy="afterInteractive"
-    />
+    <Script src="https://example.com/script.js" strategy="afterInteractive" />
   )
 }
 ```
