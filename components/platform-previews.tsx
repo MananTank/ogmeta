@@ -413,7 +413,7 @@ export function LinkedInPreview({
   )
 }
 
-function FacebookPreview({
+export function FacebookPreview({
   title,
   description,
   image,
@@ -556,7 +556,7 @@ function FacebookPreview({
   )
 }
 
-function DiscordPreview({
+export function DiscordPreview({
   title,
   description,
   image,
@@ -733,7 +733,7 @@ export function SlackPreview({
   )
 }
 
-function IMessagePreview({
+export function IMessagePreview({
   title,
   // description,
   image,
@@ -777,7 +777,7 @@ function IMessagePreview({
   )
 }
 
-function WhatsAppPreview({
+export function WhatsAppPreview({
   title,
   description,
   image,
