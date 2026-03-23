@@ -639,7 +639,7 @@ function DiscordPreview({
   )
 }
 
-function SlackPreview({
+export function SlackPreview({
   title,
   description,
   image,
