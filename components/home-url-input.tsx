@@ -72,7 +72,7 @@ function normalizeUrl(url: string) {
     .replace(/\/$/, '')
 }
 
-export interface HomeUrlInputProps {
+export function HomeUrlInput(props: {
   defaultUrl: string
   debouncedUrl: string
   setDebouncedUrl: Dispatch<SetStateAction<string>>
@@ -83,19 +83,10 @@ export interface HomeUrlInputProps {
   /** OG query loading (excluding local URL bootstrap; that is handled inside the input). */
   ogFetchLoading?: boolean
   ogFetchError?: boolean
-}
-
-export function HomeUrlInput({
-  defaultUrl,
-  debouncedUrl,
-  setDebouncedUrl,
-  hasReadStoredUrl,
-  setHasReadStoredUrl,
-  fetchedOgMetadata,
-  ogFetchLoading = false,
-  ogFetchError = false,
-}: HomeUrlInputProps) {
-  const [url, setUrl] = useState(defaultUrl)
+}) {
+  const ogFetchLoading = props.ogFetchLoading ?? false
+  const ogFetchError = props.ogFetchError ?? false
+  const [url, setUrl] = useState(props.defaultUrl)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [urlHistory, setUrlHistory] = useState<HistoryItem[]>([])
   const debounceTimerRef = useRef<NodeJS.Timeout>(null)
@@ -104,7 +95,8 @@ export function HomeUrlInput({
   const syncUrlSearchParamRef = useRef(false)
   const [locationRevision, setLocationRevision] = useState(0)
 
-  const urlIsValid = isValidUrl(debouncedUrl)
+  const urlIsValid = isValidUrl(props.debouncedUrl)
+  const { setDebouncedUrl, setHasReadStoredUrl, hasReadStoredUrl } = props
 
   useLayoutEffect(() => {
     let paramUrl: string | null = null
@@ -121,6 +113,7 @@ export function HomeUrlInput({
     }
 
     if (paramUrl) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUrl(paramUrl)
       setDebouncedUrl(paramUrl)
     } else {
@@ -135,16 +128,16 @@ export function HomeUrlInput({
       }
     }
     setHasReadStoredUrl(true)
-  }, [])
+  }, [setDebouncedUrl, setHasReadStoredUrl])
 
   useEffect(() => {
     if (!urlIsValid) return
     try {
-      localStorage.setItem(LAST_URL_STORAGE_KEY, debouncedUrl.trim())
+      localStorage.setItem(LAST_URL_STORAGE_KEY, props.debouncedUrl.trim())
     } catch {
       // ignore
     }
-  }, [debouncedUrl, urlIsValid])
+  }, [props.debouncedUrl, urlIsValid])
 
   useEffect(() => {
     const onPopState = () => setLocationRevision((n) => n + 1)
@@ -156,14 +149,15 @@ export function HomeUrlInput({
     if (!hasReadStoredUrl) return
     const urlFromSearch = readUrlParamFromWindow()
     if (!urlFromSearch || !isValidUrl(urlFromSearch)) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUrl((prev) => (prev.trim() === urlFromSearch ? prev : urlFromSearch))
     setDebouncedUrl((prev) =>
       prev.trim() === urlFromSearch ? prev : urlFromSearch
     )
-  }, [hasReadStoredUrl, locationRevision])
+  }, [hasReadStoredUrl, locationRevision, setDebouncedUrl])
 
   useEffect(() => {
-    if (!hasReadStoredUrl) return
+    if (!props.hasReadStoredUrl) return
 
     const applyQuery = (
       params: URLSearchParams,
@@ -200,8 +194,8 @@ export function HomeUrlInput({
       return
     }
 
-    const v = debouncedUrl.trim()
-    if (v === defaultUrl) {
+    const v = props.debouncedUrl.trim()
+    if (v === props.defaultUrl) {
       if (searchParams.has(URL_SEARCH_PARAM)) {
         const params = new URLSearchParams(window.location.search)
         params.delete(URL_SEARCH_PARAM)
@@ -216,7 +210,7 @@ export function HomeUrlInput({
     const params = new URLSearchParams(window.location.search)
     params.set(URL_SEARCH_PARAM, v)
     applyQuery(params, 'push')
-  }, [hasReadStoredUrl, debouncedUrl, urlIsValid, defaultUrl])
+  }, [props.hasReadStoredUrl, props.debouncedUrl, urlIsValid, props.defaultUrl])
 
   const saveToHistory = useCallback(
     async (urlToSave: string, favicon?: string) => {
@@ -246,12 +240,18 @@ export function HomeUrlInput({
   )
 
   useEffect(() => {
-    if (!fetchedOgMetadata || debouncedUrl === defaultUrl) return
+    const meta = props.fetchedOgMetadata
+    if (!meta || props.debouncedUrl === props.defaultUrl) return
     const timer = setTimeout(() => {
-      void saveToHistory(debouncedUrl, fetchedOgMetadata.favicon)
+      void saveToHistory(props.debouncedUrl, meta.favicon)
     }, SAVE_DELAY_MS)
     return () => clearTimeout(timer)
-  }, [fetchedOgMetadata, debouncedUrl, defaultUrl, saveToHistory])
+  }, [
+    props.fetchedOgMetadata,
+    props.debouncedUrl,
+    props.defaultUrl,
+    saveToHistory,
+  ])
 
   const removeFromHistory = useCallback(async (urlToRemove: string) => {
     try {
@@ -290,14 +290,14 @@ export function HomeUrlInput({
     }
 
     debounceTimerRef.current = setTimeout(() => {
-      setDebouncedUrl(newUrl)
+      props.setDebouncedUrl(newUrl)
     }, 500)
   }
 
   const handleSelectSuggestion = (selectedUrl: string) => {
     syncUrlSearchParamRef.current = true
     setUrl(selectedUrl)
-    setDebouncedUrl(selectedUrl)
+    props.setDebouncedUrl(selectedUrl)
     setShowSuggestions(false)
   }
 
@@ -387,21 +387,21 @@ export function HomeUrlInput({
     }
   }, [])
 
-  const previewsLoading = !hasReadStoredUrl || ogFetchLoading
+  const previewsLoading = !props.hasReadStoredUrl || ogFetchLoading
   const Icon = previewsLoading
     ? CircleDotDashedIcon
     : ogFetchError
       ? AlertCircleIcon
       : GlobeIcon
   const showFavicon =
-    !previewsLoading && !ogFetchError && !!fetchedOgMetadata?.favicon
+    !previewsLoading && !ogFetchError && !!props.fetchedOgMetadata?.favicon
 
   return (
     <div className="relative">
       {showFavicon ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={fetchedOgMetadata.favicon}
+          src={props.fetchedOgMetadata?.favicon ?? ''}
           alt=""
           className="pointer-events-none absolute top-1/2 left-4 z-10 h-4 w-4 -translate-y-1/2 rounded-sm object-contain"
         />

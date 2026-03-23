@@ -44,18 +44,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout(
+  props: Readonly<{ children: React.ReactNode }>
+) {
   return (
     <html
       lang="en"
       className={`dark ${geist.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
     >
       <body className="bg-background text-foreground min-h-screen font-sans antialiased">
-        <Providers>{children}</Providers>
+        <Providers>{props.children}</Providers>
         <Analytics />
       </body>
     </html>

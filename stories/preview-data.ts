@@ -1,10 +1,10 @@
-import type { Props } from '@/components/platform-previews'
+import type { PlatformPreviewsProps } from '@/components/platform-previews'
 
 const SAMPLE_IMAGE =
   'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=630&fit=crop'
 const SAMPLE_URL = 'https://example.com/article/how-to-build-great-products'
 
-type PreviewData = Omit<Props, never>
+type PreviewData = Omit<PlatformPreviewsProps, never>
 
 export const completeData: PreviewData = {
   title: 'How to Build Great Products - A Comprehensive Guide',

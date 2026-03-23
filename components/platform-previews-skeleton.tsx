@@ -1,15 +1,12 @@
 import { Skeleton } from '@/components/ui/skeleton'
 
-function PlatformSection({
-  children,
-  className,
-}: {
+function PlatformSection(props: {
   children: React.ReactNode
   className?: string
 }) {
   return (
-    <div className={`w-full px-5 py-16 sm:px-8 ${className || ''}`}>
-      <div className="mx-auto max-w-3xl">{children}</div>
+    <div className={`w-full px-5 py-16 sm:px-8 ${props.className || ''}`}>
+      <div className="mx-auto max-w-3xl">{props.children}</div>
     </div>
   )
 }

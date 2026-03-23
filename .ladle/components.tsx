@@ -3,10 +3,12 @@ import '../app/globals.css'
 import './styles.css'
 import React from 'react'
 
-export const Provider: GlobalProvider = ({ children }) => {
+export const Provider: GlobalProvider = function Provider(props: {
+  children: React.ReactNode
+}) {
   return (
     <div className="dark bg-background text-foreground min-h-dvh">
-      {children}
+      {props.children}
     </div>
   )
 }

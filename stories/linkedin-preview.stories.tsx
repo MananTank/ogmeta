@@ -22,14 +22,14 @@ export default {
   ],
 } satisfies StoryDefault
 
-function StoryGroup({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-col gap-16">{children}</div>
+function StoryGroup(props: { children: React.ReactNode }) {
+  return <div className="flex flex-col gap-16">{props.children}</div>
 }
 
-function StoryLabel({ children }: { children: React.ReactNode }) {
+function StoryLabel(props: { children: React.ReactNode }) {
   return (
     <div className="text-muted-foreground mb-2 text-center text-sm font-medium">
-      {children}
+      {props.children}
     </div>
   )
 }

@@ -1,0 +1,28 @@
+---
+description: React component props — inline types, no prop destructuring
+globs: '**/*.tsx'
+alwaysApply: false
+---
+
+# React component props
+
+- Do **not** add a separate `interface` (or `type`) for a component’s props unless the same shape must be reused elsewhere (e.g. shared across files, exported API). Prefer an inline object type on the `props` parameter.
+- Declare components as `function Name(props: { ... }) { ... }`.
+- Do **not** destructure `props` in the parameter list or body for the sole purpose of convenience. Use `props.field` (and `props.children`) so the component’s data flow stays explicit.
+
+```tsx
+// ❌ Avoid — extra interface only used here, destructured props
+interface CardProps {
+  title: string
+}
+function Card({ title }: CardProps) {
+  return <h1>{title}</h1>
+}
+
+// ✅ Prefer — inline props type, `props.*` access
+function Card(props: { title: string }) {
+  return <h1>{props.title}</h1>
+}
+```
+
+When the props type **is** shared, define it once (e.g. `export type CardProps = { ... }`) and still use `function Card(props: CardProps)` with `props.*`, not destructuring.

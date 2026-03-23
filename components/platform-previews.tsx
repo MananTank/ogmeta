@@ -22,7 +22,7 @@ import { cn } from '../lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SlackIcon } from './icons/slack'
 
-export interface Props {
+export type PlatformPreviewsProps = {
   title: string
   description: string
   image: string
@@ -73,29 +73,23 @@ function UserAvatar(props: { size: number }) {
   )
 }
 
-function OGImage({
-  src,
-  isValidImage,
-  className,
-  isLoading,
-  skeletonClassName,
-}: {
+function OGImage(props: {
   src: string
   isValidImage: boolean
   className?: string
   isLoading?: boolean
   skeletonClassName?: string
 }) {
-  if (isLoading) {
-    return <Skeleton className={cn(className, skeletonClassName)} />
+  if (props.isLoading) {
+    return <Skeleton className={cn(props.className, props.skeletonClassName)} />
   }
 
-  if (!src || !isValidImage) {
+  if (!props.src || !props.isValidImage) {
     return (
       <div
         className={cn(
           'items-center justify-center bg-neutral-500/50',
-          className,
+          props.className,
           'flex'
         )}
       >
@@ -105,7 +99,7 @@ function OGImage({
   }
 
   // eslint-disable-next-line @next/next/no-img-element
-  return <img src={src} alt="og preview" className={className} />
+  return <img src={props.src} alt="og preview" className={props.className} />
 }
 
 function PlatformSection(props: {
@@ -136,21 +130,14 @@ function PlatformSection(props: {
   )
 }
 
-export function TwitterPreview({
-  title,
-  description,
-  image,
-  isValidImage,
-  url,
-  isLoading,
-  isError,
-  isValidUrl,
-}: Props) {
-  const hasValidImage = image && isValidImage
-  const hasLargeCard = !isLoading && title && hasValidImage
-  const hasCompactCard = !isLoading && title && !hasValidImage
+export function TwitterPreview(props: PlatformPreviewsProps) {
+  const hasValidImage = props.image && props.isValidImage
+  const hasLargeCard = !props.isLoading && props.title && hasValidImage
+  const hasCompactCard = !props.isLoading && props.title && !hasValidImage
   const showPreview =
-    isValidUrl && !isError && (isLoading || hasLargeCard || hasCompactCard)
+    props.isValidUrl &&
+    !props.isError &&
+    (props.isLoading || hasLargeCard || hasCompactCard)
 
   return (
     <PlatformSection
@@ -181,34 +168,34 @@ export function TwitterPreview({
             <p>{PARAGRAPH_2}</p>
 
             {!showPreview && (
-              <p className={isValidUrl ? 'text-link' : ''}>{url}</p>
+              <p className={props.isValidUrl ? 'text-link' : ''}>{props.url}</p>
             )}
           </div>
 
           {/* Large card - has valid image */}
-          {(isLoading || hasLargeCard) && showPreview && (
+          {(props.isLoading || hasLargeCard) && showPreview && (
             <div className="mt-3">
               <div className="relative overflow-hidden rounded-2xl border">
                 <OGImage
-                  src={image}
-                  isValidImage={isValidImage}
+                  src={props.image}
+                  isValidImage={props.isValidImage}
                   className="block aspect-[1.91/1] h-auto w-full object-cover"
-                  isLoading={isLoading}
+                  isLoading={props.isLoading}
                   skeletonClassName="bg-border"
                 />
-                {!isLoading && title && (
+                {!props.isLoading && props.title && (
                   <div className="absolute right-3 bottom-3 left-3">
                     <span
                       className="text-foreground inline-block max-w-full truncate rounded px-2 text-[13px] leading-[20px] font-semibold backdrop-blur-md"
                       style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
                     >
-                      {title}
+                      {props.title}
                     </span>
                   </div>
                 )}
               </div>
               <p className="text-muted-foreground mt-1 text-[13px]">
-                From {domain(url)}
+                From {domain(props.url)}
               </p>
             </div>
           )}
@@ -221,14 +208,14 @@ export function TwitterPreview({
               </div>
               <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5 px-3 py-2.5">
                 <p className="text-muted-foreground text-[13px]">
-                  {domain(url)}
+                  {domain(props.url)}
                 </p>
                 <p className="text-foreground truncate text-[15px] leading-snug">
-                  {title}
+                  {props.title}
                 </p>
-                {description && (
+                {props.description && (
                   <p className="text-muted-foreground line-clamp-2 text-[13px] leading-snug">
-                    {description}
+                    {props.description}
                   </p>
                 )}
               </div>
@@ -263,16 +250,9 @@ export function TwitterPreview({
   )
 }
 
-export function LinkedInPreview({
-  title,
-  image,
-  isValidImage,
-  url,
-  isLoading,
-  isError,
-  isValidUrl,
-}: Props) {
-  const showPreview = isValidUrl && !isError && image && isValidImage
+export function LinkedInPreview(props: PlatformPreviewsProps) {
+  const showPreview =
+    props.isValidUrl && !props.isError && props.image && props.isValidImage
 
   return (
     <PlatformSection
@@ -308,11 +288,11 @@ export function LinkedInPreview({
 
             <a
               className="text-link block font-medium hover:underline"
-              href={url}
+              href={props.url}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {url}
+              {props.url}
             </a>
           </div>
 
@@ -320,14 +300,14 @@ export function LinkedInPreview({
           {showPreview && (
             <div className="bg-card mt-3 flex overflow-hidden rounded-lg border p-3">
               <OGImage
-                src={image}
-                isValidImage={isValidImage}
+                src={props.image}
+                isValidImage={props.isValidImage}
                 className="h-[72px] w-[128px] shrink-0 rounded-md object-cover"
-                isLoading={isLoading}
+                isLoading={props.isLoading}
                 skeletonClassName="bg-secondary"
               />
               <div className="flex min-w-0 flex-1 flex-col justify-center px-3 py-2">
-                {isLoading ? (
+                {props.isLoading ? (
                   <>
                     <Skeleton className="bg-secondary h-4 w-3/4" />
                     <Skeleton className="bg-secondary mt-1 h-3 w-20" />
@@ -335,10 +315,10 @@ export function LinkedInPreview({
                 ) : (
                   <>
                     <p className="text-foreground line-clamp-2 text-sm leading-snug font-semibold">
-                      {title || domain(url)}
+                      {props.title || domain(props.url)}
                     </p>
                     <p className="text-muted-foreground mt-0.5 text-xs">
-                      {domain(url)}
+                      {domain(props.url)}
                     </p>
                   </>
                 )}
@@ -412,17 +392,13 @@ export function LinkedInPreview({
   )
 }
 
-export function FacebookPreview({
-  title,
-  description,
-  image,
-  isValidImage,
-  url,
-  isLoading,
-  isError,
-  isValidUrl,
-}: Props) {
-  const showPreview = isValidUrl && !isError && title && image && isValidImage
+export function FacebookPreview(props: PlatformPreviewsProps) {
+  const showPreview =
+    props.isValidUrl &&
+    !props.isError &&
+    props.title &&
+    props.image &&
+    props.isValidImage
 
   return (
     <PlatformSection name="Facebook" containerClassName="facebook">
@@ -453,11 +429,11 @@ export function FacebookPreview({
             {!showPreview && (
               <a
                 className="text-link block font-medium hover:underline"
-                href={url}
+                href={props.url}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {url}
+                {props.url}
               </a>
             )}
           </div>
@@ -467,14 +443,14 @@ export function FacebookPreview({
         {showPreview && (
           <div className="border-t">
             <OGImage
-              src={image}
-              isValidImage={isValidImage}
+              src={props.image}
+              isValidImage={props.isValidImage}
               className="aspect-[1.91/1] w-full object-cover"
-              isLoading={isLoading}
+              isLoading={props.isLoading}
               skeletonClassName="bg-secondary"
             />
             <div className="bg-secondary space-y-0.5 px-3 py-2.5">
-              {isLoading ? (
+              {props.isLoading ? (
                 <>
                   <Skeleton className="bg-border h-3 w-20" />
                   <Skeleton className="bg-border h-4 w-3/4" />
@@ -483,10 +459,10 @@ export function FacebookPreview({
               ) : (
                 <>
                   <p className="text-muted-foreground text-[13px] tracking-wide uppercase">
-                    {domain(url)}
+                    {domain(props.url)}
                   </p>
                   <p className="text-foreground line-clamp-2 text-[17px] leading-snug font-semibold">
-                    {title || '—'}
+                    {props.title || '—'}
                   </p>
                 </>
               )}
@@ -555,17 +531,9 @@ export function FacebookPreview({
   )
 }
 
-export function DiscordPreview({
-  title,
-  description,
-  image,
-  isValidImage,
-  url,
-  isLoading,
-  isError,
-  isValidUrl,
-}: Props) {
-  const showPreview = isValidUrl && !isError && image && isValidImage
+export function DiscordPreview(props: PlatformPreviewsProps) {
+  const showPreview =
+    props.isValidUrl && !props.isError && props.image && props.isValidImage
 
   return (
     <PlatformSection name="Discord" containerClassName="discord">
@@ -592,12 +560,12 @@ export function DiscordPreview({
           <p
             className={cn(
               'text-[15px]',
-              isValidUrl
+              props.isValidUrl
                 ? 'text-link cursor-pointer hover:underline'
                 : 'text-foreground'
             )}
           >
-            {url}
+            {props.url}
           </p>
 
           {/* Link Embed */}
@@ -607,7 +575,7 @@ export function DiscordPreview({
               style={{ maxWidth: 432 }}
             >
               <div className="space-y-1">
-                {isLoading ? (
+                {props.isLoading ? (
                   <>
                     <Skeleton className="bg-border h-3 w-24" />
                     <Skeleton className="bg-border h-4 w-3/4" />
@@ -615,21 +583,23 @@ export function DiscordPreview({
                   </>
                 ) : (
                   <>
-                    <p className="text-foreground text-xs">{siteName(url)}</p>
+                    <p className="text-foreground text-xs">
+                      {siteName(props.url)}
+                    </p>
                     <p className="text-link cursor-pointer leading-snug font-semibold hover:underline">
-                      {title || 'No title'}
+                      {props.title || 'No title'}
                     </p>
                     <p className="text-foreground line-clamp-2 text-sm leading-relaxed">
-                      {description || 'No description'}
+                      {props.description || 'No description'}
                     </p>
                   </>
                 )}
               </div>
               <OGImage
-                src={image}
-                isValidImage={isValidImage}
+                src={props.image}
+                isValidImage={props.isValidImage}
                 className="block aspect-400/210 max-h-[210px] w-full max-w-[400px] rounded-b object-cover"
-                isLoading={isLoading}
+                isLoading={props.isLoading}
                 skeletonClassName="bg-border"
               />
             </div>
@@ -640,17 +610,9 @@ export function DiscordPreview({
   )
 }
 
-export function SlackPreview({
-  title,
-  description,
-  image,
-  isValidImage,
-  url,
-  isLoading,
-  isError,
-  isValidUrl,
-}: Props) {
-  const showPreview = isValidUrl && !isError && image && isValidImage
+export function SlackPreview(props: PlatformPreviewsProps) {
+  const showPreview =
+    props.isValidUrl && !props.isError && props.image && props.isValidImage
 
   return (
     <PlatformSection
@@ -685,12 +647,12 @@ export function SlackPreview({
           <p
             className={cn(
               'mt-0.5 text-[15px]',
-              isValidUrl
+              props.isValidUrl
                 ? 'text-link cursor-pointer underline'
                 : 'text-foreground'
             )}
           >
-            {url}
+            {props.url}
           </p>
 
           {/* Link Embed */}
@@ -698,7 +660,7 @@ export function SlackPreview({
             <div className="border-border relative mt-2 pl-4">
               {/* left line */}
               <span className="bg-border absolute top-0 bottom-0 left-0 h-full w-1 rounded-lg"></span>
-              {isLoading ? (
+              {props.isLoading ? (
                 <>
                   <Skeleton className="bg-border mb-1 h-4 w-20" />
                   <Skeleton className="bg-border h-4 w-3/4" />
@@ -708,22 +670,22 @@ export function SlackPreview({
                 <>
                   <div className="mb-1 flex items-center gap-1.5">
                     <span className="text-foreground text-[15px] font-bold">
-                      {siteName(url)}
+                      {siteName(props.url)}
                     </span>
                   </div>
                   <p className="text-link cursor-pointer text-[15px] leading-snug font-medium underline">
-                    {title || '—'}
+                    {props.title || '—'}
                   </p>
                   <p className="text-foreground/80 mt-0.5 line-clamp-2 text-[15px] leading-relaxed">
-                    {description}
+                    {props.description}
                   </p>
                 </>
               )}
               <OGImage
-                src={image}
-                isValidImage={isValidImage}
+                src={props.image}
+                isValidImage={props.isValidImage}
                 className="mt-2 aspect-[1.91/1] w-full max-w-[360px] rounded object-cover"
-                isLoading={isLoading}
+                isLoading={props.isLoading}
                 skeletonClassName="bg-border"
               />
             </div>
@@ -734,17 +696,9 @@ export function SlackPreview({
   )
 }
 
-export function IMessagePreview({
-  title,
-  // description,
-  image,
-  isValidImage,
-  url,
-  isLoading,
-  isError,
-  isValidUrl,
-}: Props) {
-  const showPreview = isValidUrl && !isError && image && isValidImage
+export function IMessagePreview(props: PlatformPreviewsProps) {
+  const showPreview =
+    props.isValidUrl && !props.isError && props.image && props.isValidImage
 
   return (
     <PlatformSection name="Messages" containerClassName="imessage">
@@ -755,14 +709,14 @@ export function IMessagePreview({
         {showPreview && (
           <div className="bg-card squircle-2xl w-full max-w-[300px] overflow-hidden">
             <OGImage
-              src={image}
-              isValidImage={isValidImage}
+              src={props.image}
+              isValidImage={props.isValidImage}
               className="aspect-[1.91/1] w-full object-cover"
-              isLoading={isLoading}
+              isLoading={props.isLoading}
               skeletonClassName="bg-border"
             />
             <div className="space-y-0.5 p-3">
-              {isLoading ? (
+              {props.isLoading ? (
                 <>
                   <Skeleton className="bg-border h-2.5 w-16" />
                   <Skeleton className="bg-border h-4 w-3/4" />
@@ -771,10 +725,10 @@ export function IMessagePreview({
               ) : (
                 <>
                   <p className="text-card-foreground line-clamp-2 text-sm leading-snug font-semibold">
-                    {title || '—'}
+                    {props.title || '—'}
                   </p>
                   <p className="text-muted-foreground text-xs font-medium tracking-wide">
-                    {domain(url)}
+                    {domain(props.url)}
                   </p>
                 </>
               )}
@@ -782,7 +736,7 @@ export function IMessagePreview({
           </div>
         )}
 
-        {!showPreview && url && <MessageBubble text={url} isLink />}
+        {!showPreview && props.url && <MessageBubble text={props.url} isLink />}
       </div>
     </PlatformSection>
   )
@@ -814,17 +768,9 @@ function MessageBubble(props: { text: string; isLink?: boolean }) {
   )
 }
 
-export function WhatsAppPreview({
-  title,
-  description,
-  image,
-  isValidImage,
-  url,
-  isLoading,
-  isError,
-  isValidUrl,
-}: Props) {
-  const showPreview = isValidUrl && !isError && image && isValidImage
+export function WhatsAppPreview(props: PlatformPreviewsProps) {
+  const showPreview =
+    props.isValidUrl && !props.isError && props.image && props.isValidImage
 
   return (
     <PlatformSection name="WhatsApp" containerClassName="whatsapp">
@@ -834,14 +780,14 @@ export function WhatsAppPreview({
         {showPreview && (
           <div className="bg-background/50 rounded-lg">
             <OGImage
-              src={image}
-              isValidImage={isValidImage}
+              src={props.image}
+              isValidImage={props.isValidImage}
               className="aspect-[1.91/1] w-full rounded-t-lg object-cover"
-              isLoading={isLoading}
+              isLoading={props.isLoading}
               skeletonClassName="bg-border"
             />
             <div className="space-y-1.5 p-3">
-              {isLoading ? (
+              {props.isLoading ? (
                 <>
                   <Skeleton className="bg-border h-4 w-3/4" />
                   <Skeleton className="bg-border h-3 w-full" />
@@ -850,16 +796,16 @@ export function WhatsAppPreview({
               ) : (
                 <>
                   <p className="text-foreground text-sm leading-snug font-semibold">
-                    {title || '—'}
+                    {props.title || '—'}
                   </p>
                   <p className="text-muted-foreground line-clamp-5 text-xs">
-                    {description}
+                    {props.description}
                   </p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <LinkIcon className="text-foreground size-2.5" />
                       <span className="text-foreground text-xs">
-                        {domain(url)}
+                        {domain(props.url)}
                       </span>
                     </div>
                   </div>
@@ -877,10 +823,10 @@ export function WhatsAppPreview({
           </p>
           <p
             className={cn(
-              isValidUrl ? 'text-link underline' : 'text-foreground'
+              props.isValidUrl ? 'text-link underline' : 'text-foreground'
             )}
           >
-            {url}
+            {props.url}
           </p>
           <div className="flex justify-end">
             <span className="text-muted-foreground ml-2 shrink-0 text-[11px]">
@@ -893,7 +839,7 @@ export function WhatsAppPreview({
   )
 }
 
-export function PlatformPreviews(props: Props) {
+export function PlatformPreviews(props: PlatformPreviewsProps) {
   return (
     <div className="flex flex-col gap-10">
       <TwitterPreview {...props} />
