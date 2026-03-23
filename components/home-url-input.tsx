@@ -6,6 +6,8 @@ import {
   useLayoutEffect,
   useRef,
   useCallback,
+  type Dispatch,
+  type SetStateAction,
 } from 'react'
 import { get, set } from 'idb-keyval'
 import {
@@ -70,15 +72,12 @@ function normalizeUrl(url: string) {
     .replace(/\/$/, '')
 }
 
-export interface HomeUrlInputState {
-  debouncedUrl: string
-  hasReadStoredUrl: boolean
-  urlIsValid: boolean
-}
-
 export interface HomeUrlInputProps {
   defaultUrl: string
-  onStateChange: (state: HomeUrlInputState) => void
+  debouncedUrl: string
+  setDebouncedUrl: Dispatch<SetStateAction<string>>
+  hasReadStoredUrl: boolean
+  setHasReadStoredUrl: Dispatch<SetStateAction<boolean>>
   /** When set after a successful OG fetch, URL is saved to history after a short delay. */
   fetchedOgMetadata?: OGMetadata | null
   /** OG query loading (excluding local URL bootstrap; that is handled inside the input). */
@@ -88,14 +87,15 @@ export interface HomeUrlInputProps {
 
 export function HomeUrlInput({
   defaultUrl,
-  onStateChange,
+  debouncedUrl,
+  setDebouncedUrl,
+  hasReadStoredUrl,
+  setHasReadStoredUrl,
   fetchedOgMetadata,
   ogFetchLoading = false,
   ogFetchError = false,
 }: HomeUrlInputProps) {
   const [url, setUrl] = useState(defaultUrl)
-  const [debouncedUrl, setDebouncedUrl] = useState(defaultUrl)
-  const [hasReadStoredUrl, setHasReadStoredUrl] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [urlHistory, setUrlHistory] = useState<HistoryItem[]>([])
   const debounceTimerRef = useRef<NodeJS.Timeout>(null)
@@ -105,10 +105,6 @@ export function HomeUrlInput({
   const [locationRevision, setLocationRevision] = useState(0)
 
   const urlIsValid = isValidUrl(debouncedUrl)
-
-  useEffect(() => {
-    onStateChange({ debouncedUrl, hasReadStoredUrl, urlIsValid })
-  }, [debouncedUrl, hasReadStoredUrl, urlIsValid, onStateChange])
 
   useLayoutEffect(() => {
     let paramUrl: string | null = null

@@ -4,7 +4,7 @@ import { fetchOGData } from '@/lib/og'
 
 export default async function Home() {
   const result = await fetchOGData(DEFAULT_URL)
-  const initialData = result.type === 'success' ? result.data : null
+  const defaultURLData = result.type === 'success' ? result.data : null
 
-  return <HomeClient defaultUrl={DEFAULT_URL} initialData={initialData} />
+  return <HomeClient defaultURLData={defaultURLData} />
 }

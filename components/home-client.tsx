@@ -1,33 +1,24 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { PlatformPreviews } from '@/components/platform-previews'
 import {
   HomeUrlInput,
   isValidUrl,
   normalizeUrlForFetch,
-  type HomeUrlInputState,
 } from '@/components/home-url-input'
+import { DEFAULT_URL } from '@/lib/constants'
 import { fetchOGData, type OGMetadata } from '@/lib/og'
 
 interface HomeClientProps {
-  defaultUrl: string
-  initialData: OGMetadata | null
+  defaultURLData: OGMetadata | null
 }
 
-export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
-  const [urlInputState, setUrlInputState] = useState<HomeUrlInputState>(() => ({
-    debouncedUrl: defaultUrl,
-    hasReadStoredUrl: false,
-    urlIsValid: isValidUrl(defaultUrl),
-  }))
-
-  const handleUrlInputStateChange = useCallback((state: HomeUrlInputState) => {
-    setUrlInputState(state)
-  }, [])
-
-  const { debouncedUrl, hasReadStoredUrl, urlIsValid } = urlInputState
+export function HomeClient({ defaultURLData }: HomeClientProps) {
+  const [debouncedUrl, setDebouncedUrl] = useState(() => DEFAULT_URL)
+  const [hasReadStoredUrl, setHasReadStoredUrl] = useState(false)
+  const urlIsValid = isValidUrl(debouncedUrl)
 
   const {
     data: ogData,
@@ -45,7 +36,9 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
     enabled: hasReadStoredUrl && urlIsValid,
     retry: false,
     initialData:
-      debouncedUrl === defaultUrl && initialData ? initialData : undefined,
+      debouncedUrl === DEFAULT_URL && defaultURLData
+        ? defaultURLData
+        : undefined,
   })
 
   const bootstrappingUrl = !hasReadStoredUrl
@@ -68,11 +61,14 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
         <div className="mx-auto w-full max-w-lg space-y-3">
           <div>
             <HomeUrlInput
-              defaultUrl={defaultUrl}
+              defaultUrl={DEFAULT_URL}
+              debouncedUrl={debouncedUrl}
+              setDebouncedUrl={setDebouncedUrl}
+              hasReadStoredUrl={hasReadStoredUrl}
+              setHasReadStoredUrl={setHasReadStoredUrl}
               fetchedOgMetadata={ogData}
               ogFetchError={!!error}
               ogFetchLoading={isLoading}
-              onStateChange={handleUrlInputStateChange}
             />
             {hasReadStoredUrl && error && (
               <p className="mt-2 text-center text-sm text-red-400">
