@@ -81,6 +81,8 @@ export const Loading: Story = () => (
   </StoryGroup>
 )
 
-export const FailedToFetch: Story = () => <TwitterPreview {...failedToFetchData} />
+export const FailedToFetch: Story = () => (
+  <TwitterPreview {...failedToFetchData} />
+)
 
 export const InvalidUrl: Story = () => <TwitterPreview {...invalidUrlData} />

@@ -81,6 +81,8 @@ export const Loading: Story = () => (
   </StoryGroup>
 )
 
-export const FailedToFetch: Story = () => <LinkedInPreview {...failedToFetchData} />
+export const FailedToFetch: Story = () => (
+  <LinkedInPreview {...failedToFetchData} />
+)
 
 export const InvalidUrl: Story = () => <LinkedInPreview {...invalidUrlData} />

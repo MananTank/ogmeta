@@ -103,11 +103,11 @@ function OGImage({
   return <img src={src} alt="og preview" className={className} />
 }
 
-function PlatformSectionContainer(props: {
+function PlatformSection(props: {
   containerClassName?: string
   name: string
   children: React.ReactNode
-  logo?: React.FC<{ className?: string }>
+  // logo?: React.FC<{ className?: string }>
 }) {
   return (
     <section className="group mx-auto w-full max-w-5xl">
@@ -118,11 +118,10 @@ function PlatformSectionContainer(props: {
             props.containerClassName
           )}
         >
-          <div className="bg-foreground/10 absolute top-5 left-5 flex items-center gap-1 rounded-full px-2.5 py-1 backdrop-blur-md">
-            {props.logo && (
-              <props.logo className="text-muted-foreground size-4" />
-            )}
-            <h2 className="text-foreground text-sm">{props.name}</h2>
+          <div className="bg-foreground/10 absolute top-4 left-4 flex items-center gap-1 rounded-full px-3 py-1.5 backdrop-blur-md">
+            <h2 className="text-foreground text-sm tracking-wide">
+              {props.name}
+            </h2>
           </div>
 
           {props.children}
@@ -145,13 +144,14 @@ export function TwitterPreview({
   const hasValidImage = image && isValidImage
   const hasLargeCard = !isLoading && title && hasValidImage
   const hasCompactCard = !isLoading && title && !hasValidImage
-  const showPreview = isValidUrl && !isError && (isLoading || hasLargeCard || hasCompactCard)
+  const showPreview =
+    isValidUrl && !isError && (isLoading || hasLargeCard || hasCompactCard)
 
   return (
-    <PlatformSectionContainer
+    <PlatformSection
       name="Twitter"
       containerClassName="twitter"
-      logo={TwitterLogoIcon}
+      // logo={TwitterLogoIcon}
     >
       <div className="font-chirp flex max-w-[566px] gap-3">
         <div className="shrink-0">
@@ -257,7 +257,7 @@ export function TwitterPreview({
           </div>
         </div>
       </div>
-    </PlatformSectionContainer>
+    </PlatformSection>
   )
 }
 
@@ -272,10 +272,10 @@ export function LinkedInPreview({
 }: Props) {
   const showPreview = isValidUrl && !isError
   return (
-    <PlatformSectionContainer
+    <PlatformSection
       name="LinkedIn"
       containerClassName="linkedin"
-      logo={LinkedInLogoIcon}
+      // logo={LinkedInLogoIcon}
     >
       <div className="bg-card w-full max-w-[550px] overflow-hidden rounded-lg shadow-sm">
         {/* Post Header */}
@@ -409,7 +409,7 @@ export function LinkedInPreview({
           </button>
         </div>
       </div>
-    </PlatformSectionContainer>
+    </PlatformSection>
   )
 }
 
@@ -426,7 +426,7 @@ export function FacebookPreview({
   const showPreview = isValidUrl && !isError
 
   return (
-    <PlatformSectionContainer name="Facebook" containerClassName="facebook">
+    <PlatformSection name="Facebook" containerClassName="facebook">
       <div className="bg-card w-full max-w-[680px] overflow-hidden rounded-xl shadow-md">
         {/* Post Header */}
         <div className="p-3 pb-2">
@@ -552,7 +552,7 @@ export function FacebookPreview({
           </button>
         </div>
       </div>
-    </PlatformSectionContainer>
+    </PlatformSection>
   )
 }
 
@@ -569,7 +569,7 @@ export function DiscordPreview({
   const showPreview = isValidUrl && !isError
 
   return (
-    <PlatformSectionContainer name="Discord" containerClassName="discord">
+    <PlatformSection name="Discord" containerClassName="discord">
       {/* Message */}
       <div className="flex gap-4">
         <div className="shrink-0">
@@ -635,7 +635,7 @@ export function DiscordPreview({
           )}
         </div>
       </div>
-    </PlatformSectionContainer>
+    </PlatformSection>
   )
 }
 
@@ -652,10 +652,10 @@ export function SlackPreview({
   const showPreview = isValidUrl && !isError
 
   return (
-    <PlatformSectionContainer
+    <PlatformSection
       name="Slack"
       containerClassName="slack"
-      logo={SlackIcon}
+      // logo={SlackIcon}
     >
       {/* Message */}
       <div className="flex max-w-[600px] gap-2">
@@ -729,7 +729,7 @@ export function SlackPreview({
           )}
         </div>
       </div>
-    </PlatformSectionContainer>
+    </PlatformSection>
   )
 }
 
@@ -745,7 +745,7 @@ export function IMessagePreview({
   if (isError) return null
 
   return (
-    <PlatformSectionContainer name="Messages" containerClassName="imessage">
+    <PlatformSection name="Messages" containerClassName="imessage">
       <div className="bg-card w-full max-w-[300px] overflow-hidden rounded-2xl">
         <OGImage
           src={image}
@@ -773,7 +773,7 @@ export function IMessagePreview({
           )}
         </div>
       </div>
-    </PlatformSectionContainer>
+    </PlatformSection>
   )
 }
 
@@ -790,7 +790,7 @@ export function WhatsAppPreview({
   const showPreview = isValidUrl && !isError
 
   return (
-    <PlatformSectionContainer name="WhatsApp" containerClassName="whatsapp">
+    <PlatformSection name="WhatsApp" containerClassName="whatsapp">
       {/* Message Bubble with Link Preview */}
       <div className="bg-card max-w-[230px] overflow-hidden rounded-xl p-1">
         {/* Link Preview */}
@@ -852,7 +852,7 @@ export function WhatsAppPreview({
           </div>
         </div>
       </div>
-    </PlatformSectionContainer>
+    </PlatformSection>
   )
 }
 
