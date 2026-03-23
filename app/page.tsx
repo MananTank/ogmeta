@@ -1,7 +1,6 @@
-import { fetchOGData } from '@/lib/og'
 import { HomeClient } from '@/components/home-client'
-
-const DEFAULT_URL = 'https://vercel.com'
+import { DEFAULT_URL } from '@/lib/constants'
+import { fetchOGData } from '@/lib/og'
 
 export default async function Home() {
   const result = await fetchOGData(DEFAULT_URL)
