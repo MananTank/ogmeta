@@ -60,7 +60,6 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [urlHistory, setUrlHistory] = useState<HistoryItem[]>([])
   const debounceTimerRef = useRef<NodeJS.Timeout>(null)
-  const saveTimerRef = useRef<NodeJS.Timeout>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
@@ -84,21 +83,6 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
     initialData:
       debouncedUrl === defaultUrl && initialData ? initialData : undefined,
   })
-
-  const loadHistory = useCallback(async () => {
-    try {
-      const history = await get<HistoryItem[] | string[]>(URL_HISTORY_KEY)
-      if (history) {
-        // Handle backwards compatibility with old string[] format
-        const normalizedHistory: HistoryItem[] = history.map((item) =>
-          typeof item === 'string' ? { url: item } : item
-        )
-        setUrlHistory(normalizedHistory)
-      }
-    } catch (e) {
-      console.error('Failed to load URL history:', e)
-    }
-  }, [])
 
   const normalizeUrl = (url: string) => {
     return url
@@ -171,10 +155,6 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
       clearTimeout(debounceTimerRef.current)
     }
 
-    if (saveTimerRef.current) {
-      clearTimeout(saveTimerRef.current)
-    }
-
     debounceTimerRef.current = setTimeout(() => {
       setDebouncedUrl(newUrl)
     }, 500)
@@ -228,8 +208,25 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
   }
 
   useEffect(() => {
-    loadHistory()
-  }, [loadHistory])
+    let cancelled = false
+    ;(async () => {
+      try {
+        const history = await get<HistoryItem[] | string[]>(URL_HISTORY_KEY)
+        if (!history || cancelled) return
+        const normalizedHistory: HistoryItem[] = history.map((item) =>
+          typeof item === 'string' ? { url: item } : item
+        )
+        setUrlHistory(normalizedHistory)
+      } catch (e) {
+        if (!cancelled) {
+          console.error('Failed to load URL history:', e)
+        }
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   // Save to history when data is successfully fetched
   useEffect(() => {
@@ -262,9 +259,6 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current)
       }
-      if (saveTimerRef.current) {
-        clearTimeout(saveTimerRef.current)
-      }
     }
   }, [])
 
@@ -294,6 +288,7 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
           <div>
             <div className="relative">
               {showFavicon ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={ogData.favicon}
                   alt=""
@@ -350,6 +345,7 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
                           className="flex flex-1 items-center gap-3 px-3 py-2 text-left text-sm outline-none"
                         >
                           {item.favicon ? (
+                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                               src={item.favicon}
                               alt=""
