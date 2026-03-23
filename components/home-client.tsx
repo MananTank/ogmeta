@@ -12,7 +12,7 @@ import { DEFAULT_URL } from '@/lib/constants'
 import { fetchOGData, type OGMetadata } from '@/lib/og'
 
 export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
-  const [debouncedUrl, setDebouncedUrl] = useState(() => DEFAULT_URL)
+  const [debouncedUrl, setDebouncedUrl] = useState(DEFAULT_URL)
   const [hasReadStoredUrl, setHasReadStoredUrl] = useState(false)
   const urlIsValid = isValidUrl(debouncedUrl)
 
@@ -33,6 +33,8 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
         : undefined,
   })
 
+  const isLoading = ogQuery.isFetching || !hasReadStoredUrl
+
   return (
     <main className="min-h-screen px-4">
       <div className="mx-auto max-w-3xl pt-24 pb-24">
@@ -47,25 +49,15 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
           </p>
         </header>
 
-        <div className="mx-auto w-full max-w-lg space-y-3">
-          <div>
-            <HomeUrlInput
-              defaultUrl={DEFAULT_URL}
-              debouncedUrl={debouncedUrl}
-              setDebouncedUrl={setDebouncedUrl}
-              hasReadStoredUrl={hasReadStoredUrl}
-              setHasReadStoredUrl={setHasReadStoredUrl}
-              fetchedOgMetadata={ogQuery.data}
-              ogFetchError={!!ogQuery.error}
-              ogFetchLoading={ogQuery.isFetching}
-            />
-            {hasReadStoredUrl && ogQuery.error && (
-              <p className="mt-2 text-center text-sm text-red-400">
-                Failed to fetch opengraph metadata
-              </p>
-            )}
-          </div>
-        </div>
+        <HomeUrlInput
+          debouncedUrl={debouncedUrl}
+          setDebouncedUrl={setDebouncedUrl}
+          hasReadStoredUrl={hasReadStoredUrl}
+          setHasReadStoredUrl={setHasReadStoredUrl}
+          fetchedOgMetadata={ogQuery.data}
+          ogFetchError={!!ogQuery.error}
+          ogFetchLoading={isLoading}
+        />
       </div>
       <PlatformPreviews
         title={ogQuery.data?.title ?? ''}
@@ -73,7 +65,7 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
         image={ogQuery.data?.image ?? ''}
         isValidImage={ogQuery.data?.isValidImage ?? false}
         url={ogQuery.data?.url ?? debouncedUrl}
-        isLoading={ogQuery.isFetching}
+        isLoading={isLoading}
         isError={hasReadStoredUrl && !!ogQuery.error}
         isValidUrl={urlIsValid}
       />

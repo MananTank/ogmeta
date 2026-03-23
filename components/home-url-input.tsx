@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import { FluidHeight } from 'fluid-height'
 import { Input } from '@/components/ui/input'
+import { DEFAULT_URL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import type { OGMetadata } from '@/lib/og'
 
@@ -73,7 +74,6 @@ function normalizeUrl(url: string) {
 }
 
 export function HomeUrlInput(props: {
-  defaultUrl: string
   debouncedUrl: string
   setDebouncedUrl: Dispatch<SetStateAction<string>>
   hasReadStoredUrl: boolean
@@ -86,7 +86,7 @@ export function HomeUrlInput(props: {
 }) {
   const ogFetchLoading = props.ogFetchLoading ?? false
   const ogFetchError = props.ogFetchError ?? false
-  const [url, setUrl] = useState(props.defaultUrl)
+  const [url, setUrl] = useState(DEFAULT_URL)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [urlHistory, setUrlHistory] = useState<HistoryItem[]>([])
   const debounceTimerRef = useRef<NodeJS.Timeout>(null)
@@ -195,7 +195,7 @@ export function HomeUrlInput(props: {
     }
 
     const v = props.debouncedUrl.trim()
-    if (v === props.defaultUrl) {
+    if (v === DEFAULT_URL) {
       if (searchParams.has(URL_SEARCH_PARAM)) {
         const params = new URLSearchParams(window.location.search)
         params.delete(URL_SEARCH_PARAM)
@@ -210,7 +210,7 @@ export function HomeUrlInput(props: {
     const params = new URLSearchParams(window.location.search)
     params.set(URL_SEARCH_PARAM, v)
     applyQuery(params, 'push')
-  }, [props.hasReadStoredUrl, props.debouncedUrl, urlIsValid, props.defaultUrl])
+  }, [props.hasReadStoredUrl, props.debouncedUrl, urlIsValid])
 
   const saveToHistory = useCallback(
     async (urlToSave: string, favicon?: string) => {
@@ -241,17 +241,12 @@ export function HomeUrlInput(props: {
 
   useEffect(() => {
     const meta = props.fetchedOgMetadata
-    if (!meta || props.debouncedUrl === props.defaultUrl) return
+    if (!meta || props.debouncedUrl === DEFAULT_URL) return
     const timer = setTimeout(() => {
       void saveToHistory(props.debouncedUrl, meta.favicon)
     }, SAVE_DELAY_MS)
     return () => clearTimeout(timer)
-  }, [
-    props.fetchedOgMetadata,
-    props.debouncedUrl,
-    props.defaultUrl,
-    saveToHistory,
-  ])
+  }, [props.fetchedOgMetadata, props.debouncedUrl, saveToHistory])
 
   const removeFromHistory = useCallback(async (urlToRemove: string) => {
     try {
@@ -397,91 +392,98 @@ export function HomeUrlInput(props: {
     !previewsLoading && !ogFetchError && !!props.fetchedOgMetadata?.favicon
 
   return (
-    <div className="relative">
-      {showFavicon ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={props.fetchedOgMetadata?.favicon ?? ''}
-          alt=""
-          className="pointer-events-none absolute top-1/2 left-4 z-10 h-4 w-4 -translate-y-1/2 rounded-sm object-contain"
-        />
-      ) : (
-        <Icon
+    <div className="mx-auto w-full max-w-lg space-y-3">
+      <div className="relative">
+        {showFavicon ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={props.fetchedOgMetadata?.favicon ?? ''}
+            alt=""
+            className="pointer-events-none absolute top-1/2 left-4 z-10 h-4 w-4 -translate-y-1/2 rounded-sm object-contain"
+          />
+        ) : (
+          <Icon
+            className={cn(
+              'pointer-events-none absolute top-1/2 left-4 z-10 h-4 w-4 -translate-y-1/2',
+              ogFetchError ? 'text-red-400' : 'text-muted-foreground',
+              previewsLoading && 'animate-spin'
+            )}
+          />
+        )}
+        <Input
+          ref={inputRef}
+          type="text"
+          value={url}
+          aria-label="URL"
+          onChange={handleInputChange}
+          onKeyDown={handleInputKeyDown}
+          placeholder="Enter a URL"
           className={cn(
-            'pointer-events-none absolute top-1/2 left-4 z-10 h-4 w-4 -translate-y-1/2',
-            ogFetchError ? 'text-red-400' : 'text-muted-foreground',
-            previewsLoading && 'animate-spin'
+            'h-10 rounded-xl pr-4 pl-10 placeholder:text-neutral-600 focus-visible:ring-0',
+            ogFetchError
+              ? 'border-red-500/50 bg-red-950/30! focus-visible:border-red-500/70!'
+              : 'border-neutral-800 bg-neutral-900/50! focus-visible:border-neutral-700!'
           )}
         />
-      )}
-      <Input
-        ref={inputRef}
-        type="text"
-        value={url}
-        aria-label="URL"
-        onChange={handleInputChange}
-        onKeyDown={handleInputKeyDown}
-        placeholder="Enter a URL"
-        className={cn(
-          'h-10 rounded-xl pr-4 pl-10 placeholder:text-neutral-600 focus-visible:ring-0',
-          ogFetchError
-            ? 'border-red-500/50 bg-red-950/30! focus-visible:border-red-500/70!'
-            : 'border-neutral-800 bg-neutral-900/50! focus-visible:border-neutral-700!'
-        )}
-      />
-      <div
-        ref={suggestionsRef}
-        className="absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 shadow-lg"
-        style={{
-          display:
-            showSuggestions && filteredSuggestions.length > 0
-              ? 'block'
-              : 'none',
-        }}
-      >
-        <div className="p-1">
-          <p className="text-muted-foreground px-3 py-1.5 text-xs">Recent</p>
-          <FluidHeight transitionDurationMs={150}>
-            {filteredSuggestions.map((item, index) => (
-              <div
-                key={item.url}
-                className="group flex items-center rounded-lg focus-within:bg-neutral-800 hover:bg-neutral-800"
-              >
-                <button
-                  data-suggestion
-                  type="button"
-                  onClick={() => handleSelectSuggestion(item.url)}
-                  onKeyDown={(e) => handleSuggestionKeyDown(e, index)}
-                  className="flex flex-1 items-center gap-3 px-3 py-2 text-left text-sm outline-none"
+        <div
+          ref={suggestionsRef}
+          className="absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 shadow-lg"
+          style={{
+            display:
+              showSuggestions && filteredSuggestions.length > 0
+                ? 'block'
+                : 'none',
+          }}
+        >
+          <div className="p-1">
+            <p className="text-muted-foreground px-3 py-1.5 text-xs">Recent</p>
+            <FluidHeight transitionDurationMs={150}>
+              {filteredSuggestions.map((item, index) => (
+                <div
+                  key={item.url}
+                  className="group flex items-center rounded-lg focus-within:bg-neutral-800 hover:bg-neutral-800"
                 >
-                  {item.favicon ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={item.favicon}
-                      alt=""
-                      className="h-4 w-4 shrink-0 rounded-sm object-contain"
-                    />
-                  ) : (
-                    <GlobeIcon className="text-muted-foreground h-4 w-4 shrink-0" />
-                  )}
-                  <span className="text-foreground truncate">{item.url}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    removeFromHistory(item.url)
-                  }}
-                  className="text-muted-foreground hover:text-foreground mr-2 p-1 opacity-0 group-hover:opacity-100"
-                  aria-label="Remove from history"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            ))}
-          </FluidHeight>
+                  <button
+                    data-suggestion
+                    type="button"
+                    onClick={() => handleSelectSuggestion(item.url)}
+                    onKeyDown={(e) => handleSuggestionKeyDown(e, index)}
+                    className="flex flex-1 items-center gap-3 px-3 py-2 text-left text-sm outline-none"
+                  >
+                    {item.favicon ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={item.favicon}
+                        alt=""
+                        className="h-4 w-4 shrink-0 rounded-sm object-contain"
+                      />
+                    ) : (
+                      <GlobeIcon className="text-muted-foreground h-4 w-4 shrink-0" />
+                    )}
+                    <span className="text-foreground truncate">{item.url}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeFromHistory(item.url)
+                    }}
+                    className="text-muted-foreground hover:text-foreground mr-2 p-1 opacity-0 group-hover:opacity-100"
+                    aria-label="Remove from history"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ))}
+            </FluidHeight>
+          </div>
         </div>
       </div>
+      {hasReadStoredUrl && ogFetchError ? (
+        <p className="mt-2 text-center text-sm text-red-400">
+          Failed to fetch opengraph metadata
+        </p>
+      ) : null}
     </div>
   )
 }
