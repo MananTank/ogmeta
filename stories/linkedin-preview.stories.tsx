@@ -1,5 +1,5 @@
 import type { Story, StoryDefault } from '@ladle/react'
-import { TwitterPreview } from '@/components/platform-previews'
+import { LinkedInPreview } from '@/components/platform-previews'
 import {
   completeData,
   longTitleData,
@@ -38,17 +38,17 @@ export const FullData: Story = () => (
   <StoryGroup>
     <div>
       <StoryLabel>Complete OG Data</StoryLabel>
-      <TwitterPreview {...completeData} />
+      <LinkedInPreview {...completeData} />
     </div>
 
     <div>
       <StoryLabel>Long Title (truncated)</StoryLabel>
-      <TwitterPreview {...longTitleData} />
+      <LinkedInPreview {...longTitleData} />
     </div>
 
     <div>
       <StoryLabel>Short Title</StoryLabel>
-      <TwitterPreview {...shortTitleData} />
+      <LinkedInPreview {...shortTitleData} />
     </div>
   </StoryGroup>
 )
@@ -57,17 +57,17 @@ export const PartialData: Story = () => (
   <StoryGroup>
     <div>
       <StoryLabel>Missing Image</StoryLabel>
-      <TwitterPreview {...missingImageData} />
+      <LinkedInPreview {...missingImageData} />
     </div>
 
     <div>
       <StoryLabel>Invalid Image</StoryLabel>
-      <TwitterPreview {...invalidImageData} />
+      <LinkedInPreview {...invalidImageData} />
     </div>
 
     <div>
       <StoryLabel>Missing Title</StoryLabel>
-      <TwitterPreview {...missingTitleData} />
+      <LinkedInPreview {...missingTitleData} />
     </div>
   </StoryGroup>
 )
@@ -76,11 +76,11 @@ export const Loading: Story = () => (
   <StoryGroup>
     <div>
       <StoryLabel>Loading State</StoryLabel>
-      <TwitterPreview {...loadingData} />
+      <LinkedInPreview {...loadingData} />
     </div>
   </StoryGroup>
 )
 
-export const FailedToFetch: Story = () => <TwitterPreview {...failedToFetchData} />
+export const FailedToFetch: Story = () => <LinkedInPreview {...failedToFetchData} />
 
-export const InvalidUrl: Story = () => <TwitterPreview {...invalidUrlData} />
+export const InvalidUrl: Story = () => <LinkedInPreview {...invalidUrlData} />

@@ -134,6 +134,7 @@ function PlatformSectionContainer(props: {
 
 export function TwitterPreview({
   title,
+  description,
   image,
   isValidImage,
   url,
@@ -141,8 +142,10 @@ export function TwitterPreview({
   isError,
   isValidUrl,
 }: Props) {
-  const hasValidCard = !isLoading && title && image && isValidImage
-  const showPreview = isValidUrl && !isError && (isLoading || hasValidCard)
+  const hasValidImage = image && isValidImage
+  const hasLargeCard = !isLoading && title && hasValidImage
+  const hasCompactCard = !isLoading && title && !hasValidImage
+  const showPreview = isValidUrl && !isError && (isLoading || hasLargeCard || hasCompactCard)
 
   return (
     <PlatformSectionContainer
@@ -180,33 +183,53 @@ export function TwitterPreview({
             )}
           </div>
 
-          {showPreview && (
+          {/* Large card - has valid image */}
+          {(isLoading || hasLargeCard) && showPreview && (
             <div className="mt-3">
-              {(isLoading || hasValidCard) && (
-                <div className="relative overflow-hidden rounded-2xl border">
-                  <OGImage
-                    src={image}
-                    isValidImage={isValidImage}
-                    className="block aspect-[1.91/1] h-auto w-full object-cover"
-                    isLoading={isLoading}
-                    skeletonClassName="bg-border"
-                  />
-                  {!isLoading && title && (
-                    <div className="absolute right-3 bottom-3 left-3">
-                      <span
-                        className="text-foreground inline-block max-w-full truncate rounded px-2 text-[13px] leading-[20px] font-semibold backdrop-blur-md"
-                        style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
-                      >
-                        {title}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-
+              <div className="relative overflow-hidden rounded-2xl border">
+                <OGImage
+                  src={image}
+                  isValidImage={isValidImage}
+                  className="block aspect-[1.91/1] h-auto w-full object-cover"
+                  isLoading={isLoading}
+                  skeletonClassName="bg-border"
+                />
+                {!isLoading && title && (
+                  <div className="absolute right-3 bottom-3 left-3">
+                    <span
+                      className="text-foreground inline-block max-w-full truncate rounded px-2 text-[13px] leading-[20px] font-semibold backdrop-blur-md"
+                      style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
+                    >
+                      {title}
+                    </span>
+                  </div>
+                )}
+              </div>
               <p className="text-muted-foreground mt-1 text-[13px]">
                 From {domain(url)}
               </p>
+            </div>
+          )}
+
+          {/* Compact card - no valid image but has title */}
+          {hasCompactCard && showPreview && (
+            <div className="mt-3 flex overflow-hidden rounded-2xl border">
+              <div className="bg-secondary flex w-[130px] shrink-0 items-center justify-center">
+                <LinkIcon className="text-muted-foreground size-8" />
+              </div>
+              <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5 px-3 py-2.5">
+                <p className="text-muted-foreground text-[13px]">
+                  {domain(url)}
+                </p>
+                <p className="text-foreground truncate text-[15px] leading-snug">
+                  {title}
+                </p>
+                {description && (
+                  <p className="text-muted-foreground line-clamp-2 text-[13px] leading-snug">
+                    {description}
+                  </p>
+                )}
+              </div>
             </div>
           )}
 
@@ -238,14 +261,16 @@ export function TwitterPreview({
   )
 }
 
-function LinkedInPreview({
+export function LinkedInPreview({
   title,
   image,
   isValidImage,
   url,
   isLoading,
   isError,
+  isValidUrl,
 }: Props) {
+  const showPreview = isValidUrl && !isError
   return (
     <PlatformSectionContainer
       name="LinkedIn"
@@ -293,7 +318,7 @@ function LinkedInPreview({
           </div>
 
           {/* Link Preview Card */}
-          {!isError && (
+          {showPreview && (
             <div className="bg-card mt-3 flex overflow-hidden rounded-lg border p-3">
               <OGImage
                 src={image}
@@ -311,7 +336,7 @@ function LinkedInPreview({
                 ) : (
                   <>
                     <p className="text-foreground line-clamp-2 text-sm leading-snug font-semibold">
-                      {title || '—'}
+                      {title || domain(url)}
                     </p>
                     <p className="text-muted-foreground mt-0.5 text-xs">
                       {domain(url)}
