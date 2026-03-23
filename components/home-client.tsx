@@ -1,12 +1,18 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+} from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
 import {
   AlertCircleIcon,
   CircleDotDashedIcon,
   GlobeIcon,
-  Loader2Icon,
   X,
 } from 'lucide-react'
 import { get, set } from 'idb-keyval'
@@ -17,6 +23,9 @@ import { cn } from '@/lib/utils'
 import { fetchOGData, type OGMetadata } from '@/lib/og'
 
 const URL_HISTORY_KEY = 'og-meta-url-history'
+const LAST_URL_STORAGE_KEY = 'og-meta-last-url'
+/** Query param for shareable links, e.g. `/?url=https://example.com` */
+const URL_SEARCH_PARAM = 'url'
 const MAX_HISTORY_ITEMS = 20
 const SAVE_DELAY_MS = 3000
 
@@ -49,19 +58,34 @@ function normalizeUrlForFetch(url: string): string {
   return finalUrl
 }
 
+function readUrlParamFromWindow(): string {
+  if (typeof window === 'undefined') return ''
+  return (
+    new URLSearchParams(window.location.search).get(URL_SEARCH_PARAM)?.trim() ??
+    ''
+  )
+}
+
 interface HomeClientProps {
   defaultUrl: string
   initialData: OGMetadata | null
 }
 
 export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
+  const router = useRouter()
+
   const [url, setUrl] = useState(defaultUrl)
   const [debouncedUrl, setDebouncedUrl] = useState(defaultUrl)
+  const [hasReadStoredUrl, setHasReadStoredUrl] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [urlHistory, setUrlHistory] = useState<HistoryItem[]>([])
   const debounceTimerRef = useRef<NodeJS.Timeout>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
+  /** When true, keep `?url=` in sync with the input (user edited or opened a share link). */
+  const syncUrlSearchParamRef = useRef(false)
+  /** Bumped on `popstate` so effects re-read `window.location.search`. */
+  const [locationRevision, setLocationRevision] = useState(0)
 
   const urlIsValid = isValidUrl(debouncedUrl)
 
@@ -78,11 +102,117 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
       }
       return result.data
     },
-    enabled: urlIsValid,
+    enabled: hasReadStoredUrl && urlIsValid,
     retry: false,
     initialData:
       debouncedUrl === defaultUrl && initialData ? initialData : undefined,
   })
+
+  useLayoutEffect(() => {
+    let paramUrl: string | null = null
+    try {
+      const raw = new URLSearchParams(window.location.search)
+        .get(URL_SEARCH_PARAM)
+        ?.trim()
+      if (raw && isValidUrl(raw)) {
+        paramUrl = raw
+        syncUrlSearchParamRef.current = true
+      }
+    } catch {
+      // ignore
+    }
+
+    if (paramUrl) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setUrl(paramUrl)
+      setDebouncedUrl(paramUrl)
+    } else {
+      try {
+        const raw = localStorage.getItem(LAST_URL_STORAGE_KEY)?.trim()
+        if (raw && isValidUrl(raw)) {
+          setUrl(raw)
+          setDebouncedUrl(raw)
+        }
+      } catch {
+        // ignore
+      }
+    }
+    setHasReadStoredUrl(true)
+  }, [])
+
+  useEffect(() => {
+    if (!urlIsValid) return
+    try {
+      localStorage.setItem(LAST_URL_STORAGE_KEY, debouncedUrl.trim())
+    } catch {
+      // ignore
+    }
+  }, [debouncedUrl, urlIsValid])
+
+  useEffect(() => {
+    const onPopState = () => setLocationRevision((n) => n + 1)
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
+
+  useLayoutEffect(() => {
+    if (!hasReadStoredUrl) return
+    const urlFromSearch = readUrlParamFromWindow()
+    if (!urlFromSearch || !isValidUrl(urlFromSearch)) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setUrl((prev) => (prev.trim() === urlFromSearch ? prev : urlFromSearch))
+    setDebouncedUrl((prev) =>
+      prev.trim() === urlFromSearch ? prev : urlFromSearch
+    )
+  }, [hasReadStoredUrl, locationRevision])
+
+  useEffect(() => {
+    if (!hasReadStoredUrl) return
+
+    const replaceQuery = (params: URLSearchParams) => {
+      const qs = params.toString()
+      const path = window.location.pathname
+      const href = qs ? `${path}?${qs}` : path
+      router.replace(href, { scroll: false })
+    }
+
+    const searchParams = new URLSearchParams(window.location.search)
+    const rawParam = searchParams.get(URL_SEARCH_PARAM)?.trim()
+    if (rawParam && !isValidUrl(rawParam)) {
+      const params = new URLSearchParams(window.location.search)
+      params.delete(URL_SEARCH_PARAM)
+      replaceQuery(params)
+      return
+    }
+
+    if (!syncUrlSearchParamRef.current) return
+
+    if (!urlIsValid) {
+      if (searchParams.has(URL_SEARCH_PARAM)) {
+        const params = new URLSearchParams(window.location.search)
+        params.delete(URL_SEARCH_PARAM)
+        replaceQuery(params)
+      }
+      return
+    }
+
+    const v = debouncedUrl.trim()
+    if (v === defaultUrl) {
+      if (searchParams.has(URL_SEARCH_PARAM)) {
+        const params = new URLSearchParams(window.location.search)
+        params.delete(URL_SEARCH_PARAM)
+        replaceQuery(params)
+      }
+      return
+    }
+
+    const inBar = searchParams.get(URL_SEARCH_PARAM)?.trim() ?? null
+    if (inBar === v) return
+
+    const params = new URLSearchParams(window.location.search)
+    params.set(URL_SEARCH_PARAM, v)
+    replaceQuery(params)
+  }, [hasReadStoredUrl, debouncedUrl, urlIsValid, defaultUrl, router])
 
   const normalizeUrl = (url: string) => {
     return url
@@ -147,6 +277,7 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
     .slice(0, 6)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    syncUrlSearchParamRef.current = true
     const newUrl = e.target.value
     setUrl(newUrl)
     setShowSuggestions(true)
@@ -161,6 +292,7 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
   }
 
   const handleSelectSuggestion = (selectedUrl: string) => {
+    syncUrlSearchParamRef.current = true
     setUrl(selectedUrl)
     setDebouncedUrl(selectedUrl)
     setShowSuggestions(false)
@@ -262,13 +394,16 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
     }
   }, [])
 
-  const Icon = isLoading
+  const bootstrappingUrl = !hasReadStoredUrl
+  const previewsLoading = bootstrappingUrl || isLoading
+
+  const Icon = previewsLoading
     ? CircleDotDashedIcon
     : error
       ? AlertCircleIcon
       : GlobeIcon
 
-  const showFavicon = !isLoading && !error && ogData?.favicon
+  const showFavicon = !previewsLoading && !error && ogData?.favicon
 
   return (
     <main className="min-h-screen px-4">
@@ -299,7 +434,7 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
                   className={cn(
                     'pointer-events-none absolute top-1/2 left-4 z-10 h-4 w-4 -translate-y-1/2',
                     error ? 'text-red-400' : 'text-muted-foreground',
-                    isLoading && 'animate-spin'
+                    previewsLoading && 'animate-spin'
                   )}
                 />
               )}
@@ -374,7 +509,7 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
                 </div>
               </div>
             </div>
-            {error && (
+            {hasReadStoredUrl && error && (
               <p className="mt-2 text-center text-sm text-red-400">
                 Failed to fetch opengraph metadata
               </p>
@@ -388,8 +523,8 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
         image={ogData?.image ?? ''}
         isValidImage={ogData?.isValidImage ?? false}
         url={ogData?.url ?? debouncedUrl}
-        isLoading={isLoading}
-        isError={!!error}
+        isLoading={previewsLoading}
+        isError={hasReadStoredUrl && !!error}
         isValidUrl={urlIsValid}
       />
     </main>
