@@ -1,5 +1,6 @@
 'use server'
 
+import { unstable_cache } from 'next/cache'
 import * as cheerio from 'cheerio'
 
 export interface OGMetadata {
@@ -17,30 +18,8 @@ export type FetchOGDataResult =
   | { type: 'success'; data: OGMetadata }
   | { type: 'error'; error: string }
 
-export async function fetchOGData(url: string): Promise<FetchOGDataResult> {
-  try {
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; OG-Preview/1.0)',
-      },
-      redirect: 'follow',
-    })
-
-    if (!response.ok) {
-      return {
-        type: 'error',
-        error: `Failed to fetch URL: ${response.statusText}`,
-      }
-    }
-
-    const html = await response.text()
-    const data = await parseOGMetadata(html, url)
-    return { type: 'success', data }
-  } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to fetch metadata'
-    return { type: 'error', error: message }
-  }
-}
+/** Cached OG fetches (shared by RSC + server actions). */
+const REVALIDATE_SECONDS = 60 * 5 // 5 mins
 
 async function validateImage(imageUrl: string): Promise<boolean> {
   if (!imageUrl) return false
@@ -62,6 +41,30 @@ async function validateImage(imageUrl: string): Promise<boolean> {
   } catch {
     return false
   }
+}
+
+async function validateImageAndFavicon(
+  imageUrl: string,
+  faviconUrl: string
+): Promise<{ isValidImage: boolean; isValidFavicon: boolean }> {
+  const hasImage = Boolean(imageUrl)
+  const hasFavicon = Boolean(faviconUrl)
+
+  if (!hasImage && !hasFavicon) {
+    return { isValidImage: false, isValidFavicon: false }
+  }
+
+  if (hasImage && hasFavicon && imageUrl === faviconUrl) {
+    const ok = await validateImage(imageUrl)
+    return { isValidImage: ok, isValidFavicon: ok }
+  }
+
+  const [isValidImage, isValidFavicon] = await Promise.all([
+    hasImage ? validateImage(imageUrl) : Promise.resolve(false),
+    hasFavicon ? validateImage(faviconUrl) : Promise.resolve(false),
+  ])
+
+  return { isValidImage, isValidFavicon }
 }
 
 async function parseOGMetadata(html: string, url: string): Promise<OGMetadata> {
@@ -158,11 +161,10 @@ async function parseOGMetadata(html: string, url: string): Promise<OGMetadata> {
     }
   }
 
-  // Validate image and favicon in parallel
-  const [isValidImage, isValidFavicon] = await Promise.all([
-    validateImage(resolvedImage),
-    resolvedFavicon ? validateImage(resolvedFavicon) : Promise.resolve(false),
-  ])
+  const { isValidImage, isValidFavicon } = await validateImageAndFavicon(
+    resolvedImage,
+    resolvedFavicon
+  )
 
   return {
     title,
@@ -174,4 +176,39 @@ async function parseOGMetadata(html: string, url: string): Promise<OGMetadata> {
     type,
     favicon: isValidFavicon ? resolvedFavicon : undefined,
   }
+}
+
+async function fetchOGDataUncached(url: string): Promise<FetchOGDataResult> {
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; OG-Preview/1.0)',
+      },
+      redirect: 'follow',
+    })
+
+    if (!response.ok) {
+      return {
+        type: 'error',
+        error: `Failed to fetch URL: ${response.statusText}`,
+      }
+    }
+
+    const html = await response.text()
+    const data = await parseOGMetadata(html, url)
+    return { type: 'success', data }
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Failed to fetch metadata'
+    return { type: 'error', error: message }
+  }
+}
+
+const getCachedOGData = unstable_cache(
+  async (url: string) => fetchOGDataUncached(url),
+  ['og-metadata'],
+  { revalidate: REVALIDATE_SECONDS, tags: ['og-metadata'] }
+)
+
+export async function fetchOGData(url: string): Promise<FetchOGDataResult> {
+  return getCachedOGData(url)
 }
