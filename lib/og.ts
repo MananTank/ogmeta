@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
+'use server'
+
 import * as cheerio from 'cheerio'
 
-interface OGMetadata {
+export interface OGMetadata {
   title: string
   description: string
   image: string
@@ -9,26 +10,15 @@ interface OGMetadata {
   url: string
   siteName?: string
   type?: string
+  favicon?: string
 }
 
-export async function GET(request: NextRequest) {
+export type FetchOGDataResult =
+  | { type: 'success'; data: OGMetadata }
+  | { type: 'error'; error: string }
+
+export async function fetchOGData(url: string): Promise<FetchOGDataResult> {
   try {
-    const { searchParams } = new URL(request.url)
-    const url = searchParams.get('url')
-
-    if (!url) {
-      return NextResponse.json(
-        { error: 'URL parameter is required' },
-        { status: 400 }
-      )
-    }
-
-    try {
-      new URL(url)
-    } catch {
-      return NextResponse.json({ error: 'Invalid URL format' }, { status: 400 })
-    }
-
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; OG-Preview/1.0)',
@@ -37,22 +27,18 @@ export async function GET(request: NextRequest) {
     })
 
     if (!response.ok) {
-      return NextResponse.json(
-        { error: `Failed to fetch URL: ${response.statusText}` },
-        { status: response.status }
-      )
+      return {
+        type: 'error',
+        error: `Failed to fetch URL: ${response.statusText}`,
+      }
     }
 
     const html = await response.text()
-    const metadata = await parseOGMetadata(html, url)
-
-    return NextResponse.json(metadata)
-  } catch (error) {
-    console.error('[og-api] Fetch error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch open graph metadata' },
-      { status: 500 }
-    )
+    const data = await parseOGMetadata(html, url)
+    return { type: 'success', data }
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Failed to fetch metadata'
+    return { type: 'error', error: message }
   }
 }
 
@@ -131,8 +117,42 @@ async function parseOGMetadata(html: string, url: string): Promise<OGMetadata> {
     }
   }
 
-  // Validate image
-  const isValidImage = await validateImage(resolvedImage)
+  // Extract favicon
+  const faviconSelectors = [
+    'link[rel="icon"]',
+    // 'link[rel="shortcut icon"]',
+    // 'link[rel="apple-touch-icon"]',
+    // 'link[rel="apple-touch-icon-precomposed"]',
+  ]
+
+  let faviconUrl = ''
+  for (const selector of faviconSelectors) {
+    const href = $(selector).attr('href')
+    if (href) {
+      faviconUrl = href
+      break
+    }
+  }
+
+  // Resolve relative favicon URL
+  let resolvedFavicon = faviconUrl
+  if (
+    faviconUrl &&
+    !faviconUrl.startsWith('http') &&
+    !faviconUrl.startsWith('data:')
+  ) {
+    try {
+      resolvedFavicon = new URL(faviconUrl, url).href
+    } catch {
+      resolvedFavicon = faviconUrl
+    }
+  }
+
+  // Validate image and favicon in parallel
+  const [isValidImage, isValidFavicon] = await Promise.all([
+    validateImage(resolvedImage),
+    resolvedFavicon ? validateImage(resolvedFavicon) : Promise.resolve(false),
+  ])
 
   return {
     title,
@@ -142,5 +162,6 @@ async function parseOGMetadata(html: string, url: string): Promise<OGMetadata> {
     url,
     siteName,
     type,
+    favicon: isValidFavicon ? resolvedFavicon : undefined,
   }
 }

@@ -108,23 +108,22 @@
 }
 
 .linkedin {
-  --background: #f3f2ef;
-  --card: #ffffff;
-  --foreground: rgba(0, 0, 0, 0.9);
-  --muted-foreground: rgba(0, 0, 0, 0.6);
-  --border: #e0e0e0;
-  --secondary: #e9e5df;
-  --link: #0a66c2;
+  --background: #000000;
+  --card: #1b1f23;
+  --foreground: #e9e9ea;
+  --muted-foreground: #a3a6a7;
+  --border: #373a3d;
+  --link: #71b7fb;
 }
 
 .facebook {
-  --background: #f0f2f5;
-  --card: #ffffff;
-  --foreground: #1d2129;
-  --muted-foreground: #606770;
-  --border: #dddfe2;
-  --secondary: #f2f3f5;
-  --link: #1877f2;
+  --background: #1c1c1d;
+  --card: #242728;
+  --foreground: #e2e5e9;
+  --muted-foreground: #b0b3b8;
+  /* --border: #dddfe2; */
+  --secondary: #333334;
+  --link: #5aa7ff;
 }
 
 .discord {
@@ -138,13 +137,13 @@
 }
 
 .slack {
-  --background: #1a1d21;
-  --card: #1a1d21;
-  --foreground: #ffffff;
+  --background: #1b1d21;
+  /* --card: #1a1d21; */
+  --foreground: #d1d2d3;
   --muted-foreground: #ababad;
-  --border: hsl(220deg 10% 15%);
-  --link: #1d9bd1;
-  --secondary: #36c5f0;
+  --border: #36373b;
+  --link: #2aa5ce;
+  /* --secondary: #36c5f0; */
 }
 
 .imessage {

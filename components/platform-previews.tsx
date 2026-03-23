@@ -9,7 +9,7 @@ import {
   LinkIcon,
 } from 'lucide-react'
 import Avatar from 'boring-avatars'
-import { LinkedInGlobeIcon } from './icons/linkedin'
+import { LinkedInGlobeIcon, LinkedInLogoIcon } from './icons/linkedin'
 import {
   TwitterReplyIcon,
   TwitterRetweetIcon,
@@ -114,16 +114,15 @@ function PlatformSectionContainer(props: {
       <div className="flex flex-col items-center">
         <div
           className={cn(
-            'bg-background relative flex min-h-[700px] w-full flex-col items-center justify-center rounded-2xl border px-4 py-32',
+            'bg-background relative flex min-h-[700px] w-full flex-col items-center justify-center rounded-2xl border border-neutral-700/50 px-4 py-24',
             props.containerClassName
           )}
         >
-          {/* <h2 className="text-muted-foreground absolute top-6 left-6 text-center text-sm tracking-wide">
-            {props.name}
-          </h2> */}
-          <div className="absolute top-6 left-6 flex items-center gap-2">
-            {props.logo && <props.logo className="text-foreground size-5" />}
-            <p className="text-foreground text-base">{props.name}</p>
+          <div className="bg-foreground/10 absolute top-5 left-5 flex items-center gap-1 rounded-full px-2.5 py-1 backdrop-blur-md">
+            {props.logo && (
+              <props.logo className="text-muted-foreground size-4" />
+            )}
+            <h2 className="text-foreground text-sm">{props.name}</h2>
           </div>
 
           {props.children}
@@ -248,7 +247,11 @@ function LinkedInPreview({
   isError,
 }: Props) {
   return (
-    <PlatformSectionContainer name="LinkedIn" containerClassName="linkedin">
+    <PlatformSectionContainer
+      name="LinkedIn"
+      containerClassName="linkedin"
+      logo={LinkedInLogoIcon}
+    >
       <div className="bg-card w-full max-w-[550px] overflow-hidden rounded-lg shadow-sm">
         {/* Post Header */}
         <div className="p-4">
@@ -257,11 +260,11 @@ function LinkedInPreview({
               <UserAvatar size={48} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-foreground text-sm font-semibold">
+              <p className="text-foreground text-base leading-tight font-semibold">
                 {UserName}
               </p>
-              <p className="text-muted-foreground line-clamp-1 text-xs">
-                Product Designer at Company
+              <p className="text-muted-foreground text-xs">
+                Design Engineer at Company
               </p>
               <div className="flex items-center gap-1">
                 <p className="text-muted-foreground text-xs">2h •</p>
@@ -271,11 +274,22 @@ function LinkedInPreview({
           </div>
 
           {/* Post Content */}
-          <div className="text-foreground mt-3 text-sm leading-relaxed">
+          <div className="text-foreground mt-3 space-y-2 text-sm leading-relaxed">
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
               faucibus ultrices risus.
             </p>
+
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco</p>
+
+            <a
+              className="text-link block font-medium hover:underline"
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {url}
+            </a>
           </div>
 
           {/* Link Preview Card */}
@@ -382,10 +396,13 @@ function FacebookPreview({
   url,
   isLoading,
   isError,
+  isValidUrl,
 }: Props) {
+  const showPreview = isValidUrl && !isError
+
   return (
     <PlatformSectionContainer name="Facebook" containerClassName="facebook">
-      <div className="bg-card w-full max-w-[680px] overflow-hidden rounded-lg shadow-sm">
+      <div className="bg-card w-full max-w-[680px] overflow-hidden rounded-xl shadow-md">
         {/* Post Header */}
         <div className="p-3 pb-2">
           <div className="flex gap-2">
@@ -401,16 +418,29 @@ function FacebookPreview({
           </div>
 
           {/* Post Content */}
-          <div className="text-foreground mt-2 text-[15px] leading-relaxed">
+          <div className="text-foreground mt-2 space-y-1.5 text-[15px] leading-relaxed">
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
               faucibus ultrices risus.
             </p>
+
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco</p>
+
+            {!showPreview && (
+              <a
+                className="text-link block font-medium hover:underline"
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {url}
+              </a>
+            )}
           </div>
         </div>
 
         {/* Link Preview Card */}
-        {!isError && (
+        {showPreview && (
           <div className="border-t">
             <OGImage
               src={image}
@@ -428,14 +458,11 @@ function FacebookPreview({
                 </>
               ) : (
                 <>
-                  <p className="text-muted-foreground text-[11px] tracking-wide uppercase">
+                  <p className="text-muted-foreground text-[13px] tracking-wide uppercase">
                     {domain(url)}
                   </p>
-                  <p className="text-foreground line-clamp-2 text-[15px] leading-snug font-semibold">
+                  <p className="text-foreground line-clamp-2 text-[17px] leading-snug font-semibold">
                     {title || '—'}
-                  </p>
-                  <p className="text-muted-foreground line-clamp-1 text-[13px]">
-                    {description}
                   </p>
                 </>
               )}
@@ -444,7 +471,7 @@ function FacebookPreview({
         )}
 
         {/* Engagement Stats */}
-        <div className="text-muted-foreground flex items-center border-t px-3 py-2 text-[13px]">
+        <div className="text-muted-foreground flex items-center px-3 py-2 text-[13px]">
           <span className="flex -space-x-1">
             <span className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[#1877f2] text-[10px] text-white">
               👍
@@ -461,7 +488,7 @@ function FacebookPreview({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-around border-t px-2 py-1">
+        <div className="flex items-center justify-around px-2 py-1">
           <button className="text-muted-foreground hover:bg-secondary flex flex-1 items-center justify-center gap-2 rounded py-2.5 transition-colors">
             <svg
               className="h-5 w-5"
@@ -606,7 +633,7 @@ function SlackPreview({
       logo={SlackIcon}
     >
       {/* Message */}
-      <div className="flex gap-2">
+      <div className="flex max-w-[600px] gap-2">
         <div className="shrink-0">
           <UserAvatar size={36} />
         </div>
@@ -620,17 +647,21 @@ function SlackPreview({
           </div>
 
           {/* Message content */}
-          <p className="text-foreground/80 text-[15px] leading-relaxed">
-            Hello
-          </p>
+          <div className="text-foreground space-y-2 text-[15px] leading-relaxed">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco</p>
+          </div>
 
           {/* URL */}
           <p
             className={cn(
               'mt-0.5 text-[15px]',
               isValidUrl
-                ? 'text-link cursor-pointer hover:underline'
-                : 'text-foreground/80'
+                ? 'text-link cursor-pointer underline'
+                : 'text-foreground'
             )}
           >
             {url}
@@ -638,10 +669,9 @@ function SlackPreview({
 
           {/* Link Embed */}
           {showPreview && (
-            <div
-              className="border-secondary mt-2 border-l-4 py-1 pl-3"
-              style={{ maxWidth: 480 }}
-            >
+            <div className="border-border relative mt-2 pl-4">
+              {/* left line */}
+              <span className="bg-border absolute top-0 bottom-0 left-0 h-full w-1 rounded-lg"></span>
               {isLoading ? (
                 <>
                   <Skeleton className="bg-border mb-1 h-4 w-20" />
@@ -655,7 +685,7 @@ function SlackPreview({
                       {siteName(url)}
                     </span>
                   </div>
-                  <p className="text-link cursor-pointer text-[15px] leading-snug font-medium hover:underline">
+                  <p className="text-link cursor-pointer text-[15px] leading-snug font-medium underline">
                     {title || '—'}
                   </p>
                   <p className="text-foreground/80 mt-0.5 line-clamp-2 text-[15px] leading-relaxed">
@@ -805,8 +835,8 @@ export function PlatformPreviews(props: Props) {
   return (
     <div className="flex flex-col gap-10">
       <TwitterPreview {...props} />
-      <SlackPreview {...props} />
       <LinkedInPreview {...props} />
+      <SlackPreview {...props} />
       <DiscordPreview {...props} />
       <FacebookPreview {...props} />
       <WhatsAppPreview {...props} />
