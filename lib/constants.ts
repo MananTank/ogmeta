@@ -1,1 +1,1 @@
-export const DEFAULT_URL = 'https://vercel.com'
+export const DEFAULT_URL = 'vercel.com'
