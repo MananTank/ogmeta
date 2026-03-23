@@ -120,9 +120,9 @@ async function parseOGMetadata(html: string, url: string): Promise<OGMetadata> {
   // Extract favicon
   const faviconSelectors = [
     'link[rel="icon"]',
-    // 'link[rel="shortcut icon"]',
-    // 'link[rel="apple-touch-icon"]',
-    // 'link[rel="apple-touch-icon-precomposed"]',
+    'link[rel="shortcut icon"]',
+    'link[rel="apple-touch-icon"]',
+    'link[rel="apple-touch-icon-precomposed"]',
   ]
 
   let faviconUrl = ''
@@ -131,6 +131,16 @@ async function parseOGMetadata(html: string, url: string): Promise<OGMetadata> {
     if (href) {
       faviconUrl = href
       break
+    }
+  }
+
+  // Fallback to /favicon.ico if no favicon found in HTML
+  if (!faviconUrl) {
+    try {
+      const baseUrl = new URL(url)
+      faviconUrl = `${baseUrl.origin}/favicon.ico`
+    } catch {
+      // ignore
     }
   }
 
