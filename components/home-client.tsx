@@ -8,7 +8,6 @@ import {
   useCallback,
 } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
 import {
   AlertCircleIcon,
   CircleDotDashedIcon,
@@ -72,8 +71,6 @@ interface HomeClientProps {
 }
 
 export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
-  const router = useRouter()
-
   const [url, setUrl] = useState(defaultUrl)
   const [debouncedUrl, setDebouncedUrl] = useState(defaultUrl)
   const [hasReadStoredUrl, setHasReadStoredUrl] = useState(false)
@@ -169,11 +166,19 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
   useEffect(() => {
     if (!hasReadStoredUrl) return
 
-    const replaceQuery = (params: URLSearchParams) => {
+    const applyQuery = (
+      params: URLSearchParams,
+      mode: 'replace' | 'push' = 'replace'
+    ) => {
       const qs = params.toString()
       const path = window.location.pathname
       const href = qs ? `${path}?${qs}` : path
-      router.replace(href, { scroll: false })
+      const state = window.history.state
+      if (mode === 'push') {
+        window.history.pushState(state, '', href)
+      } else {
+        window.history.replaceState(state, '', href)
+      }
     }
 
     const searchParams = new URLSearchParams(window.location.search)
@@ -181,7 +186,7 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
     if (rawParam && !isValidUrl(rawParam)) {
       const params = new URLSearchParams(window.location.search)
       params.delete(URL_SEARCH_PARAM)
-      replaceQuery(params)
+      applyQuery(params, 'replace')
       return
     }
 
@@ -191,7 +196,7 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
       if (searchParams.has(URL_SEARCH_PARAM)) {
         const params = new URLSearchParams(window.location.search)
         params.delete(URL_SEARCH_PARAM)
-        replaceQuery(params)
+        applyQuery(params, 'replace')
       }
       return
     }
@@ -201,7 +206,7 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
       if (searchParams.has(URL_SEARCH_PARAM)) {
         const params = new URLSearchParams(window.location.search)
         params.delete(URL_SEARCH_PARAM)
-        replaceQuery(params)
+        applyQuery(params, 'replace')
       }
       return
     }
@@ -211,8 +216,8 @@ export function HomeClient({ defaultUrl, initialData }: HomeClientProps) {
 
     const params = new URLSearchParams(window.location.search)
     params.set(URL_SEARCH_PARAM, v)
-    replaceQuery(params)
-  }, [hasReadStoredUrl, debouncedUrl, urlIsValid, defaultUrl, router])
+    applyQuery(params, 'push')
+  }, [hasReadStoredUrl, debouncedUrl, urlIsValid, defaultUrl])
 
   const normalizeUrl = (url: string) => {
     return url
