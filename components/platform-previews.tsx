@@ -104,29 +104,6 @@ function OGImage(props: {
   return <img src={props.src} alt="og preview" className={props.className} />
 }
 
-function InvertedRadius(props: { direction: 'right' | 'left' }) {
-  return (
-    <div>
-      <div
-        className={cn(
-          'bg-section-card absolute bottom-0 z-20 size-2.5',
-          props.direction === 'right'
-            ? 'right-0 translate-x-full'
-            : 'left-0 -translate-x-full'
-        )}
-      ></div>
-      <div
-        className={cn(
-          'bg-background absolute bottom-0 z-20 size-5 rounded-full',
-          props.direction === 'right'
-            ? 'right-0 translate-x-full'
-            : 'left-0 -translate-x-full'
-        )}
-      ></div>
-    </div>
-  )
-}
-
 function PlatformSection(props: {
   containerClassName?: string
   name: string
@@ -134,28 +111,20 @@ function PlatformSection(props: {
 }) {
   return (
     <section className="group mx-auto w-full max-w-5xl">
-      <div className="relative w-full">
-        <div className="absolute top-0 left-1/2 z-20 -translate-x-1/2 -translate-y-full">
-          <div className="w-fit">
-            <h2 className="text-muted-foreground bg-section-card squircle-2xl flex items-center gap-1.5 rounded-b-none! px-5 py-2 text-2xl font-semibold tracking-tight lowercase">
-              {props.name}
-            </h2>
-            <div className="-mt-4">
-              <InvertedRadius direction="right" />
-              <InvertedRadius direction="left" />
-            </div>
-          </div>
+      <div className="bg-section-card squircle-2xl relative flex min-h-[800px] w-full flex-col overflow-hidden px-4 py-36">
+        <div className="absolute top-8 left-1/2 z-20 -translate-x-1/2">
+          <h2 className="text-muted-foreground bg-card/70 flex items-center gap-1.5 rounded-full px-4 py-1.5 text-lg font-semibold tracking-tight">
+            {props.name}
+          </h2>
         </div>
 
-        <div className="bg-section-card squircle-2xl flex min-h-[700px] w-full flex-col overflow-hidden px-4 py-16">
-          <div
-            className={cn(
-              'flex min-h-0 w-full flex-1 flex-col items-center justify-center',
-              props.containerClassName
-            )}
-          >
-            {props.children}
-          </div>
+        <div
+          className={cn(
+            'flex min-h-0 w-full flex-1 flex-col items-center justify-center',
+            props.containerClassName
+          )}
+        >
+          {props.children}
         </div>
       </div>
     </section>
@@ -883,7 +852,7 @@ export function WhatsAppPreview(props: PlatformPreviewsProps) {
 
 export function PlatformPreviews(props: PlatformPreviewsProps) {
   return (
-    <div className="flex flex-col gap-12">
+    <div className="flex flex-col gap-6">
       <TwitterPreview {...props} />
       <LinkedInPreview {...props} />
       <SlackPreview {...props} />

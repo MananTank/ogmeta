@@ -11,6 +11,7 @@ import {
 import { DEFAULT_URL } from '@/lib/constants'
 import { fetchOGData, type OGMetadata } from '@/lib/og'
 import { ThemeToggle } from './theme-toggle'
+import { InspectionPanelIcon } from 'lucide-react'
 
 export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
   const [debouncedUrl, setDebouncedUrl] = useState(DEFAULT_URL)
@@ -41,26 +42,25 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
       <div className="fixed top-6 right-6">
         <ThemeToggle />
       </div>
-      <div className="mx-auto max-w-3xl pt-12 pb-24 md:pt-32">
-        <header className="mb-8 text-center">
-          <div className="flex justify-center">
-            <h1 className="text-foreground bg-card/70 flex items-center gap-1.5 rounded-full px-4 py-1 text-lg font-semibold tracking-tighter">
-              {/* <GlobeIcon className="text-muted-foreground/50 size-3.5" /> */}
-              <span className="text-muted-foreground -translate-y-px">
-                og meta
-              </span>
-            </h1>
+
+      <div className="mx-auto max-w-3xl py-32">
+        <header className="text-center">
+          <div className="flex items-center justify-center">
+            <InspectionPanelIcon className="text-muted-foreground size-12" />
           </div>
+          <h1 className="sr-only">og meta</h1>
           <div className="h-12" />
           <p className="font-sans text-5xl font-semibold tracking-tight md:text-5xl">
-            <span className="text-foreground">preview links on</span>
+            <span className="text-foreground">Preview links on</span>
             <br />
             <span className="text-muted-foreground">social platforms</span>
           </p>
-          <p className="text-muted-foreground mt-4 text-lg font-medium lowercase">
+          <p className="text-muted-foreground mt-5 text-base font-medium">
             Fast, Accurate, Open Source
           </p>
         </header>
+
+        <div className="h-10" />
 
         <HomeUrlInput
           debouncedUrl={debouncedUrl}
@@ -72,6 +72,7 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
           ogFetchLoading={isLoading}
         />
       </div>
+
       <PlatformPreviews
         title={ogQuery.data?.title ?? ''}
         description={ogQuery.data?.description ?? ''}
