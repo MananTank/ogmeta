@@ -41,7 +41,7 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
   const isLoading = ogQuery.isFetching || !hasReadStoredUrl
 
   return (
-    <main className="min-h-screen px-4 pb-32">
+    <main className="min-h-screen px-4 pb-8">
       <div className="mx-auto max-w-2xl py-32">
         <header className="text-center">
           <div className="flex items-center justify-center">
@@ -61,7 +61,7 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
 
         <div className="h-10" />
 
-        <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-start sm:gap-3">
+        <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:gap-2">
           <div className="min-w-0 flex-1">
             <HomeUrlInput
               debouncedUrl={debouncedUrl}
@@ -74,7 +74,7 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
             />
           </div>
           <PreviewControls
-            className="shrink-0 justify-center sm:pt-0.5"
+            className="shrink-0 justify-center"
             viewport={previewViewport}
             onViewportChange={setPreviewViewport}
           />
@@ -93,6 +93,18 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
         isValidUrl={urlIsValid}
         previewViewport={previewViewport}
       />
+
+      <footer className="text-muted-foreground mx-auto mt-32 max-w-2xl px-4 pb-6 text-center text-base">
+        Made by{' '}
+        <a
+          href="https://x.com/MananTank_"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-foreground/85 hover:text-foreground underline-offset-2 transition-colors hover:underline"
+        >
+          Manan Tank
+        </a>
+      </footer>
     </main>
   )
 }

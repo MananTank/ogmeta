@@ -9,10 +9,7 @@ import { cn } from '@/lib/utils'
 import type { PreviewViewport } from '@/lib/preview-viewport'
 import { TabButton, TabsContainer } from '@/components/tabs-pill'
 
-function TabTooltip(props: {
-  label: string
-  children: React.ReactNode
-}) {
+function TabTooltip(props: { label: string; children: React.ReactNode }) {
   return (
     <TooltipPrimitive.Root>
       <TooltipPrimitive.Trigger asChild>
@@ -43,50 +40,51 @@ export function PreviewControls(props: {
     <TooltipProvider delayDuration={300}>
       <div
         className={cn(
-          'flex flex-wrap items-center justify-center gap-3',
+          'flex flex-wrap items-center justify-center gap-2',
           props.className
         )}
       >
         <TabsContainer aria-label="Theme">
-          <TabTooltip label="Light theme">
+          <TabTooltip label="Dark">
             <TabButton
-              aria-label="Light theme"
-              selected={mounted ? !isDark : false}
-              disabled={!mounted}
-              onClick={() => setTheme('light')}
-            >
-              <Sun />
-            </TabButton>
-          </TabTooltip>
-          <TabTooltip label="Dark theme">
-            <TabButton
-              aria-label="Dark theme"
+              aria-label="Dark"
               selected={mounted ? isDark : false}
               disabled={!mounted}
               onClick={() => setTheme('dark')}
             >
-              <Moon />
+              <Moon className="fill-current" />
+            </TabButton>
+          </TabTooltip>
+
+          <TabTooltip label="Light">
+            <TabButton
+              aria-label="Light"
+              selected={mounted ? !isDark : false}
+              disabled={!mounted}
+              onClick={() => setTheme('light')}
+            >
+              <Sun className="fill-current" />
             </TabButton>
           </TabTooltip>
         </TabsContainer>
 
         <TabsContainer aria-label="Preview size">
-          <TabTooltip label="Desktop preview">
+          <TabTooltip label="Desktop">
             <TabButton
-              aria-label="Desktop preview"
+              aria-label="Desktop"
               selected={props.viewport === 'desktop'}
               onClick={() => props.onViewportChange('desktop')}
             >
-              <Monitor />
+              <Monitor className="fill-current" />
             </TabButton>
           </TabTooltip>
-          <TabTooltip label="Mobile preview">
+          <TabTooltip label="Mobile">
             <TabButton
-              aria-label="Mobile preview"
+              aria-label="Mobile"
               selected={props.viewport === 'mobile'}
               onClick={() => props.onViewportChange('mobile')}
             >
-              <Smartphone />
+              <Smartphone className="fill-current" />
             </TabButton>
           </TabTooltip>
         </TabsContainer>

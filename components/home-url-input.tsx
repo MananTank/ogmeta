@@ -419,7 +419,7 @@ export function HomeUrlInput(props: {
           onKeyDown={handleInputKeyDown}
           placeholder="Enter a URL"
           className={cn(
-            'placeholder:text-muted-foreground focus-visible:border-border h-10 rounded-full border-transparent pr-4 pl-10 focus-visible:ring-0',
+            'placeholder:text-muted-foreground focus-visible:border-border h-10 rounded-full border-transparent pr-4 pl-10 shadow-none focus-visible:ring-0',
             ogFetchError
               ? 'border-destructive/50 bg-destructive/10! focus-visible:border-destructive/70! text-destructive'
               : 'focus-visible:border-ring'

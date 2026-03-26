@@ -11,7 +11,7 @@ export function TabsContainer(props: {
   return (
     <div
       className={cn(
-        'bg-card inline-flex gap-1 rounded-full p-1',
+        'bg-muted inline-flex gap-1 rounded-full p-1',
         props.className
       )}
       role="radiogroup"
