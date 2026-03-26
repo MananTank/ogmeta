@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import type { PreviewViewport } from '@/lib/preview-viewport'
 import { useQuery } from '@tanstack/react-query'
 import { PlatformPreviews } from '@/components/platform-previews'
 import {
@@ -10,12 +11,14 @@ import {
 } from '@/components/home-url-input'
 import { DEFAULT_URL } from '@/lib/constants'
 import { fetchOGData, type OGMetadata } from '@/lib/og'
-import { ThemeToggle } from './theme-toggle'
+import { PreviewControls } from './preview-controls'
 import { InspectionPanelIcon } from 'lucide-react'
 
 export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
   const [debouncedUrl, setDebouncedUrl] = useState(DEFAULT_URL)
   const [hasReadStoredUrl, setHasReadStoredUrl] = useState(false)
+  const [previewViewport, setPreviewViewport] =
+    useState<PreviewViewport>('desktop')
   const urlIsValid = isValidUrl(debouncedUrl)
 
   const ogQuery = useQuery({
@@ -39,11 +42,7 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
 
   return (
     <main className="min-h-screen px-4 pb-32">
-      <div className="fixed top-6 right-6">
-        <ThemeToggle />
-      </div>
-
-      <div className="mx-auto max-w-3xl py-32">
+      <div className="mx-auto max-w-2xl py-32">
         <header className="text-center">
           <div className="flex items-center justify-center">
             <InspectionPanelIcon className="text-muted-foreground size-12" />
@@ -62,15 +61,24 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
 
         <div className="h-10" />
 
-        <HomeUrlInput
-          debouncedUrl={debouncedUrl}
-          setDebouncedUrl={setDebouncedUrl}
-          hasReadStoredUrl={hasReadStoredUrl}
-          setHasReadStoredUrl={setHasReadStoredUrl}
-          fetchedOgMetadata={ogQuery.data}
-          ogFetchError={!!ogQuery.error}
-          ogFetchLoading={isLoading}
-        />
+        <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-start sm:gap-3">
+          <div className="min-w-0 flex-1">
+            <HomeUrlInput
+              debouncedUrl={debouncedUrl}
+              setDebouncedUrl={setDebouncedUrl}
+              hasReadStoredUrl={hasReadStoredUrl}
+              setHasReadStoredUrl={setHasReadStoredUrl}
+              fetchedOgMetadata={ogQuery.data}
+              ogFetchError={!!ogQuery.error}
+              ogFetchLoading={isLoading}
+            />
+          </div>
+          <PreviewControls
+            className="shrink-0 justify-center sm:pt-0.5"
+            viewport={previewViewport}
+            onViewportChange={setPreviewViewport}
+          />
+        </div>
       </div>
 
       <PlatformPreviews
@@ -83,6 +91,7 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
         isLoading={isLoading}
         isError={hasReadStoredUrl && !!ogQuery.error}
         isValidUrl={urlIsValid}
+        previewViewport={previewViewport}
       />
     </main>
   )

@@ -20,8 +20,11 @@ import {
   TwitterLogoIcon,
 } from './icons/twitter'
 import { cn } from '../lib/utils'
+import type { PreviewViewport } from '@/lib/preview-viewport'
 import { Img } from '@/components/ui/img'
 import { Skeleton } from '@/components/ui/skeleton'
+
+export type { PreviewViewport } from '@/lib/preview-viewport'
 
 export type PlatformPreviewsProps = {
   title: string
@@ -33,6 +36,8 @@ export type PlatformPreviewsProps = {
   isLoading?: boolean
   isError?: boolean
   isValidUrl?: boolean
+  /** Passed from home toolbar; use for responsive preview styling. */
+  previewViewport?: PreviewViewport
 }
 
 const PARAGRAPH_1 =
@@ -108,10 +113,16 @@ function PlatformSection(props: {
   containerClassName?: string
   name: string
   children: React.ReactNode
+  previewViewport?: PreviewViewport
 }) {
+  const viewport = props.previewViewport ?? 'desktop'
+
   return (
     <section className="group mx-auto w-full max-w-5xl">
-      <div className="bg-section-card squircle-2xl relative flex min-h-[800px] w-full flex-col overflow-hidden px-4 py-36">
+      <div
+        data-preview-viewport={viewport}
+        className="bg-section-card squircle-2xl relative flex min-h-[800px] w-full flex-col overflow-hidden px-4 py-36"
+      >
         <div className="absolute top-8 left-1/2 z-20 -translate-x-1/2">
           <h2 className="text-muted-foreground bg-card/70 flex items-center gap-1.5 rounded-full px-4 py-1.5 text-lg font-semibold tracking-tight">
             {props.name}
@@ -141,7 +152,11 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
     (props.isLoading || hasLargeCard || hasCompactCard)
 
   return (
-    <PlatformSection name="Twitter" containerClassName="twitter">
+    <PlatformSection
+      name="Twitter"
+      containerClassName="twitter"
+      previewViewport={props.previewViewport}
+    >
       <div className="font-chirp flex max-w-[566px] gap-3">
         <div className="shrink-0">
           <UserAvatar size={40} />
@@ -252,7 +267,7 @@ export function LinkedInPreview(props: PlatformPreviewsProps) {
     <PlatformSection
       name="LinkedIn"
       containerClassName="linkedin"
-      // logo={LinkedInLogoIcon}
+      previewViewport={props.previewViewport}
     >
       <div className="bg-card w-full max-w-[550px] overflow-hidden rounded-lg shadow-sm">
         {/* Post Header */}
@@ -395,7 +410,11 @@ export function FacebookPreview(props: PlatformPreviewsProps) {
     props.isValidImage
 
   return (
-    <PlatformSection name="Facebook" containerClassName="facebook">
+    <PlatformSection
+      name="Facebook"
+      containerClassName="facebook"
+      previewViewport={props.previewViewport}
+    >
       <div className="bg-card w-full max-w-[680px] overflow-hidden rounded-xl shadow-md">
         {/* Post Header */}
         <div className="p-3 pb-2">
@@ -530,7 +549,11 @@ export function DiscordPreview(props: PlatformPreviewsProps) {
     props.isValidUrl && !props.isError && props.image && props.isValidImage
 
   return (
-    <PlatformSection name="Discord" containerClassName="discord">
+    <PlatformSection
+      name="Discord"
+      containerClassName="discord"
+      previewViewport={props.previewViewport}
+    >
       {/* Message */}
       <div className="flex max-w-2xl gap-4">
         <div className="shrink-0">
@@ -613,7 +636,11 @@ export function SlackPreview(props: PlatformPreviewsProps) {
     props.title
 
   return (
-    <PlatformSection name="Slack" containerClassName="slack">
+    <PlatformSection
+      name="Slack"
+      containerClassName="slack"
+      previewViewport={props.previewViewport}
+    >
       {/* Message */}
       <div className="flex max-w-[600px] gap-2">
         <div className="shrink-0">
@@ -712,7 +739,11 @@ export function IMessagePreview(props: PlatformPreviewsProps) {
     props.isValidUrl && !props.isError && props.image && props.isValidImage
 
   return (
-    <PlatformSection name="Messages" containerClassName="imessage">
+    <PlatformSection
+      name="Messages"
+      containerClassName="imessage"
+      previewViewport={props.previewViewport}
+    >
       <div className="flex flex-col items-start space-y-3">
         <MessageBubble text="tempor incididunt" />
         <MessageBubble text={PARAGRAPH_1} />
@@ -784,7 +815,11 @@ export function WhatsAppPreview(props: PlatformPreviewsProps) {
     props.isValidUrl && !props.isError && props.image && props.isValidImage
 
   return (
-    <PlatformSection name="WhatsApp" containerClassName="whatsapp">
+    <PlatformSection
+      name="WhatsApp"
+      containerClassName="whatsapp"
+      previewViewport={props.previewViewport}
+    >
       {/* Message Bubble with Link Preview */}
       <div className="bg-card max-w-[230px] overflow-hidden rounded-xl p-1">
         {/* Link Preview */}

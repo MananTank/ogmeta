@@ -392,7 +392,7 @@ export function HomeUrlInput(props: {
     !previewsLoading && !ogFetchError && !!props.fetchedOgMetadata?.favicon
 
   return (
-    <div className="mx-auto w-full max-w-lg space-y-3">
+    <div className="w-full space-y-3">
       <div className="relative">
         {showFavicon ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -419,7 +419,7 @@ export function HomeUrlInput(props: {
           onKeyDown={handleInputKeyDown}
           placeholder="Enter a URL"
           className={cn(
-            'placeholder:text-muted-foreground focus-visible:border-border h-10 rounded-xl border-transparent pr-4 pl-10 focus-visible:ring-0',
+            'placeholder:text-muted-foreground focus-visible:border-border h-10 rounded-full border-transparent pr-4 pl-10 focus-visible:ring-0',
             ogFetchError
               ? 'border-destructive/50 bg-destructive/10! focus-visible:border-destructive/70! text-destructive'
               : 'focus-visible:border-ring'
