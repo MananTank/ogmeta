@@ -118,17 +118,17 @@ function PlatformSection(props: {
   const viewport = props.previewViewport ?? 'desktop'
 
   return (
-    <section className="group mx-auto w-full max-w-5xl">
+    <section className="group bg-section-card squircle-2xl mx-auto w-full max-w-5xl">
+      <div className="mt-6 flex justify-center">
+        <h2 className="text-muted-foreground bg-card/70 flex items-center gap-1.5 rounded-full px-3 py-1 text-base font-semibold tracking-tight">
+          {props.name}
+        </h2>
+      </div>
+
       <div
         data-preview-viewport={viewport}
-        className="bg-section-card squircle-2xl relative flex min-h-[800px] w-full flex-col overflow-hidden px-4 py-36"
+        className="relative flex w-full flex-col overflow-hidden px-4 py-40"
       >
-        <div className="absolute top-8 left-1/2 z-20 -translate-x-1/2">
-          <h2 className="text-muted-foreground bg-card/70 flex items-center gap-1.5 rounded-full px-4 py-1.5 text-lg font-semibold tracking-tight">
-            {props.name}
-          </h2>
-        </div>
-
         <div
           className={cn(
             'flex min-h-0 w-full flex-1 flex-col items-center justify-center',
