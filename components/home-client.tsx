@@ -10,6 +10,7 @@ import {
 } from '@/components/home-url-input'
 import { DEFAULT_URL } from '@/lib/constants'
 import { fetchOGData, type OGMetadata } from '@/lib/og'
+import { ThemeToggle } from './theme-toggle'
 
 export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
   const [debouncedUrl, setDebouncedUrl] = useState(DEFAULT_URL)
@@ -36,15 +37,27 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
   const isLoading = ogQuery.isFetching || !hasReadStoredUrl
 
   return (
-    <main className="min-h-screen px-4">
-      <div className="mx-auto max-w-3xl pt-24 pb-24">
+    <main className="min-h-screen px-4 pb-32">
+      <div className="fixed top-6 right-6">
+        <ThemeToggle />
+      </div>
+      <div className="mx-auto max-w-3xl pt-12 pb-24 md:pt-32">
         <header className="mb-8 text-center">
-          <h1 className="font-sans text-5xl font-semibold tracking-tight md:text-5xl">
-            <span className="text-foreground">Preview link on</span>
+          <div className="flex justify-center">
+            <h1 className="text-foreground bg-card/70 flex items-center gap-1.5 rounded-full px-4 py-1 text-lg font-semibold tracking-tighter">
+              {/* <GlobeIcon className="text-muted-foreground/50 size-3.5" /> */}
+              <span className="text-muted-foreground -translate-y-px">
+                og meta
+              </span>
+            </h1>
+          </div>
+          <div className="h-12" />
+          <p className="font-sans text-5xl font-semibold tracking-tight md:text-5xl">
+            <span className="text-foreground">preview links on</span>
             <br />
             <span className="text-muted-foreground">social platforms</span>
-          </h1>
-          <p className="text-muted-foreground mt-4 text-base">
+          </p>
+          <p className="text-muted-foreground mt-4 text-lg font-medium lowercase">
             Fast, Accurate, Open Source
           </p>
         </header>
@@ -64,6 +77,7 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
         description={ogQuery.data?.description ?? ''}
         image={ogQuery.data?.image ?? ''}
         isValidImage={ogQuery.data?.isValidImage ?? false}
+        favicon={ogQuery.data?.favicon}
         url={ogQuery.data?.url ?? debouncedUrl}
         isLoading={isLoading}
         isError={hasReadStoredUrl && !!ogQuery.error}

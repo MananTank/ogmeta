@@ -7,6 +7,7 @@ import {
   Heart,
   ImageIcon,
   LinkIcon,
+  GlobeIcon,
 } from 'lucide-react'
 import Avatar from 'boring-avatars'
 import { LinkedInGlobeIcon, LinkedInLogoIcon } from './icons/linkedin'
@@ -19,8 +20,8 @@ import {
   TwitterLogoIcon,
 } from './icons/twitter'
 import { cn } from '../lib/utils'
+import { Img } from '@/components/ui/img'
 import { Skeleton } from '@/components/ui/skeleton'
-import { SlackIcon } from './icons/slack'
 
 export type PlatformPreviewsProps = {
   title: string
@@ -28,6 +29,7 @@ export type PlatformPreviewsProps = {
   image: string
   isValidImage: boolean
   url: string
+  favicon?: string
   isLoading?: boolean
   isError?: boolean
   isValidUrl?: boolean
@@ -88,12 +90,12 @@ function OGImage(props: {
     return (
       <div
         className={cn(
-          'items-center justify-center bg-neutral-500/50',
+          'bg-muted items-center justify-center',
           props.className,
           'flex'
         )}
       >
-        <ImageIcon className="size-6 text-neutral-500" />
+        <ImageIcon className="text-muted-foreground size-6" />
       </div>
     )
   }
@@ -102,28 +104,58 @@ function OGImage(props: {
   return <img src={props.src} alt="og preview" className={props.className} />
 }
 
+function InvertedRadius(props: { direction: 'right' | 'left' }) {
+  return (
+    <div>
+      <div
+        className={cn(
+          'bg-section-card absolute bottom-0 z-20 size-2.5',
+          props.direction === 'right'
+            ? 'right-0 translate-x-full'
+            : 'left-0 -translate-x-full'
+        )}
+      ></div>
+      <div
+        className={cn(
+          'bg-background absolute bottom-0 z-20 size-5 rounded-full',
+          props.direction === 'right'
+            ? 'right-0 translate-x-full'
+            : 'left-0 -translate-x-full'
+        )}
+      ></div>
+    </div>
+  )
+}
+
 function PlatformSection(props: {
   containerClassName?: string
   name: string
   children: React.ReactNode
-  // logo?: React.FC<{ className?: string }>
 }) {
   return (
     <section className="group mx-auto w-full max-w-5xl">
-      <div className="flex flex-col items-center">
-        <div
-          className={cn(
-            'bg-background squircle-2xl relative flex min-h-[700px] w-full flex-col items-center justify-center border border-neutral-700/50 px-4 py-24',
-            props.containerClassName
-          )}
-        >
-          <div className="bg-foreground/10 absolute top-4 left-4 flex items-center gap-1 rounded-full px-3 py-1.5 backdrop-blur-md">
-            <h2 className="text-foreground text-sm tracking-wide">
+      <div className="relative w-full">
+        <div className="absolute top-0 left-1/2 z-20 -translate-x-1/2 -translate-y-full">
+          <div className="w-fit">
+            <h2 className="text-muted-foreground bg-section-card squircle-2xl flex items-center gap-1.5 rounded-b-none! px-5 py-2 text-2xl font-semibold tracking-tight lowercase">
               {props.name}
             </h2>
+            <div className="-mt-4">
+              <InvertedRadius direction="right" />
+              <InvertedRadius direction="left" />
+            </div>
           </div>
+        </div>
 
-          {props.children}
+        <div className="bg-section-card squircle-2xl flex min-h-[700px] w-full flex-col overflow-hidden px-4 py-16">
+          <div
+            className={cn(
+              'flex min-h-0 w-full flex-1 flex-col items-center justify-center',
+              props.containerClassName
+            )}
+          >
+            {props.children}
+          </div>
         </div>
       </div>
     </section>
@@ -140,11 +172,7 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
     (props.isLoading || hasLargeCard || hasCompactCard)
 
   return (
-    <PlatformSection
-      name="Twitter"
-      containerClassName="twitter"
-      // logo={TwitterLogoIcon}
-    >
+    <PlatformSection name="Twitter" containerClassName="twitter">
       <div className="font-chirp flex max-w-[566px] gap-3">
         <div className="shrink-0">
           <UserAvatar size={40} />
@@ -185,10 +213,7 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
                 />
                 {!props.isLoading && props.title && (
                   <div className="absolute right-3 bottom-3 left-3">
-                    <span
-                      className="text-foreground inline-block max-w-full truncate rounded px-2 text-[13px] leading-[20px] font-semibold backdrop-blur-md"
-                      style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
-                    >
+                    <span className="inline-block max-w-full truncate rounded bg-white/90 px-2 text-[13px] leading-[20px] font-semibold text-neutral-900 backdrop-blur-md dark:bg-black/75 dark:text-white">
                       {props.title}
                     </span>
                   </div>
@@ -571,7 +596,7 @@ export function DiscordPreview(props: PlatformPreviewsProps) {
           {/* Link Embed */}
           {showPreview && (
             <div
-              className="bg-card mt-1.5 overflow-hidden rounded border p-4"
+              className="bg-card mt-1.5 overflow-hidden rounded border border-l-5 p-3"
               style={{ maxWidth: 432 }}
             >
               <div className="space-y-1">
@@ -612,14 +637,14 @@ export function DiscordPreview(props: PlatformPreviewsProps) {
 
 export function SlackPreview(props: PlatformPreviewsProps) {
   const showPreview =
-    props.isValidUrl && !props.isError && props.image && props.isValidImage
+    props.isValidUrl &&
+    !props.isError &&
+    props.image &&
+    props.isValidImage &&
+    props.title
 
   return (
-    <PlatformSection
-      name="Slack"
-      containerClassName="slack"
-      // logo={SlackIcon}
-    >
+    <PlatformSection name="Slack" containerClassName="slack">
       {/* Message */}
       <div className="flex max-w-[600px] gap-2">
         <div className="shrink-0">
@@ -662,20 +687,37 @@ export function SlackPreview(props: PlatformPreviewsProps) {
               <span className="bg-border absolute top-0 bottom-0 left-0 h-full w-1 rounded-lg"></span>
               {props.isLoading ? (
                 <>
-                  <Skeleton className="bg-border mb-1 h-4 w-20" />
+                  <div className="mb-1 flex items-center gap-1.5">
+                    <Skeleton className="bg-border size-4 shrink-0 rounded-sm" />
+                    <Skeleton className="bg-border h-4 w-20" />
+                  </div>
                   <Skeleton className="bg-border h-4 w-3/4" />
                   <Skeleton className="bg-border mt-1 h-3 w-1/2" />
                 </>
               ) : (
                 <>
                   <div className="mb-1 flex items-center gap-1.5">
+                    <Img
+                      src={props.favicon}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                      className="size-4 shrink-0 rounded-sm object-contain"
+                      fallback={
+                        <GlobeIcon
+                          className="text-muted-foreground size-4 shrink-0"
+                          aria-hidden
+                        />
+                      }
+                    />
                     <span className="text-foreground text-[15px] font-bold">
                       {siteName(props.url)}
                     </span>
                   </div>
-                  <p className="text-link cursor-pointer text-[15px] leading-snug font-medium underline">
-                    {props.title || '—'}
-                  </p>
+                  <div>
+                    <p className="text-link cursor-pointer text-[15px] leading-snug font-medium underline">
+                      {props.title}
+                    </p>
+                  </div>
                   <p className="text-foreground/80 mt-0.5 line-clamp-2 text-[15px] leading-relaxed">
                     {props.description}
                   </p>
@@ -684,7 +726,7 @@ export function SlackPreview(props: PlatformPreviewsProps) {
               <OGImage
                 src={props.image}
                 isValidImage={props.isValidImage}
-                className="mt-2 aspect-[1.91/1] w-full max-w-[360px] rounded object-cover"
+                className="mt-2 aspect-[1.91/1] w-full max-w-[360px] rounded-lg border object-cover"
                 isLoading={props.isLoading}
                 skeletonClassName="bg-border"
               />
@@ -841,7 +883,7 @@ export function WhatsAppPreview(props: PlatformPreviewsProps) {
 
 export function PlatformPreviews(props: PlatformPreviewsProps) {
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-12">
       <TwitterPreview {...props} />
       <LinkedInPreview {...props} />
       <SlackPreview {...props} />

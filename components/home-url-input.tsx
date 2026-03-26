@@ -405,7 +405,7 @@ export function HomeUrlInput(props: {
           <Icon
             className={cn(
               'pointer-events-none absolute top-1/2 left-4 z-10 h-4 w-4 -translate-y-1/2',
-              ogFetchError ? 'text-red-400' : 'text-muted-foreground',
+              ogFetchError ? 'text-destructive' : 'text-muted-foreground',
               previewsLoading && 'animate-spin'
             )}
           />
@@ -419,15 +419,15 @@ export function HomeUrlInput(props: {
           onKeyDown={handleInputKeyDown}
           placeholder="Enter a URL"
           className={cn(
-            'h-10 rounded-xl pr-4 pl-10 placeholder:text-neutral-600 focus-visible:ring-0',
+            'placeholder:text-muted-foreground focus-visible:border-border h-10 rounded-xl border-transparent pr-4 pl-10 focus-visible:ring-0',
             ogFetchError
-              ? 'border-red-500/50 bg-red-950/30! focus-visible:border-red-500/70!'
-              : 'border-neutral-800 bg-neutral-900/50! focus-visible:border-neutral-700!'
+              ? 'border-destructive/50 bg-destructive/10! focus-visible:border-destructive/70! text-destructive'
+              : 'focus-visible:border-ring'
           )}
         />
         <div
           ref={suggestionsRef}
-          className="absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 shadow-lg"
+          className="border-border bg-popover text-popover-foreground absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-xl border shadow-lg"
           style={{
             display:
               showSuggestions && filteredSuggestions.length > 0
@@ -441,7 +441,7 @@ export function HomeUrlInput(props: {
               {filteredSuggestions.map((item, index) => (
                 <div
                   key={item.url}
-                  className="group flex items-center rounded-lg focus-within:bg-neutral-800 hover:bg-neutral-800"
+                  className="hover:bg-accent focus-within:bg-accent group flex items-center rounded-lg"
                 >
                   <button
                     data-suggestion
@@ -480,7 +480,7 @@ export function HomeUrlInput(props: {
         </div>
       </div>
       {hasReadStoredUrl && ogFetchError ? (
-        <p className="mt-2 text-center text-sm text-red-400">
+        <p className="text-destructive mt-2 text-center text-sm">
           Failed to fetch opengraph metadata
         </p>
       ) : null}

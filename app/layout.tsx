@@ -1,12 +1,32 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono, Instrument_Serif } from 'next/font/google'
+import localFont from 'next/font/local'
+import { Geist_Mono, Instrument_Serif } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Providers } from '@/components/providers'
+import { SiteHeader } from '@/components/site-header'
+import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
-const geist = Geist({
-  subsets: ['latin'],
-  variable: '--font-geist',
+const openRunde = localFont({
+  src: [
+    {
+      path: '../public/fonts/OpenRunde-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/OpenRunde-Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/OpenRunde-Semibold.woff2',
+      weight: '600',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-open-runde',
+  display: 'swap',
 })
 
 const geistMono = Geist_Mono({
@@ -50,10 +70,20 @@ export default function RootLayout(
   return (
     <html
       lang="en"
-      className={`dark ${geist.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
+      suppressHydrationWarning
+      className={`dark ${openRunde.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
     >
       <body className="bg-background text-foreground min-h-screen font-sans antialiased">
-        <Providers>{props.children}</Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          storageKey="ogmeta-theme"
+          disableTransitionOnChange
+        >
+          {/* <SiteHeader /> */}
+          <Providers>{props.children}</Providers>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>
