@@ -1,5 +1,9 @@
 import type { PlatformPreviewsProps } from '@/components/previews/types'
 import type { OGMetadata } from '@/lib/og-types'
+import {
+  TWITTER_SHORT_DESCRIPTION,
+  TWITTER_SHORT_TITLE,
+} from '@/lib/og-test-html'
 
 const SAMPLE_IMAGE =
   'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=630&fit=crop'
@@ -65,8 +69,8 @@ export const summaryCardData: PreviewData = {
     ...completeData.data!,
     url: 'https://ogmeta.app/tests/twitter-card-summary',
     twitter: {
-      title: 'Sample short title',
-      description: 'Sample short description for the fixture.',
+      title: TWITTER_SHORT_TITLE,
+      description: TWITTER_SHORT_DESCRIPTION,
       image: SAMPLE_IMAGE,
       isValidImage: true,
       card: 'summary',

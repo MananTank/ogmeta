@@ -221,24 +221,6 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
   },
-  'og-image-relative': {
-    config: {
-      title: 'short',
-      desc: 'short',
-      og: {
-        title: 'short',
-        desc: 'short',
-        image: 'relative',
-        type: 'website',
-      },
-      twitter: {
-        title: 'short',
-        card: 'summary_large_image',
-        description: 'short',
-        image: 'relative',
-      },
-    },
-  },
   'og-image-broken': {
     config: {
       title: 'short',

@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 
 export type Content = 'none' | 'short' | 'long'
 
-/** Standard aspect ratios; `relative` and `broken` support extra fixture cases. */
-export type Image = 'none' | '1/1' | '1200/630' | 'relative' | 'broken'
+/** Standard aspect ratios; `broken` is a deliberately missing file for error cases. */
+export type Image = 'none' | '1/1' | '1200/630' | 'broken'
 
 export type OGType = 'website' | 'article'
 
@@ -74,28 +74,65 @@ function normalizeOgTestHtmlOptions(
   }
 }
 
-export const SHORT_TITLE = 'Sample short title'
-export const SHORT_DESCRIPTION = 'Sample short description for the fixture.'
+/** `<title>` and standalone meta description — distinct from OG/Twitter strings. */
+export const HTML_SHORT_TITLE = 'Document title — short'
+export const HTML_LONG_TITLE =
+  'Document title — long: ' +
+  'A long HTML document title for the <title> element. '.repeat(14).trim()
 
-export const LONG_OG_TITLE =
-  'This is an intentionally long Open Graph title used to test truncation and layout in previews. '
-    .repeat(5)
-    .trim()
+export const HTML_SHORT_DESCRIPTION = 'Meta description — short'
+export const HTML_LONG_DESCRIPTION =
+  'Meta description — long: ' +
+  'A long HTML meta description (name=description). '.repeat(18).trim()
 
-export const LONG_OG_DESCRIPTION =
-  'This is an intentionally long Open Graph description used to test truncation in link previews across platforms. '
-    .repeat(12)
-    .trim()
+/** `og:title` / `og:description` */
+export const OG_SHORT_TITLE = 'og:title — short'
+export const OG_LONG_TITLE =
+  'og:title — long: ' +
+  'A long Open Graph title for og:title. '.repeat(14).trim()
+
+export const OG_SHORT_DESCRIPTION = 'og:description — short'
+export const OG_LONG_DESCRIPTION =
+  'og:description — long: ' +
+  'A long Open Graph description for og:description. '.repeat(18).trim()
+
+/** `twitter:title` / `twitter:description` */
+export const TWITTER_SHORT_TITLE = 'twitter:title — short'
+export const TWITTER_LONG_TITLE =
+  'twitter:title — long: ' +
+  'A long Twitter Card title for twitter:title. '.repeat(14).trim()
+
+export const TWITTER_SHORT_DESCRIPTION = 'twitter:description — short'
+export const TWITTER_LONG_DESCRIPTION =
+  'twitter:description — long: ' +
+  'A long Twitter Card description for twitter:description. '.repeat(18).trim()
+
+type ContentSource = 'html' | 'og' | 'twitter'
 
 function resolveContent(
   kind: 'title' | 'description',
-  c: Content
+  c: Content,
+  source: ContentSource
 ): string | null {
   if (c === 'none') return null
   if (c === 'short') {
-    return kind === 'title' ? SHORT_TITLE : SHORT_DESCRIPTION
+    if (kind === 'title') {
+      if (source === 'html') return HTML_SHORT_TITLE
+      if (source === 'og') return OG_SHORT_TITLE
+      return TWITTER_SHORT_TITLE
+    }
+    if (source === 'html') return HTML_SHORT_DESCRIPTION
+    if (source === 'og') return OG_SHORT_DESCRIPTION
+    return TWITTER_SHORT_DESCRIPTION
   }
-  return kind === 'title' ? LONG_OG_TITLE : LONG_OG_DESCRIPTION
+  if (kind === 'title') {
+    if (source === 'html') return HTML_LONG_TITLE
+    if (source === 'og') return OG_LONG_TITLE
+    return TWITTER_LONG_TITLE
+  }
+  if (source === 'html') return HTML_LONG_DESCRIPTION
+  if (source === 'og') return OG_LONG_DESCRIPTION
+  return TWITTER_LONG_DESCRIPTION
 }
 
 function hasAnyOg(og: OgTestHtmlOgOptions): boolean {
@@ -108,11 +145,9 @@ function ogImagePath(image: Image): string | null {
     case 'none':
       return null
     case '1/1':
-      return '/og-test/square-1200x1200.jpg'
+      return '/og-test/1200-1200.png'
     case '1200/630':
-      return '/og-test/rect-1200x630.jpg'
-    case 'relative':
-      return '/og-test/rect-1200x630.jpg'
+      return '/og-test/1200-630.png'
     case 'broken':
       return '/og-test/this-file-does-not-exist-ogmeta.png'
     default:
@@ -123,13 +158,12 @@ function ogImagePath(image: Image): string | null {
 /** Path for `twitter:image` metadata, or `null` when omitted. */
 function twitterImagePath(image: Image): string | null {
   if (image === 'none') return null
-  if (image === 'relative') return '/og-test/rect-1200x630.jpg'
   if (image === 'broken') return '/og-test/this-file-does-not-exist-ogmeta.png'
-  return ogImagePath(image) ?? '/og-test/rect-1200x630.jpg'
+  return ogImagePath(image) ?? '/og-test/1200-630.png'
 }
 
 function visibleTitle(options: OgTestHtmlOptionsResolved): string {
-  const t = resolveContent('title', options.title)
+  const t = resolveContent('title', options.title, 'html')
   if (t) return t
   return ''
 }
@@ -186,7 +220,7 @@ export function ogTestOptionsToMetadata(
   const resolved = normalizeOgTestHtmlOptions(options)
 
   const title = visibleTitle(resolved)
-  const htmlDesc = resolveContent('description', resolved.desc)
+  const htmlDesc = resolveContent('description', resolved.desc, 'html')
 
   const metadata: Metadata = {
     title,
@@ -201,8 +235,8 @@ export function ogTestOptionsToMetadata(
         pathname.startsWith('/') ? pathname : `/${pathname}`,
         metadataBase
       ).href
-    const ogTitle = resolveContent('title', og.title)
-    const ogDesc = resolveContent('description', og.desc)
+    const ogTitle = resolveContent('title', og.title, 'og')
+    const ogDesc = resolveContent('description', og.desc, 'og')
 
     const ogImagePathname = og.image !== 'none' ? ogImagePath(og.image) : null
 
@@ -218,8 +252,8 @@ export function ogTestOptionsToMetadata(
 
   const tw = resolved.twitter
   if (tw.card !== 'none') {
-    const twTitle = resolveContent('title', tw.title)
-    const twDesc = resolveContent('description', tw.description)
+    const twTitle = resolveContent('title', tw.title, 'twitter')
+    const twDesc = resolveContent('description', tw.description, 'twitter')
     const twImgPath = twitterImagePath(tw.image)
 
     metadata.twitter = {
