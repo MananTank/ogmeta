@@ -102,44 +102,30 @@ function hasAnyOg(og: OgTestHtmlOgOptions): boolean {
   return og.title !== 'none' || og.desc !== 'none' || og.image !== 'none'
 }
 
-function absoluteOgImageUrl(origin: string, image: Image): string | null {
+/** Public path under `/public` for fixture images (resolved with `metadataBase`). */
+function ogImagePath(image: Image): string | null {
   switch (image) {
     case 'none':
       return null
     case '1/1':
-      return `${origin}/og-test/square-1200x1200.jpg`
+      return '/og-test/square-1200x1200.jpg'
     case '1200/630':
-      return `${origin}/og-test/rect-1200x630.jpg`
+      return '/og-test/rect-1200x630.jpg'
     case 'relative':
       return '/og-test/rect-1200x630.jpg'
     case 'broken':
-      return `${origin}/og-test/this-file-does-not-exist-ogmeta.png`
+      return '/og-test/this-file-does-not-exist-ogmeta.png'
     default:
       return null
   }
 }
 
-/** Absolute URL for `twitter:image`, or `null` when `image === 'none'`. */
-function twitterTagImageUrl(origin: string, image: Image): string | null {
+/** Path for `twitter:image` metadata, or `null` when omitted. */
+function twitterImagePath(image: Image): string | null {
   if (image === 'none') return null
-  if (image === 'relative') {
-    return `${origin}/og-test/rect-1200x630.jpg`
-  }
-  if (image === 'broken') {
-    return `${origin}/og-test/this-file-does-not-exist-ogmeta.png`
-  }
-  const abs = absoluteOgImageUrl(origin, image)
-  if (abs) return abs.startsWith('http') ? abs : new URL(abs, origin).href
-  return `${origin}/og-test/rect-1200x630.jpg`
-}
-
-function ogImageAbsoluteForMetadata(
-  origin: string,
-  image: Image
-): string | null {
-  const url = absoluteOgImageUrl(origin, image)
-  if (!url) return null
-  return url.startsWith('http') ? url : new URL(url, origin).href
+  if (image === 'relative') return '/og-test/rect-1200x630.jpg'
+  if (image === 'broken') return '/og-test/this-file-does-not-exist-ogmeta.png'
+  return ogImagePath(image) ?? '/og-test/rect-1200x630.jpg'
 }
 
 function visibleTitle(options: OgTestHtmlOptionsResolved): string {
@@ -148,17 +134,26 @@ function visibleTitle(options: OgTestHtmlOptionsResolved): string {
   return ''
 }
 
-/** Base URL for resolving absolute OG/Twitter image URLs in metadata (matches deployment). */
+/**
+ * Site origin for `/tests/**` metadata (`metadataBase`, `og:url`).
+ * Prefer `NEXT_PUBLIC_SITE_URL` in production so OG images match the public URL.
+ */
 export function getOgTestsMetadataBase(): URL {
   const raw =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ??
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim() ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
     'http://localhost:3000'
-  return new URL(raw)
+  const normalized = raw.replace(/\/+$/, '')
+  try {
+    return new URL(normalized)
+  } catch {
+    return new URL('http://localhost:3000')
+  }
 }
 
 /**
- * Maps a fixture config to Next.js `Metadata` (used by `generateMetadata` on `/tests/**`).
+ * Maps {@link OgTestHtmlOptions} to Next.js `Metadata` (used by `generateMetadata` on `/tests/**`).
  */
 export function ogTestOptionsToMetadata(
   options: OgTestHtmlOptions,
@@ -166,7 +161,6 @@ export function ogTestOptionsToMetadata(
   metadataBase: URL
 ): Metadata {
   const resolved = normalizeOgTestHtmlOptions(options)
-  const origin = metadataBase.origin
 
   const title = visibleTitle(resolved)
   const htmlDesc = resolveContent('description', resolved.desc)
@@ -179,12 +173,16 @@ export function ogTestOptionsToMetadata(
 
   if (hasAnyOg(resolved.og)) {
     const og = resolved.og
-    const ogUrl = og.url ?? `${origin}${pathname}`
+    const ogUrl =
+      og.url ??
+      new URL(
+        pathname.startsWith('/') ? pathname : `/${pathname}`,
+        metadataBase
+      ).href
     const ogTitle = resolveContent('title', og.title)
     const ogDesc = resolveContent('description', og.desc)
 
-    const ogImageUrl =
-      og.image !== 'none' ? ogImageAbsoluteForMetadata(origin, og.image) : null
+    const ogImagePathname = og.image !== 'none' ? ogImagePath(og.image) : null
 
     metadata.openGraph = {
       type: og.type,
@@ -192,7 +190,7 @@ export function ogTestOptionsToMetadata(
       siteName: 'OG Meta Fixtures',
       ...(ogTitle ? { title: ogTitle } : {}),
       ...(ogDesc ? { description: ogDesc } : {}),
-      ...(ogImageUrl ? { images: [{ url: ogImageUrl }] } : {}),
+      ...(ogImagePathname ? { images: [{ url: ogImagePathname }] } : {}),
     }
   }
 
@@ -200,13 +198,13 @@ export function ogTestOptionsToMetadata(
   if (tw.card !== 'none') {
     const twTitle = resolveContent('title', tw.title)
     const twDesc = resolveContent('description', tw.description)
-    const twImg = twitterTagImageUrl(origin, tw.image)
+    const twImgPath = twitterImagePath(tw.image)
 
     metadata.twitter = {
       card: tw.card,
       ...(twTitle ? { title: twTitle } : {}),
       ...(twDesc ? { description: twDesc } : {}),
-      ...(twImg ? { images: [twImg] } : {}),
+      ...(twImgPath ? { images: [twImgPath] } : {}),
       ...(tw.url ? { url: tw.url } : {}),
       ...(tw.site?.trim() ? { site: tw.site.trim() } : {}),
     }

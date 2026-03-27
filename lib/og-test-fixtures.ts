@@ -14,328 +14,389 @@ export type OgTestFixtureAppResult = {
   imessage?: string
 }
 
-export type OgTestFixture = OgTestHtmlOptions & {
+export type OgTestFixture = {
+  config: OgTestHtmlOptions
   results?: OgTestFixtureAppResult
 }
 
+const TWITTER_NO_PREVIEW = 'no preview, link shown'
+
 export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
   'no-meta': {
-    title: 'none',
-    desc: 'none',
-    og: 'none',
-    twitter: 'none',
+    config: {
+      title: 'none',
+      desc: 'none',
+      og: 'none',
+      twitter: 'none',
+    },
     results: {
-      twitter: 'no preview, link shown',
+      twitter: TWITTER_NO_PREVIEW,
     },
   },
   'only-title': {
-    title: 'short',
-    desc: 'none',
-    og: 'none',
-    twitter: 'none',
+    config: {
+      title: 'short',
+      desc: 'none',
+      og: 'none',
+      twitter: 'none',
+    },
+    results: {
+      twitter: TWITTER_NO_PREVIEW,
+    },
   },
   'only-desc': {
-    title: 'none',
-    desc: 'short',
-    og: 'none',
-    twitter: 'none',
+    config: {
+      title: 'none',
+      desc: 'short',
+      og: 'none',
+      twitter: 'none',
+    },
+    results: {
+      twitter: TWITTER_NO_PREVIEW,
+    },
   },
   'only-meta': {
-    title: 'short',
-    desc: 'short',
-    og: 'none',
-    twitter: 'none',
-  },
-  'only-og': {
-    title: 'none',
-    desc: 'none',
-    og: {
+    config: {
       title: 'short',
       desc: 'short',
-      image: '1200/630',
-      type: 'website',
+      og: 'none',
+      twitter: 'none',
     },
-    twitter: 'none',
+    results: {
+      twitter: TWITTER_NO_PREVIEW,
+    },
+  },
+  'only-og': {
+    config: {
+      title: 'none',
+      desc: 'none',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: 'none',
+    },
+    results: {
+      twitter: TWITTER_NO_PREVIEW,
+    },
   },
   'only-twitter': {
-    title: 'none',
-    desc: 'none',
-    og: 'none',
-    twitter: {
-      title: 'short',
-      card: 'summary_large_image',
-      description: 'short',
-      image: '1200/630',
+    config: {
+      title: 'none',
+      desc: 'none',
+      og: 'none',
+      twitter: {
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'short',
+        image: '1200/630',
+      },
     },
   },
   'complete/short': {
-    title: 'short',
-    desc: 'short',
-    og: {
+    config: {
       title: 'short',
       desc: 'short',
-      image: '1200/630',
-      type: 'website',
-    },
-    twitter: {
-      title: 'short',
-      card: 'summary_large_image',
-      description: 'short',
-      image: '1200/630',
-      site: '@example',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'short',
+        image: '1200/630',
+        site: '@example',
+      },
     },
   },
   'complete/long': {
-    title: 'long',
-    desc: 'long',
-    og: {
+    config: {
       title: 'long',
       desc: 'long',
-      image: '1200/630',
-      type: 'website',
-    },
-    twitter: {
-      title: 'long',
-      card: 'summary_large_image',
-      description: 'long',
-      image: '1200/630',
-      site: '@example',
+      og: {
+        title: 'long',
+        desc: 'long',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'long',
+        card: 'summary_large_image',
+        description: 'long',
+        image: '1200/630',
+        site: '@example',
+      },
     },
   },
   'no-og-title': {
-    title: 'short',
-    desc: 'short',
-    og: {
-      title: 'none', // missing
+    config: {
+      title: 'short',
       desc: 'short',
-      image: '1200/630',
-      type: 'website',
-    },
-    twitter: {
-      title: 'none', // missing
-      card: 'summary_large_image',
-      description: 'short',
-      image: '1200/630',
+      og: {
+        title: 'none', // missing
+        desc: 'short',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'none', // missing
+        card: 'summary_large_image',
+        description: 'short',
+        image: '1200/630',
+      },
     },
   },
   'no-og-description': {
-    title: 'short',
-    desc: 'short',
-    og: {
+    config: {
       title: 'short',
-      desc: 'none', // missing
-      image: '1200/630',
-      type: 'website',
-    },
-    twitter: {
-      title: 'none',
-      card: 'summary_large_image',
-      description: 'none', // missing
-      image: '1200/630',
+      desc: 'short',
+      og: {
+        title: 'short',
+        desc: 'none', // missing
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'none',
+        card: 'summary_large_image',
+        description: 'none', // missing
+        image: '1200/630',
+      },
     },
   },
   'no-og-image': {
-    title: 'short',
-    desc: 'short',
-    og: {
+    config: {
       title: 'short',
       desc: 'short',
-      image: 'none', // missing
-      type: 'website',
-    },
-    twitter: {
-      title: 'short',
-      card: 'summary_large_image',
-      description: 'none',
-      image: 'none', // missing
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: 'none', // missing
+        type: 'website',
+      },
+      twitter: {
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'none',
+        image: 'none', // missing
+      },
     },
   },
   'no-twitter': {
-    title: 'short',
-    desc: 'short',
-    og: {
+    config: {
       title: 'short',
       desc: 'short',
-      image: '1200/630',
-      type: 'website',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: 'none',
     },
-    twitter: 'none',
   },
   'no-twitter-description': {
-    title: 'short',
-    desc: 'short',
-    og: {
+    config: {
       title: 'short',
       desc: 'short',
-      image: '1200/630',
-      type: 'website',
-    },
-    twitter: {
-      title: 'short',
-      card: 'summary_large_image',
-      description: 'none',
-      image: '1200/630',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'none',
+        image: '1200/630',
+      },
     },
   },
   'og-image-relative': {
-    title: 'short',
-    desc: 'short',
-    og: {
+    config: {
       title: 'short',
       desc: 'short',
-      image: 'relative',
-      type: 'website',
-    },
-    twitter: {
-      title: 'short',
-      card: 'summary_large_image',
-      description: 'short',
-      image: 'relative',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: 'relative',
+        type: 'website',
+      },
+      twitter: {
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'short',
+        image: 'relative',
+      },
     },
   },
   'og-image-broken': {
-    title: 'short',
-    desc: 'short',
-    og: {
+    config: {
       title: 'short',
       desc: 'short',
-      image: 'broken',
-      type: 'website',
-    },
-    twitter: {
-      title: 'short',
-      card: 'summary_large_image',
-      description: 'short',
-      image: 'broken',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: 'broken',
+        type: 'website',
+      },
+      twitter: {
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'short',
+        image: 'broken',
+      },
     },
   },
   'og-square': {
-    title: 'short',
-    desc: 'short',
-    og: {
+    config: {
       title: 'short',
       desc: 'short',
-      image: '1/1',
-      type: 'website',
-    },
-    twitter: {
-      title: 'none',
-      card: 'none',
-      description: 'none',
-      image: 'none',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: '1/1',
+        type: 'website',
+      },
+      twitter: {
+        title: 'none',
+        card: 'none',
+        description: 'none',
+        image: 'none',
+      },
     },
   },
   'twitter-only': {
-    title: 'short',
-    desc: 'none',
-    og: {
-      title: 'none',
-      desc: 'none',
-      image: 'none',
-      type: 'website',
-    },
-    twitter: {
+    config: {
       title: 'short',
-      card: 'summary_large_image',
-      description: 'short',
-      image: '1200/630',
+      desc: 'none',
+      og: {
+        title: 'none',
+        desc: 'none',
+        image: 'none',
+        type: 'website',
+      },
+      twitter: {
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'short',
+        image: '1200/630',
+      },
     },
   },
   'og-only-no-twitter': {
-    title: 'short',
-    desc: 'short',
-    og: {
+    config: {
       title: 'short',
       desc: 'short',
-      image: '1200/630',
-      type: 'website',
-    },
-    twitter: {
-      title: 'none',
-      card: 'none',
-      description: 'none',
-      image: 'none',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'none',
+        card: 'none',
+        description: 'none',
+        image: 'none',
+      },
     },
   },
   'twitter-card-summary': {
-    title: 'short',
-    desc: 'short',
-    og: {
+    config: {
       title: 'short',
       desc: 'short',
-      image: '1200/630',
-      type: 'website',
-    },
-    twitter: {
-      title: 'short',
-      card: 'summary',
-      description: 'short',
-      image: '1200/630',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'short',
+        card: 'summary',
+        description: 'short',
+        image: '1200/630',
+      },
     },
   },
   'twitter-card-none': {
-    title: 'long',
-    desc: 'long',
-    og: {
+    config: {
       title: 'long',
       desc: 'long',
-      image: '1200/630',
-      type: 'website',
-    },
-    twitter: {
-      title: 'long',
-      card: 'none',
-      description: 'long',
-      image: '1200/630',
-      site: '@example',
+      og: {
+        title: 'long',
+        desc: 'long',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'long',
+        card: 'none',
+        description: 'long',
+        image: '1200/630',
+        site: '@example',
+      },
     },
   },
   'twitter-card-large-image': {
-    title: 'short',
-    desc: 'short',
-    og: {
+    config: {
       title: 'short',
       desc: 'short',
-      image: '1200/630',
-      type: 'website',
-    },
-    twitter: {
-      title: 'short',
-      card: 'summary_large_image',
-      description: 'short',
-      image: '1200/630',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'short',
+        image: '1200/630',
+      },
     },
   },
   'og-title-long': {
-    title: 'short',
-    desc: 'short',
-    og: {
-      title: 'long',
+    config: {
+      title: 'short',
       desc: 'short',
-      image: '1200/630',
-      type: 'website',
-    },
-    twitter: {
-      title: 'none',
-      card: 'none',
-      description: 'none',
-      image: 'none',
+      og: {
+        title: 'long',
+        desc: 'short',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'none',
+        card: 'none',
+        description: 'none',
+        image: 'none',
+      },
     },
   },
   'og-description-long': {
-    title: 'short',
-    desc: 'short',
-    og: {
+    config: {
       title: 'short',
-      desc: 'long',
-      image: '1200/630',
-      type: 'website',
-    },
-    twitter: {
-      title: 'none',
-      card: 'none',
-      description: 'none',
-      image: 'none',
+      desc: 'short',
+      og: {
+        title: 'short',
+        desc: 'long',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'none',
+        card: 'none',
+        description: 'none',
+        image: 'none',
+      },
     },
   },
 }
