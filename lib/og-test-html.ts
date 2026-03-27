@@ -134,22 +134,45 @@ function visibleTitle(options: OgTestHtmlOptionsResolved): string {
   return ''
 }
 
+/** Canonical production origin for `/tests/**` metadata (`metadataBase`, `og:url`). */
+const OG_METADATA_PROD_BASE = 'https://ogmeta.app/'
+
+/** Vercel often provides hostnames without a scheme; `new URL("ogmeta.app")` throws. */
+function normalizeSiteOrigin(raw: string | undefined): string | null {
+  const s = raw?.trim()
+  if (!s) return null
+  const noTrailing = s.replace(/\/+$/, '')
+  const withScheme = /^https?:\/\//i.test(noTrailing)
+    ? noTrailing
+    : `https://${noTrailing}`
+  try {
+    const u = new URL(withScheme)
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') return null
+    return u.href.replace(/\/+$/, '')
+  } catch {
+    return null
+  }
+}
+
 /**
  * Site origin for `/tests/**` metadata (`metadataBase`, `og:url`).
- * Prefer `NEXT_PUBLIC_SITE_URL` in production so OG images match the public URL.
+ * Production on Vercel uses {@link OG_METADATA_PROD_BASE}; preview and local dev use env or localhost.
  */
 export function getOgTestsMetadataBase(): URL {
-  const raw =
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-    process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim() ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
-    'http://localhost:3000'
-  const normalized = raw.replace(/\/+$/, '')
-  try {
-    return new URL(normalized)
-  } catch {
-    return new URL('http://localhost:3000')
+  if (process.env.VERCEL_ENV === 'production') {
+    return new URL(OG_METADATA_PROD_BASE)
   }
+
+  const fromEnv =
+    normalizeSiteOrigin(process.env.NEXT_PUBLIC_SITE_URL) ??
+    normalizeSiteOrigin(process.env.VERCEL_PROJECT_PRODUCTION_URL)
+  if (fromEnv) return new URL(fromEnv)
+
+  if (process.env.VERCEL_URL) {
+    return new URL(`https://${process.env.VERCEL_URL.replace(/\/+$/, '')}`)
+  }
+
+  return new URL('http://localhost:3000')
 }
 
 /**
