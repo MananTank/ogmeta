@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { CopyTestSnippetButton } from '@/components/copy-test-snippet-button'
 import { OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
+import { getOgTestsMetadataBase } from '@/lib/og-test-html'
 import { InspectionPanelIcon } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -15,6 +17,8 @@ const TEST_LINKS = Object.keys(OG_TEST_FIXTURES).map((key) => ({
 }))
 
 export default function TestsIndexPage() {
+  const metadataBase = getOgTestsMetadataBase()
+
   return (
     <main className="mx-auto max-w-xl px-6 pt-24 pb-32 font-sans">
       <Link href="/" className="mb-8 block">
@@ -28,17 +32,33 @@ export default function TestsIndexPage() {
         configurations are rendered on social platforms
       </p>
 
-      <ul className="mt-12 space-y-5">
-        {TEST_LINKS.map((item) => (
-          <li key={item.href}>
-            <Link
-              href={item.href}
-              className="text-muted-foreground hover:text-foreground decoration-muted-foreground/20 hover:decoration-foreground/30 text-base underline underline-offset-4"
+      <ul className="-mx-3 mt-12 flex flex-col gap-0">
+        {TEST_LINKS.map((item) => {
+          const fullUrl = new URL(item.href, metadataBase).href
+          return (
+            <li
+              key={item.href}
+              className="group hover:bg-muted/60 relative flex items-center gap-2 rounded-lg px-3 py-2"
             >
-              {item.label}
-            </Link>
-          </li>
-        ))}
+              <Link
+                href={item.href}
+                className="focus-visible:ring-ring focus-visible:ring-offset-background absolute inset-0 z-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                aria-label={`Open fixture ${item.label}`}
+              />
+              <span
+                aria-hidden
+                className="text-muted-foreground group-hover:text-foreground pointer-events-none relative z-10 min-w-0 flex-1 text-base"
+              >
+                {item.label}
+              </span>
+              <CopyTestSnippetButton
+                pathname={item.href}
+                fullUrl={fullUrl}
+                className="group-hover:text-foreground relative z-10"
+              />
+            </li>
+          )
+        })}
       </ul>
     </main>
   )
