@@ -40,7 +40,7 @@ export function PreviewControls(props: {
     <TooltipProvider delayDuration={300}>
       <div
         className={cn(
-          'flex flex-wrap items-center justify-center gap-2',
+          'flex flex-wrap items-center justify-center gap-2.5',
           props.className
         )}
       >
@@ -52,7 +52,7 @@ export function PreviewControls(props: {
               disabled={!mounted}
               onClick={() => setTheme('dark')}
             >
-              <Moon className="fill-current" />
+              <Moon />
             </TabButton>
           </TabTooltip>
 
@@ -63,7 +63,7 @@ export function PreviewControls(props: {
               disabled={!mounted}
               onClick={() => setTheme('light')}
             >
-              <Sun className="fill-current" />
+              <Sun />
             </TabButton>
           </TabTooltip>
         </TabsContainer>
@@ -75,7 +75,7 @@ export function PreviewControls(props: {
               selected={props.viewport === 'desktop'}
               onClick={() => props.onViewportChange('desktop')}
             >
-              <Monitor className="fill-current" />
+              <Monitor />
             </TabButton>
           </TabTooltip>
           <TabTooltip label="Mobile">
@@ -84,7 +84,7 @@ export function PreviewControls(props: {
               selected={props.viewport === 'mobile'}
               onClick={() => props.onViewportChange('mobile')}
             >
-              <Smartphone className="fill-current" />
+              <Smartphone />
             </TabButton>
           </TabTooltip>
         </TabsContainer>

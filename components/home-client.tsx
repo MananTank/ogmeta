@@ -9,7 +9,7 @@ import {
   isValidUrl,
   normalizeUrlForFetch,
 } from '@/components/home-url-input'
-import { DEFAULT_URL } from '@/lib/constants'
+import { DEFAULT_URL, SOURCE_REPO_URL } from '@/lib/constants'
 import { fetchOGData, type OGMetadata } from '@/lib/og'
 import { PreviewControls } from './preview-controls'
 import { InspectionPanelIcon } from 'lucide-react'
@@ -40,16 +40,24 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
 
   const isLoading = ogQuery.isFetching || !hasReadStoredUrl
 
+  const errorMessage = !debouncedUrl
+    ? undefined
+    : ogQuery.error
+      ? 'Failed to fetch opengraph metadata'
+      : !urlIsValid
+        ? 'Invalid URL'
+        : null
+
   return (
-    <main className="min-h-screen px-4 pb-8">
-      <div className="mx-auto max-w-2xl py-32">
+    <main className="min-h-screen pb-8">
+      <div className="mx-auto max-w-2xl px-6 py-32">
         <header className="text-center">
           <div className="flex items-center justify-center">
-            <InspectionPanelIcon className="text-muted-foreground size-12" />
+            <InspectionPanelIcon className="text-muted-foreground/50 size-12" />
           </div>
           <h1 className="sr-only">og meta</h1>
           <div className="h-12" />
-          <p className="font-sans text-5xl font-semibold tracking-tight md:text-5xl">
+          <p className="font-sans text-4xl font-semibold tracking-tight md:text-5xl">
             <span className="text-foreground">Preview links on</span>
             <br />
             <span className="text-muted-foreground">social platforms</span>
@@ -61,7 +69,7 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
 
         <div className="h-10" />
 
-        <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:gap-2">
+        <div className="flex w-full flex-col gap-5 sm:flex-row sm:items-start sm:gap-2.5">
           <div className="min-w-0 flex-1">
             <HomeUrlInput
               debouncedUrl={debouncedUrl}
@@ -69,8 +77,8 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
               hasReadStoredUrl={hasReadStoredUrl}
               setHasReadStoredUrl={setHasReadStoredUrl}
               fetchedOgMetadata={ogQuery.data}
-              ogFetchError={!!ogQuery.error}
-              ogFetchLoading={isLoading}
+              isLoading={isLoading}
+              isError={!!errorMessage}
             />
           </div>
           <PreviewControls
@@ -79,6 +87,12 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
             onViewportChange={setPreviewViewport}
           />
         </div>
+
+        {errorMessage && (
+          <p className="text-destructive fade-in-0 animate-in mt-3 text-center text-sm font-medium">
+            {errorMessage}
+          </p>
+        )}
       </div>
 
       <PlatformPreviews
@@ -94,16 +108,31 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
         previewViewport={previewViewport}
       />
 
-      <footer className="text-muted-foreground mx-auto mt-32 max-w-2xl px-4 pb-6 text-center text-base">
-        Made by{' '}
-        <a
-          href="https://x.com/MananTank_"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-foreground/85 hover:text-foreground underline-offset-2 transition-colors hover:underline"
-        >
-          Manan Tank
-        </a>
+      <footer className="text-muted-foreground mx-auto mt-40 max-w-2xl px-4 pb-6 text-center text-base">
+        <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+          <span>
+            Made by{' '}
+            <a
+              href="https://x.com/MananTank_"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground underline-offset-2 transition-colors hover:underline"
+            >
+              Manan Tank
+            </a>
+          </span>
+          <span aria-hidden className="text-muted-foreground/40">
+            ·
+          </span>
+          <a
+            href={SOURCE_REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground underline-offset-2 transition-colors hover:underline"
+          >
+            GitHub
+          </a>
+        </p>
       </footer>
     </main>
   )

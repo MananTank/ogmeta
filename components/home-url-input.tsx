@@ -78,14 +78,10 @@ export function HomeUrlInput(props: {
   setDebouncedUrl: Dispatch<SetStateAction<string>>
   hasReadStoredUrl: boolean
   setHasReadStoredUrl: Dispatch<SetStateAction<boolean>>
-  /** When set after a successful OG fetch, URL is saved to history after a short delay. */
   fetchedOgMetadata?: OGMetadata | null
-  /** OG query loading (excluding local URL bootstrap; that is handled inside the input). */
-  ogFetchLoading?: boolean
-  ogFetchError?: boolean
+  isLoading: boolean
+  isError: boolean
 }) {
-  const ogFetchLoading = props.ogFetchLoading ?? false
-  const ogFetchError = props.ogFetchError ?? false
   const [url, setUrl] = useState(DEFAULT_URL)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [urlHistory, setUrlHistory] = useState<HistoryItem[]>([])
@@ -382,14 +378,14 @@ export function HomeUrlInput(props: {
     }
   }, [])
 
-  const previewsLoading = !props.hasReadStoredUrl || ogFetchLoading
+  const previewsLoading = !props.hasReadStoredUrl || props.isLoading
   const Icon = previewsLoading
     ? CircleDotDashedIcon
-    : ogFetchError
+    : props.isError
       ? AlertCircleIcon
       : GlobeIcon
   const showFavicon =
-    !previewsLoading && !ogFetchError && !!props.fetchedOgMetadata?.favicon
+    !previewsLoading && !props.isError && !!props.fetchedOgMetadata?.favicon
 
   return (
     <div className="w-full space-y-3">
@@ -405,7 +401,7 @@ export function HomeUrlInput(props: {
           <Icon
             className={cn(
               'pointer-events-none absolute top-1/2 left-4 z-10 h-4 w-4 -translate-y-1/2',
-              ogFetchError ? 'text-destructive' : 'text-muted-foreground',
+              props.isError ? 'text-destructive' : 'text-muted-foreground',
               previewsLoading && 'animate-spin'
             )}
           />
@@ -420,7 +416,7 @@ export function HomeUrlInput(props: {
           placeholder="Enter a URL"
           className={cn(
             'placeholder:text-muted-foreground focus-visible:border-border h-10 rounded-full border-transparent pr-4 pl-10 shadow-none focus-visible:ring-0',
-            ogFetchError
+            props.isError
               ? 'border-destructive/50 bg-destructive/10! focus-visible:border-destructive/70! text-destructive'
               : 'focus-visible:border-ring'
           )}
@@ -479,11 +475,6 @@ export function HomeUrlInput(props: {
           </div>
         </div>
       </div>
-      {hasReadStoredUrl && ogFetchError ? (
-        <p className="text-destructive mt-2 text-center text-sm">
-          Failed to fetch opengraph metadata
-        </p>
-      ) : null}
     </div>
   )
 }
