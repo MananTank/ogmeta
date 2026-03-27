@@ -190,7 +190,6 @@ export function ogTestOptionsToMetadata(
 
   const metadata: Metadata = {
     title,
-    robots: { index: false, follow: false },
   }
   if (htmlDesc) metadata.description = htmlDesc
 
