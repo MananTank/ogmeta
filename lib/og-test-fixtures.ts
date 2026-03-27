@@ -95,7 +95,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
   },
-  'complete/short': {
+  'complete-short': {
     config: {
       title: 'short',
       desc: 'short',
@@ -114,7 +114,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
   },
-  'complete/long': {
+  'complete-long': {
     config: {
       title: 'long',
       desc: 'long',

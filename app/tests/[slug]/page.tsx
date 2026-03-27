@@ -6,26 +6,23 @@ import {
   ogTestOptionsToMetadata,
 } from '@/lib/og-test-html'
 import Link from 'next/link'
-import { ArrowLeftIcon, CornerUpLeftIcon } from 'lucide-react'
+import { CornerUpLeftIcon } from 'lucide-react'
 
 export const dynamic = 'force-static'
 
 export function generateStaticParams() {
-  return Object.keys(OG_TEST_FIXTURES).map((key) => ({
-    path: key.split('/'),
-  }))
+  return Object.keys(OG_TEST_FIXTURES).map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ path: string[] }>
+  params: Promise<{ slug: string }>
 }): Promise<Metadata> {
-  const { path } = await params
-  const key = path.join('/')
-  const fixture = OG_TEST_FIXTURES[key]
+  const { slug } = await params
+  const fixture = OG_TEST_FIXTURES[slug]
   if (!fixture) return {}
-  const pathname = `/tests/${key}`
+  const pathname = `/tests/${slug}`
   return ogTestOptionsToMetadata(
     fixture.config,
     pathname,
@@ -36,11 +33,10 @@ export async function generateMetadata({
 export default async function TestsFixturePage({
   params,
 }: {
-  params: Promise<{ path: string[] }>
+  params: Promise<{ slug: string }>
 }) {
-  const { path } = await params
-  const key = path.join('/')
-  const fixture = OG_TEST_FIXTURES[key]
+  const { slug } = await params
+  const fixture = OG_TEST_FIXTURES[slug]
   if (!fixture) notFound()
 
   return (
@@ -53,7 +49,7 @@ export default async function TestsFixturePage({
         <CornerUpLeftIcon className="size-5" />
       </Link>
 
-      <h1 className="mb-4 text-lg font-semibold tracking-tight">{key}</h1>
+      <h1 className="mb-4 text-lg font-semibold tracking-tight">{slug}</h1>
       <code className="bg-card block w-full rounded-2xl p-4 text-sm whitespace-pre-wrap">
         {JSON.stringify(fixture, null, 2)}
       </code>
