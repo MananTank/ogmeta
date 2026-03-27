@@ -6,10 +6,6 @@ export const metadata: Metadata = {
   title: 'OG test fixtures',
   description:
     'Static HTML fixtures for Open Graph and Twitter card behavior (missing fields, images, aspect ratios).',
-  robots: {
-    index: false,
-    follow: false,
-  },
 }
 
 const TEST_LINKS = Object.keys(OG_TEST_FIXTURES).map((key) => ({

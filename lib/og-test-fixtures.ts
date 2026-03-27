@@ -94,6 +94,9 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         image: '1200/630',
       },
     },
+    results: {
+      twitter: TWITTER_NO_PREVIEW,
+    },
   },
   'complete-short': {
     config: {
