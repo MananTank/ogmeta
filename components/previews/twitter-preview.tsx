@@ -42,11 +42,11 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
   const cardIsNone = card === 'none'
   const cardIsSummary = card === 'summary'
 
-  /** Large image on top (`summary_large_image` or unset — default when an image exists). */
+  /** Large image on top (`summary_large_image` or unset, default when an image exists). */
   const hasLargeSummaryLargeImageCard =
     !props.isLoading && title && hasValidImage && !cardIsNone && !cardIsSummary
 
-  /** Small thumbnail left, text right — `twitter:card` = `summary`. */
+  /** Small thumbnail left, text right when `twitter:card` is `summary`. */
   const hasSummaryCard =
     !props.isLoading && title && hasValidImage && !cardIsNone && cardIsSummary
 

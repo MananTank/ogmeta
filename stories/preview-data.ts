@@ -62,7 +62,7 @@ export const shortTitleData: PreviewData = {
   }),
 }
 
-/** `twitter:card` = summary — small square image left, text column right. */
+/** `twitter:card` = summary: small square image left, text column right. */
 export const summaryCardData: PreviewData = {
   ...completeData,
   data: {

@@ -8,7 +8,7 @@ export interface OpenGraphSlice {
   type?: string
 }
 
-/** Parsed only from twitter:* tags — no OG mixed in. */
+/** Parsed only from twitter:* tags; no OG mixed in. */
 export interface TwitterTagsSlice {
   title: string
   description: string
