@@ -61,6 +61,30 @@ function SlackUnfurlDescription({
   )
 }
 
+function SmallUnfurlSiteRow(props: { faviconUrl?: string; siteLabel: string }) {
+  return (
+    <div className="mb-0.5 flex min-w-0 items-center gap-1.5">
+      {props.faviconUrl && (
+        <Img
+          src={props.faviconUrl}
+          alt=""
+          referrerPolicy="no-referrer"
+          className="size-4 shrink-0 rounded-sm object-contain"
+          fallback={
+            <GlobeIcon
+              className="text-muted-foreground size-4 shrink-0"
+              aria-hidden
+            />
+          }
+        />
+      )}
+      <span className="text-foreground min-w-0 truncate text-[15px] font-bold">
+        {props.siteLabel}
+      </span>
+    </div>
+  )
+}
+
 export function SlackPreview(props: PlatformPreviewsProps) {
   const url = props.data?.url ?? props.urlInput ?? ''
   const og = props.data?.openGraph
@@ -128,7 +152,7 @@ export function SlackPreview(props: PlatformPreviewsProps) {
             {url}
           </p>
 
-          {/* Link embed: rich (title + image) or small (description only, domain as title) */}
+          {/* Link embed: rich (title + image) or small (no hero image; title+desc → 3 rows) */}
           {showEmbed && (
             <div className="border-border relative mt-2 pl-4">
               <span className="bg-border absolute top-0 bottom-0 left-0 h-full w-1 rounded-lg" />
@@ -143,32 +167,34 @@ export function SlackPreview(props: PlatformPreviewsProps) {
                   <Skeleton className="bg-border mt-2 aspect-[1.91/1] w-full max-w-[360px] rounded-lg" />
                 </>
               ) : showSmallUnfurl ? (
-                <>
-                  <div className="mb-0.5 flex items-center gap-1.5">
-                    {props.data?.favicon && (
-                      <Img
-                        src={props.data?.favicon}
-                        alt=""
-                        referrerPolicy="no-referrer"
-                        className="size-4 shrink-0 rounded-sm object-contain"
-                        fallback={
-                          <GlobeIcon
-                            className="text-muted-foreground size-4 shrink-0"
-                            aria-hidden
-                          />
-                        }
-                      />
-                    )}
-
-                    <span className="text-foreground text-[15px] font-bold">
-                      {unfurlTitle || domain(url)}
-                    </span>
-                  </div>
-                  <SlackUnfurlDescription
-                    text={unfurlDescription}
-                    className="text-foreground text-[15px] leading-relaxed"
-                  />
-                </>
+                hasTitle ? (
+                  <>
+                    <SmallUnfurlSiteRow
+                      faviconUrl={props.data?.favicon}
+                      siteLabel={displaySiteName}
+                    />
+                    <div>
+                      <p className="text-link cursor-pointer text-[15px] leading-snug font-medium underline">
+                        {unfurlTitle}
+                      </p>
+                    </div>
+                    <SlackUnfurlDescription
+                      text={unfurlDescription}
+                      className="text-foreground text-[15px] leading-relaxed"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <SmallUnfurlSiteRow
+                      faviconUrl={props.data?.favicon}
+                      siteLabel={displaySiteName}
+                    />
+                    <SlackUnfurlDescription
+                      text={unfurlDescription}
+                      className="text-foreground text-[15px] leading-relaxed"
+                    />
+                  </>
+                )
               ) : (
                 <>
                   <div className="mb-1 flex items-center gap-1.5">
@@ -203,7 +229,7 @@ export function SlackPreview(props: PlatformPreviewsProps) {
                   <OGImage
                     src={unfurlImage}
                     isValidImage={unfurlImageValid}
-                    className="mt-2 aspect-[1.91/1] w-full max-w-[360px] rounded-lg border object-cover"
+                    className="mt-2 w-full max-w-[360px] rounded-lg border object-cover"
                     isLoading={false}
                     skeletonClassName="bg-border"
                   />

@@ -351,40 +351,4 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
   },
-  'og-title-long': {
-    config: {
-      title: 'short',
-      desc: 'short',
-      og: {
-        title: 'long',
-        desc: 'short',
-        image: '1200/630',
-        type: 'website',
-      },
-      twitter: {
-        title: 'none',
-        card: 'none',
-        description: 'none',
-        image: 'none',
-      },
-    },
-  },
-  'og-description-long': {
-    config: {
-      title: 'short',
-      desc: 'short',
-      og: {
-        title: 'short',
-        desc: 'long',
-        image: '1200/630',
-        type: 'website',
-      },
-      twitter: {
-        title: 'none',
-        card: 'none',
-        description: 'none',
-        image: 'none',
-      },
-    },
-  },
 }
