@@ -1,5 +1,7 @@
 import type { Story, StoryDefault } from '@ladle/react'
 import { WhatsAppPreview } from '@/components/previews/whatsapp-preview'
+import { NOT_A_RELEVANT_TEST, OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
+import { ogTestFixtureToPlatformPreviewsProps } from '@/lib/og-test-fixture-preview'
 import {
   completeData,
   longTitleData,
@@ -86,3 +88,18 @@ export const FailedToFetch: Story = () => (
 )
 
 export const InvalidUrl: Story = () => <WhatsAppPreview {...invalidUrlData} />
+
+export const WhatsAppFullTestSuite: Story = () => (
+  <div className="flex flex-col gap-14">
+    {Object.entries(OG_TEST_FIXTURES)
+      .filter(([, fixture]) => fixture.results?.whatsapp !== NOT_A_RELEVANT_TEST)
+      .map(([slug, fixture]) => (
+        <div key={slug}>
+          <StoryLabel>{slug}</StoryLabel>
+          <WhatsAppPreview
+            {...ogTestFixtureToPlatformPreviewsProps(slug, fixture)}
+          />
+        </div>
+      ))}
+  </div>
+)

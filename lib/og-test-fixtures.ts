@@ -82,10 +82,10 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         type: 'website',
       },
       twitter: {
-        title: 'none',
-        card: 'none',
-        description: 'none',
-        image: 'none',
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'short',
+        image: '1/1',
       },
     },
     results: {
@@ -276,6 +276,11 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
     },
     results: {
       slack: NOT_A_RELEVANT_TEST,
+      discord: NOT_A_RELEVANT_TEST,
+      linkedin: NOT_A_RELEVANT_TEST,
+      facebook: NOT_A_RELEVANT_TEST,
+      whatsapp: NOT_A_RELEVANT_TEST,
+      imessage: NOT_A_RELEVANT_TEST,
     },
   },
   'no-twitter-description': {
@@ -297,27 +302,11 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
     },
     results: {
       slack: NOT_A_RELEVANT_TEST,
-    },
-  },
-  'og-only-no-twitter': {
-    config: {
-      title: 'short',
-      desc: 'short',
-      og: {
-        title: 'short',
-        desc: 'short',
-        image: '1200/630',
-        type: 'website',
-      },
-      twitter: {
-        title: 'none',
-        card: 'none',
-        description: 'none',
-        image: 'none',
-      },
-    },
-    results: {
-      slack: NOT_A_RELEVANT_TEST,
+      discord: NOT_A_RELEVANT_TEST,
+      linkedin: NOT_A_RELEVANT_TEST,
+      facebook: NOT_A_RELEVANT_TEST,
+      whatsapp: NOT_A_RELEVANT_TEST,
+      imessage: NOT_A_RELEVANT_TEST,
     },
   },
   // Twitter Card variations
@@ -340,6 +329,11 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
     },
     results: {
       slack: NOT_A_RELEVANT_TEST,
+      discord: NOT_A_RELEVANT_TEST,
+      linkedin: NOT_A_RELEVANT_TEST,
+      facebook: NOT_A_RELEVANT_TEST,
+      whatsapp: NOT_A_RELEVANT_TEST,
+      imessage: NOT_A_RELEVANT_TEST,
     },
   },
   'twitter-card-none': {
@@ -362,6 +356,11 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
     },
     results: {
       slack: NOT_A_RELEVANT_TEST,
+      discord: NOT_A_RELEVANT_TEST,
+      linkedin: NOT_A_RELEVANT_TEST,
+      facebook: NOT_A_RELEVANT_TEST,
+      whatsapp: NOT_A_RELEVANT_TEST,
+      imessage: NOT_A_RELEVANT_TEST,
     },
   },
   'twitter-card-large-image': {
@@ -383,6 +382,11 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
     },
     results: {
       slack: NOT_A_RELEVANT_TEST,
+      discord: NOT_A_RELEVANT_TEST,
+      linkedin: NOT_A_RELEVANT_TEST,
+      facebook: NOT_A_RELEVANT_TEST,
+      whatsapp: NOT_A_RELEVANT_TEST,
+      imessage: NOT_A_RELEVANT_TEST,
     },
   },
 }

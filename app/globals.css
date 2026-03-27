@@ -60,7 +60,6 @@
   --chart-4: oklch(0.75 0.15 84);
   --chart-5: oklch(0.65 0.18 70);
   --link: oklch(0.45 0.14 255);
-  --section-border: var(--border);
 }
 
 .dark {
@@ -98,7 +97,6 @@
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
   --link: oklch(0.65 0.15 255);
-  --section-border: var(--border);
 }
 
 @theme inline {
@@ -122,7 +120,6 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
-  --color-section-border: var(--section-border);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
@@ -150,7 +147,6 @@
 /* Platform preview skins — light (default) */
 .twitter {
   /* --background: #ffffff; */
-  --section-border: var(--light-border);
   --border: var(--light-border);
   --foreground: #0f1419;
   --muted-foreground: #536471;
@@ -160,7 +156,6 @@
 
 html.dark .twitter {
   /* --background: #000000; */
-  --section-border: var(--dark-border);
   --border: var(--dark-border);
   --foreground: oklch(0.95 0 0);
   --muted-foreground: oklch(0.6 0 0);
@@ -174,7 +169,6 @@ html.dark .twitter {
   --foreground: #191919;
   --muted-foreground: #666666;
   --border: #e8e8e8;
-  --section-border: #e8e8e8;
   --link: #0a66c2;
 }
 
@@ -184,7 +178,6 @@ html.dark .linkedin {
   --foreground: #e9e9ea;
   --muted-foreground: #a3a6a7;
   --border: #373a3d;
-  --section-border: var(--dark-border);
   --link: #71b7fb;
 }
 
@@ -194,7 +187,6 @@ html.dark .linkedin {
   --foreground: #050505;
   --muted-foreground: #65676b;
   --border: #ced0d4;
-  --section-border: #c6ccd4;
   --secondary: #f0f2f5;
   --link: #1877f2;
 }
@@ -206,7 +198,6 @@ html.dark .facebook {
   --muted-foreground: #b0b3b8;
   --secondary: #333334;
   --border: #3e4042;
-  --section-border: #4a4d52;
   --link: #5aa7ff;
 }
 
@@ -216,17 +207,15 @@ html.dark .facebook {
   --foreground: #2e2e34;
   --muted-foreground: #70717a;
   --border: #d9d9dc;
-  --section-border: #d9d9dc;
   --link: #006dd4;
 }
 
 html.dark .discord {
   /* --background: #1a1a1e; */
-  --card: #242429;
-  --foreground: #f2f3f5;
-  --muted-foreground: #b5bac1;
-  --border: #323237;
-  --section-border: hsl(240 5% 15% / 1);
+  --card: #131416;
+  --foreground: #dcdcdf;
+  --muted-foreground: #dcdcdf;
+  --border: #333337;
   --link: #4e96ee;
 }
 
@@ -235,7 +224,6 @@ html.dark .discord {
   --foreground: #1d1c1d;
   --muted-foreground: #616061;
   --border: #dddddd;
-  --section-border: #dddddd;
   --link: #1064a3;
 }
 
@@ -244,7 +232,6 @@ html.dark .slack {
   --foreground: #d1d2d3;
   --muted-foreground: #ababad;
   --border: #36373b;
-  --section-border: hsl(220 12% 16% / 1);
   --link: #2aa5ce;
 }
 
@@ -255,7 +242,6 @@ html.dark .slack {
   --foreground: #000000;
   --muted-foreground: #8e8e93;
   --border: #d1d1d6;
-  --section-border: #c5c5c9;
   --link: #007aff;
   --primary: #007aff;
   --primary-foreground: #ffffff;
@@ -266,7 +252,6 @@ html.dark .imessage {
   --card: #e9e9eb;
   --card-foreground: #171717;
   --border: #d1d1d6;
-  --section-border: #3a3a3c;
   --foreground: #ffffff;
   --muted-foreground: #7f7f7f;
   --link: #007aff;
@@ -280,7 +265,6 @@ html.dark .imessage {
   --foreground: #111b21;
   --muted-foreground: #667781;
   --border: #d1d7db;
-  --section-border: #d0c8bb;
   --secondary: #d9fdd3;
   --link: #027eb5;
   /* background-image:
@@ -297,7 +281,6 @@ html.dark .whatsapp {
   --foreground: #fafafa;
   --muted-foreground: #898a8a;
   --border: #222222;
-  --section-border: #2f3634;
   --secondary: #005c4b;
   --link: #22bf63;
   /* background-image:

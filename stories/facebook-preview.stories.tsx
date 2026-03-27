@@ -1,5 +1,7 @@
 import type { Story, StoryDefault } from '@ladle/react'
 import { FacebookPreview } from '@/components/previews/facebook-preview'
+import { NOT_A_RELEVANT_TEST, OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
+import { ogTestFixtureToPlatformPreviewsProps } from '@/lib/og-test-fixture-preview'
 import {
   completeData,
   longTitleData,
@@ -86,3 +88,18 @@ export const FailedToFetch: Story = () => (
 )
 
 export const InvalidUrl: Story = () => <FacebookPreview {...invalidUrlData} />
+
+export const FacebookFullTestSuite: Story = () => (
+  <div className="flex flex-col gap-14">
+    {Object.entries(OG_TEST_FIXTURES)
+      .filter(([, fixture]) => fixture.results?.facebook !== NOT_A_RELEVANT_TEST)
+      .map(([slug, fixture]) => (
+        <div key={slug}>
+          <StoryLabel>{slug}</StoryLabel>
+          <FacebookPreview
+            {...ogTestFixtureToPlatformPreviewsProps(slug, fixture)}
+          />
+        </div>
+      ))}
+  </div>
+)
