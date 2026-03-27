@@ -23,16 +23,6 @@ export function domain(url: string) {
 export const UserName = 'John Doe'
 export const UserHandle = '@johndoe'
 
-export function siteName(url: string) {
-  try {
-    const hostname = new URL(url).hostname.replace('www.', '')
-    const name = hostname.split('.')[0]
-    return name.charAt(0).toUpperCase() + name.slice(1)
-  } catch {
-    return url
-  }
-}
-
 export function UserAvatar(props: { size: number }) {
   return (
     <Avatar

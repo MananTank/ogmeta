@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import type { OGMetadata } from '@/lib/og-types'
+import { siteNameLabelFromUrl } from '@/lib/site-name'
 
 export type Content = 'none' | 'short' | 'long'
 
@@ -190,19 +192,23 @@ function normalizeSiteOrigin(raw: string | undefined): string | null {
 /**
  * Site origin for `/tests/**` metadata (`metadataBase`, `og:url`).
  * Production on Vercel uses {@link OG_METADATA_PROD_BASE}; preview and local dev use env or localhost.
+ * Safe when `process` is undefined (e.g. some client bundles).
  */
 export function getOgTestsMetadataBase(): URL {
-  if (process.env.VERCEL_ENV === 'production') {
+  const env =
+    typeof process !== 'undefined' && process.env ? process.env : undefined
+
+  if (env?.VERCEL_ENV === 'production') {
     return new URL(OG_METADATA_PROD_BASE)
   }
 
   const fromEnv =
-    normalizeSiteOrigin(process.env.NEXT_PUBLIC_SITE_URL) ??
-    normalizeSiteOrigin(process.env.VERCEL_PROJECT_PRODUCTION_URL)
+    normalizeSiteOrigin(env?.NEXT_PUBLIC_SITE_URL) ??
+    normalizeSiteOrigin(env?.VERCEL_PROJECT_PRODUCTION_URL)
   if (fromEnv) return new URL(fromEnv)
 
-  if (process.env.VERCEL_URL) {
-    return new URL(`https://${process.env.VERCEL_URL.replace(/\/+$/, '')}`)
+  if (env?.VERCEL_URL) {
+    return new URL(`https://${env.VERCEL_URL.replace(/\/+$/, '')}`)
   }
 
   return new URL('http://localhost:3000')
@@ -242,7 +248,7 @@ export function ogTestOptionsToMetadata(
     metadata.openGraph = {
       type: og.type,
       url: ogUrl,
-      siteName: 'OG Meta Fixtures',
+      siteName: 'Site Name',
       ...(ogTitle ? { title: ogTitle } : {}),
       ...(ogDesc ? { description: ogDesc } : {}),
       ...(ogImagePathname ? { images: [{ url: ogImagePathname }] } : {}),
@@ -266,4 +272,70 @@ export function ogTestOptionsToMetadata(
   }
 
   return metadata
+}
+
+/**
+ * Builds {@link OGMetadata} the same way fixture pages expose tags (doc / og / twitter),
+ * for previews and tests. Image URLs are absolute using `metadataBase`.
+ */
+export function ogTestOptionsToOgMetadata(
+  options: OgTestHtmlOptions,
+  pathname: string,
+  metadataBase: URL
+): OGMetadata {
+  const resolved = normalizeOgTestHtmlOptions(options)
+  const pageUrl = new URL(
+    pathname.startsWith('/') ? pathname : `/${pathname}`,
+    metadataBase
+  ).href
+
+  const og = resolved.og
+  const doc = {
+    title: resolveContent('title', resolved.title, 'html') ?? '',
+    description: resolveContent('description', resolved.desc, 'html') ?? '',
+  }
+
+  const openGraph: OGMetadata['openGraph'] = {
+    title: '',
+    description: '',
+    image: '',
+    isValidImage: false,
+    type: 'website',
+  }
+  if (hasAnyOg(og)) {
+    openGraph.title = resolveContent('title', og.title, 'og') ?? ''
+    openGraph.description = resolveContent('description', og.desc, 'og') ?? ''
+    const ogPath = og.image !== 'none' ? ogImagePath(og.image) : null
+    openGraph.image = ogPath ? new URL(ogPath, metadataBase).href : ''
+    openGraph.isValidImage = og.image !== 'none' && og.image !== 'broken'
+    openGraph.siteName = 'Site Name'
+    openGraph.type = og.type
+  } else {
+    // openGraph.siteName = 'Site Name'
+  }
+
+  const tw = resolved.twitter
+  const twitter: OGMetadata['twitter'] = {
+    title: '',
+    description: '',
+    image: '',
+    isValidImage: false,
+  }
+  if (tw.card !== 'none') {
+    twitter.title = resolveContent('title', tw.title, 'twitter') ?? ''
+    twitter.description =
+      resolveContent('description', tw.description, 'twitter') ?? ''
+    const twPath = twitterImagePath(tw.image)
+    twitter.image = twPath ? new URL(twPath, metadataBase).href : ''
+    twitter.isValidImage = tw.image !== 'none' && tw.image !== 'broken'
+    twitter.card = tw.card
+    if (tw.site?.trim()) twitter.site = tw.site.trim()
+  }
+
+  return {
+    url: pageUrl,
+    doc,
+    openGraph,
+    twitter,
+  }
 }

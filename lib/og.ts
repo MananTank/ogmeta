@@ -2,6 +2,7 @@
 
 import { unstable_cache } from 'next/cache'
 import * as cheerio from 'cheerio'
+import { siteNameLabelFromUrl } from '@/lib/site-name'
 import {
   effectiveTwitterPreview,
   type OGMetadata,
@@ -10,6 +11,7 @@ import {
 } from '@/lib/og-types'
 
 export type {
+  DocumentMetaSlice,
   OGMetadata,
   OpenGraphSlice,
   TwitterTagsSlice,
@@ -66,6 +68,7 @@ async function syntheticTwitterProfileMetadata(
   }
   const base: OGMetadata = {
     url: pageUrl,
+    doc: { title, description },
     openGraph: {
       title,
       description,
@@ -166,17 +169,15 @@ async function parseOpenGraphSlice(
   $: cheerio.CheerioAPI,
   pageUrl: string
 ): Promise<OpenGraphSlice> {
-  const title =
-    getMetaContent($, [
-      'meta[property="og:title"]',
-      'meta[name="og:title"]',
-    ]).trim() || $('title').text().trim()
+  const title = getMetaContent($, [
+    'meta[property="og:title"]',
+    'meta[name="og:title"]',
+  ]).trim()
 
-  const description =
-    getMetaContent($, [
-      'meta[property="og:description"]',
-      'meta[name="og:description"]',
-    ]).trim() || getMetaContent($, ['meta[name="description"]']).trim()
+  const description = getMetaContent($, [
+    'meta[property="og:description"]',
+    'meta[name="og:description"]',
+  ]).trim()
 
   const rawImage = getMetaContent($, [
     'meta[property="og:image"]',
@@ -184,10 +185,15 @@ async function parseOpenGraphSlice(
   ])
   const image = resolveMaybeRelative(rawImage, pageUrl)
 
-  const siteName = getMetaContent($, [
+  const ogSiteName = getMetaContent($, [
     'meta[property="og:site_name"]',
     'meta[name="og:site_name"]',
-  ])
+  ]).trim()
+  const applicationName = getMetaContent($, [
+    'meta[name="application-name"]',
+  ]).trim()
+  const resolvedSiteName =
+    ogSiteName || applicationName || siteNameLabelFromUrl(pageUrl)
 
   const type =
     getMetaContent($, ['meta[property="og:type"]', 'meta[name="og:type"]']) ||
@@ -200,7 +206,7 @@ async function parseOpenGraphSlice(
     description,
     image,
     isValidImage,
-    siteName: siteName || undefined,
+    siteName: resolvedSiteName || undefined,
     type,
   }
 }
@@ -288,6 +294,9 @@ async function parsePageMetadata(
   pageUrl: string
 ): Promise<OGMetadata> {
   const $ = cheerio.load(html)
+  const title = $('title').first().text().trim()
+  const description = getMetaContent($, ['meta[name="description"]']).trim()
+
   const [openGraph, twitter, favicon] = await Promise.all([
     parseOpenGraphSlice($, pageUrl),
     parseTwitterSlice($, pageUrl),
@@ -296,6 +305,7 @@ async function parsePageMetadata(
 
   return {
     url: pageUrl,
+    doc: { title, description },
     openGraph,
     twitter,
     favicon,
@@ -334,7 +344,7 @@ async function fetchOGDataUncached(url: string): Promise<FetchOGDataResult> {
 
 const getCachedOGData = unstable_cache(
   async (url: string) => fetchOGDataUncached(url),
-  ['og-metadata', 'og-and-twitter-split-v1'],
+  ['og-metadata', 'og-and-twitter-split-v5'],
   { revalidate: REVALIDATE_SECONDS, tags: ['og-metadata'] }
 )
 

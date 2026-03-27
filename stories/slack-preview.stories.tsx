@@ -1,5 +1,7 @@
 import type { Story, StoryDefault } from '@ladle/react'
 import { SlackPreview } from '@/components/previews/slack-preview'
+import { OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
+import { ogTestFixtureToPlatformPreviewsProps } from '@/lib/og-test-fixture-preview'
 import {
   completeData,
   longTitleData,
@@ -86,3 +88,16 @@ export const FailedToFetch: Story = () => (
 )
 
 export const InvalidUrl: Story = () => <SlackPreview {...invalidUrlData} />
+
+export const SlackFullTestSuite: Story = () => (
+  <div className="flex flex-col gap-14">
+    {Object.entries(OG_TEST_FIXTURES).map(([slug, fixture]) => (
+      <div key={slug}>
+        <StoryLabel>{slug}</StoryLabel>
+        <SlackPreview
+          {...ogTestFixtureToPlatformPreviewsProps(slug, fixture)}
+        />
+      </div>
+    ))}
+  </div>
+)

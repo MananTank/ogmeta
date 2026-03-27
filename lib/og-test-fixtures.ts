@@ -19,7 +19,7 @@ export type OgTestFixture = {
   results?: OgTestFixtureAppResult
 }
 
-const TWITTER_NO_PREVIEW = 'no preview, link shown'
+const RESULT_NO_PREVIEW = 'no preview, link shown'
 
 export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
   'no-meta': {
@@ -30,7 +30,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
-      twitter: TWITTER_NO_PREVIEW,
+      twitter: RESULT_NO_PREVIEW,
+      slack: RESULT_NO_PREVIEW,
     },
   },
   'only-title': {
@@ -41,7 +42,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
-      twitter: TWITTER_NO_PREVIEW,
+      twitter: RESULT_NO_PREVIEW,
+      slack: RESULT_NO_PREVIEW,
     },
   },
   'only-desc': {
@@ -52,7 +54,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
-      twitter: TWITTER_NO_PREVIEW,
+      twitter: RESULT_NO_PREVIEW,
+      slack: 'small preview, domain shown as title, description shown',
     },
   },
   'only-meta': {
@@ -63,7 +66,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
-      twitter: TWITTER_NO_PREVIEW,
+      twitter: RESULT_NO_PREVIEW,
     },
   },
   'only-og': {
@@ -79,7 +82,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
-      twitter: TWITTER_NO_PREVIEW,
+      twitter: RESULT_NO_PREVIEW,
     },
   },
   'only-twitter': {
@@ -95,7 +98,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
-      twitter: TWITTER_NO_PREVIEW,
+      twitter: RESULT_NO_PREVIEW,
     },
   },
   'complete-short': {

@@ -19,8 +19,15 @@ export interface TwitterTagsSlice {
   site?: string
 }
 
+/** Document-level metadata: `<title>` and `meta[name="description"]` (not `og:*` / `twitter:*`). */
+export interface DocumentMetaSlice {
+  title: string
+  description: string
+}
+
 export interface OGMetadata {
   url: string
+  doc: DocumentMetaSlice
   openGraph: OpenGraphSlice
   twitter: TwitterTagsSlice
   favicon?: string
@@ -40,9 +47,12 @@ export function effectiveTwitterPreview(data: OGMetadata): {
 } {
   const og = data.openGraph
   const tw = data.twitter
+  const docTitle = data.doc.title?.trim() ?? ''
+  const docDesc = data.doc.description?.trim() ?? ''
 
-  const title = tw.title?.trim() ? tw.title : og.title
-  const description = tw.description?.trim() ? tw.description : og.description
+  const title = tw.title?.trim() || og.title?.trim() || docTitle
+  const description =
+    tw.description?.trim() || og.description?.trim() || docDesc
 
   const hasTwImage = Boolean(tw.image?.trim())
   const image = hasTwImage ? tw.image : og.image
@@ -52,4 +62,31 @@ export function effectiveTwitterPreview(data: OGMetadata): {
   const card = raw || undefined
 
   return { title, description, image, isValidImage, card }
+}
+
+/**
+ * Slack link unfurl: Open Graph first, then Twitter Card tags, then document HTML
+ * (Slack falls back to Twitter metadata when OG is missing).
+ */
+export function effectiveSlackPreview(data: OGMetadata): {
+  title: string
+  description: string
+  image: string
+  isValidImage: boolean
+} {
+  const og = data.openGraph
+  const tw = data.twitter
+  const docTitle = data.doc.title?.trim() ?? ''
+  const docDesc = data.doc.description?.trim() ?? ''
+
+  const title = og.title?.trim() || tw.title?.trim() || docTitle
+  const description =
+    og.description?.trim() || tw.description?.trim() || docDesc
+
+  const hasOgImage = Boolean(og.image?.trim()) && og.isValidImage
+  const hasTwImage = Boolean(tw.image?.trim()) && tw.isValidImage
+  const image = hasOgImage ? og.image : hasTwImage ? tw.image : ''
+  const isValidImage = hasOgImage || hasTwImage
+
+  return { title, description, image, isValidImage }
 }

@@ -3,19 +3,20 @@
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
+  domain,
   OGImage,
   PARAGRAPH_1,
   PARAGRAPH_2,
   PlatformSection,
   UserAvatar,
   UserName,
-  siteName,
 } from './common'
 import type { PlatformPreviewsProps } from './types'
 
 export function DiscordPreview(props: PlatformPreviewsProps) {
   const url = props.data?.url ?? props.urlInput ?? ''
   const og = props.data?.openGraph
+  const displaySiteName = og?.siteName?.trim() || domain(url)
   const showPreview =
     props.isValidUrl && !props.isError && og?.image && og.isValidImage
 
@@ -71,7 +72,7 @@ export function DiscordPreview(props: PlatformPreviewsProps) {
                   </>
                 ) : (
                   <>
-                    <p className="text-foreground text-xs">{siteName(url)}</p>
+                    <p className="text-foreground text-xs">{displaySiteName}</p>
                     <p className="text-link cursor-pointer leading-snug font-semibold hover:underline">
                       {og?.title || 'No title'}
                     </p>

@@ -22,6 +22,10 @@ const emptyTwitter: OGMetadata['twitter'] = {
 function baseMetadata(openGraph: OGMetadata['openGraph']): OGMetadata {
   return {
     url: SAMPLE_URL,
+    doc: {
+      title: openGraph.title,
+      description: openGraph.description,
+    },
     openGraph,
     twitter: { ...emptyTwitter },
     favicon: SAMPLE_FAVICON,
