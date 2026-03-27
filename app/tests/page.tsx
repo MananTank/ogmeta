@@ -1,13 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
-import { ogTestsRobotsAllow } from '@/lib/og-test-html'
 
 export const metadata: Metadata = {
   title: 'OG test fixtures',
   description:
     'Static HTML fixtures for Open Graph and Twitter card behavior (missing fields, images, aspect ratios).',
-  robots: ogTestsRobotsAllow,
 }
 
 const TEST_LINKS = Object.keys(OG_TEST_FIXTURES).map((key) => ({

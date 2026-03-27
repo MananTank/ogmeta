@@ -134,13 +134,6 @@ function visibleTitle(options: OgTestHtmlOptionsResolved): string {
   return ''
 }
 
-/** Explicit allow for `/tests/**` so crawlers and previews do not infer noindex. */
-export const ogTestsRobotsAllow: Metadata['robots'] = {
-  index: true,
-  follow: true,
-  googleBot: { index: true, follow: true },
-}
-
 /** Canonical production origin for `/tests/**` metadata (`metadataBase`, `og:url`). */
 const OG_METADATA_PROD_BASE = 'https://ogmeta.app/'
 
@@ -197,7 +190,6 @@ export function ogTestOptionsToMetadata(
 
   const metadata: Metadata = {
     title,
-    robots: ogTestsRobotsAllow,
   }
   if (htmlDesc) metadata.description = htmlDesc
 
