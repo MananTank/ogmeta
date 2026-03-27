@@ -145,7 +145,7 @@ function ogImageAbsoluteForMetadata(
 function visibleTitle(options: OgTestHtmlOptionsResolved): string {
   const t = resolveContent('title', options.title)
   if (t) return t
-  return 'Untitled fixture'
+  return ''
 }
 
 /** Base URL for resolving absolute OG/Twitter image URLs in metadata (matches deployment). */

@@ -1,11 +1,32 @@
 import type { OgTestHtmlOptions } from '@/lib/og-test-html'
 
-export const OG_TEST_FIXTURES: Record<string, OgTestHtmlOptions> = {
+/**
+ * Observed link-preview behavior per app when pasting the fixture URL.
+ * Fill in as you test (Twitter, LinkedIn, etc.).
+ */
+export type OgTestFixtureAppResult = {
+  twitter?: string
+  linkedin?: string
+  facebook?: string
+  discord?: string
+  slack?: string
+  whatsapp?: string
+  imessage?: string
+}
+
+export type OgTestFixture = OgTestHtmlOptions & {
+  results?: OgTestFixtureAppResult
+}
+
+export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
   'no-meta': {
     title: 'none',
     desc: 'none',
     og: 'none',
     twitter: 'none',
+    results: {
+      twitter: 'no preview, link shown',
+    },
   },
   'only-title': {
     title: 'short',

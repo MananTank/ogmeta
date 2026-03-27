@@ -21,10 +21,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { path } = await params
   const key = path.join('/')
-  const options = OG_TEST_FIXTURES[key]
-  if (!options) return {}
+  const fixture = OG_TEST_FIXTURES[key]
+  if (!fixture) return {}
   const pathname = `/tests/${key}`
-  return ogTestOptionsToMetadata(options, pathname, getOgTestsMetadataBase())
+  return ogTestOptionsToMetadata(fixture, pathname, getOgTestsMetadataBase())
 }
 
 export default async function TestsFixturePage({
@@ -34,14 +34,14 @@ export default async function TestsFixturePage({
 }) {
   const { path } = await params
   const key = path.join('/')
-  const options = OG_TEST_FIXTURES[key]
-  if (!options) notFound()
+  const fixture = OG_TEST_FIXTURES[key]
+  if (!fixture) notFound()
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-12 font-sans">
       <h1 className="mb-4 text-lg font-semibold tracking-tight">{key}</h1>
       <code className="bg-card block w-full rounded-2xl p-4 text-sm whitespace-pre-wrap">
-        {JSON.stringify(options, null, 2)}
+        {JSON.stringify(fixture, null, 2)}
       </code>
     </main>
   )
