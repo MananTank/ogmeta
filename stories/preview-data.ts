@@ -13,8 +13,7 @@ export const completeData: PreviewData = {
   image: SAMPLE_IMAGE,
   isValidImage: true,
   url: SAMPLE_URL,
-  favicon:
-    'https://www.google.com/s2/favicons?domain=example.com&sz=64',
+  favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=64',
   isLoading: false,
   isError: false,
   isValidUrl: true,

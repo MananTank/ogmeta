@@ -34,17 +34,30 @@ interface HistoryItem {
   favicon?: string
 }
 
+/** Hosts that are valid without a dot (e.g. localhost, loopback) so we can test fixture URLs locally. */
+function isLocalOrLoopbackHostname(hostname: string): boolean {
+  const h = hostname.toLowerCase()
+  return (
+    h === 'localhost' ||
+    h.endsWith('.localhost') ||
+    h === '127.0.0.1' ||
+    h === '::1' ||
+    h === '[::1]'
+  )
+}
+
 export function isValidUrl(urlString: string): boolean {
-  if (!urlString.includes('.')) {
-    return false
-  }
+  const trimmed = urlString.trim()
+  if (!trimmed) return false
   try {
-    let testUrl = urlString.trim()
+    let testUrl = trimmed
     if (!testUrl.startsWith('http://') && !testUrl.startsWith('https://')) {
       testUrl = 'https://' + testUrl
     }
-    new URL(testUrl)
-    return true
+    const u = new URL(testUrl)
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') return false
+    if (!u.hostname) return false
+    return u.hostname.includes('.') || isLocalOrLoopbackHostname(u.hostname)
   } catch {
     return false
   }
