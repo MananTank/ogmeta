@@ -40,19 +40,21 @@ export default async function TestsFixturePage({
   if (!fixture) notFound()
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-12 font-sans">
+    <main className="mx-auto max-w-xl px-6 pt-24 pb-32 font-sans">
       {/* back link */}
       <Link
         href="/tests"
         className="text-muted-foreground hover:text-foreground mb-12 flex items-center gap-2 text-sm"
       >
-        <CornerUpLeftIcon className="size-5" />
+        <CornerUpLeftIcon className="size-8" />
       </Link>
 
-      <h1 className="mb-4 text-lg font-semibold tracking-tight">{slug}</h1>
-      <code className="bg-card block w-full rounded-2xl p-4 text-sm whitespace-pre-wrap">
-        {JSON.stringify(fixture, null, 2)}
-      </code>
+      <h1 className="text-lg font-medium tracking-tight lowercase">{slug}</h1>
+      <div className="mt-4">
+        <code className="bg-card block w-full rounded-2xl p-4 text-sm whitespace-pre-wrap">
+          {JSON.stringify(fixture, null, 2)}
+        </code>
+      </div>
     </main>
   )
 }

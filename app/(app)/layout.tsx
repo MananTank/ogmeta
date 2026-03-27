@@ -1,25 +1,24 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
-import { Geist_Mono, Instrument_Serif } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Providers } from '@/components/providers'
 import { ThemeProvider } from '@/components/theme-provider'
-import './globals.css'
+import '../globals.css'
 
 const openRunde = localFont({
   src: [
     {
-      path: '../public/fonts/OpenRunde-Regular.woff2',
+      path: '../../public/fonts/OpenRunde-Regular.woff2',
       weight: '400',
       style: 'normal',
     },
     {
-      path: '../public/fonts/OpenRunde-Medium.woff2',
+      path: '../../public/fonts/OpenRunde-Medium.woff2',
       weight: '500',
       style: 'normal',
     },
     {
-      path: '../public/fonts/OpenRunde-Semibold.woff2',
+      path: '../../public/fonts/OpenRunde-Semibold.woff2',
       weight: '600',
       style: 'normal',
     },
@@ -28,22 +27,10 @@ const openRunde = localFont({
   display: 'swap',
 })
 
-const geistMono = Geist_Mono({
-  subsets: ['latin'],
-  variable: '--font-geist-mono',
-})
-
-const instrumentSerif = Instrument_Serif({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-instrument-serif',
-})
-
 export const metadata: Metadata = {
   title: 'OG Meta - Check OpenGraph Tags',
   description:
     'Preview how your URLs appear when shared on social media and messaging apps. Check OpenGraph metadata for any website.',
-  generator: 'v0.app',
   icons: {
     icon: [
       {
@@ -70,7 +57,7 @@ export default function RootLayout(
     <html
       lang="en"
       suppressHydrationWarning
-      className={`dark ${openRunde.variable} ${geistMono.variable} ${instrumentSerif.variable}`}
+      className={`dark ${openRunde.variable}`}
     >
       <body className="bg-background text-foreground min-h-screen font-sans antialiased">
         <ThemeProvider
@@ -80,7 +67,6 @@ export default function RootLayout(
           storageKey="ogmeta-theme"
           disableTransitionOnChange
         >
-          {/* <SiteHeader /> */}
           <Providers>{props.children}</Providers>
         </ThemeProvider>
         <Analytics />
