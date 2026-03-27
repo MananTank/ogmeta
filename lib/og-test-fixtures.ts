@@ -20,9 +20,140 @@ export type OgTestFixture = {
 }
 
 const RESULT_NO_PREVIEW = 'no preview, link shown'
-const NOT_A_RELEVANT_TEST = 'not a relevant test'
+export const NOT_A_RELEVANT_TEST = 'not a relevant test'
 
 export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
+  // Length variations
+  'complete-short': {
+    config: {
+      title: 'short',
+      desc: 'short',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'short',
+        image: '1200/630',
+        site: '@example',
+      },
+    },
+    results: {
+      slack:
+        'big preview - 3 rows + image: favicon + site name, og:title, og:description',
+    },
+  },
+  'complete-long': {
+    config: {
+      title: 'long',
+      desc: 'long',
+      og: {
+        title: 'long',
+        desc: 'long',
+        image: '1200/630',
+        type: 'website',
+      },
+      twitter: {
+        title: 'long',
+        card: 'summary_large_image',
+        description: 'long',
+        image: '1200/630',
+        site: '@example',
+      },
+    },
+    results: {
+      slack:
+        'big preview - 3 rows + image: favicon + site name, og:title, og:description. no limit on title, description limited to 700 characters and a show more and show less buttons shown to toggle',
+    },
+  },
+  // Image variations
+  'image-square': {
+    config: {
+      title: 'short',
+      desc: 'short',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: '1/1',
+        type: 'website',
+      },
+      twitter: {
+        title: 'none',
+        card: 'none',
+        description: 'none',
+        image: 'none',
+      },
+    },
+    results: {
+      slack: 'image shown in original aspect ratio',
+    },
+  },
+  'image-broken': {
+    config: {
+      title: 'short',
+      desc: 'short',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: 'broken',
+        type: 'website',
+      },
+      twitter: {
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'short',
+        image: 'broken',
+      },
+    },
+    results: {
+      slack:
+        'small preview - 3 rows: favicon + site name, og:title, og:description',
+    },
+  },
+  'image-none': {
+    config: {
+      title: 'short',
+      desc: 'short',
+      og: {
+        title: 'short',
+        desc: 'short',
+        image: 'none', // missing
+        type: 'website',
+      },
+      twitter: {
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'none',
+        image: 'none', // missing
+      },
+    },
+    results: {
+      slack:
+        'small preview - 3 rows: favicon + site name, og:title, og:description',
+    },
+  },
+  // Partial Data
+  'only-twitter': {
+    config: {
+      title: 'none',
+      desc: 'none',
+      og: 'none',
+      twitter: {
+        title: 'short',
+        card: 'summary_large_image',
+        description: 'short',
+        image: '1200/630',
+      },
+    },
+    results: {
+      slack:
+        'big preview - 3 rows + image: favicon + domain, twitter:title, twitter:description',
+    },
+  },
   'no-meta': {
     config: {
       title: 'none',
@@ -87,69 +218,6 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         'big preview - 3 rows + image: favicon + site name, og:title, og:description',
     },
   },
-  'only-twitter': {
-    config: {
-      title: 'none',
-      desc: 'none',
-      og: 'none',
-      twitter: {
-        title: 'short',
-        card: 'summary_large_image',
-        description: 'short',
-        image: '1200/630',
-      },
-    },
-    results: {
-      slack:
-        'big preview - 3 rows + image: favicon + domain, twitter:title, twitter:description',
-    },
-  },
-  'complete-short': {
-    config: {
-      title: 'short',
-      desc: 'short',
-      og: {
-        title: 'short',
-        desc: 'short',
-        image: '1200/630',
-        type: 'website',
-      },
-      twitter: {
-        title: 'short',
-        card: 'summary_large_image',
-        description: 'short',
-        image: '1200/630',
-        site: '@example',
-      },
-    },
-    results: {
-      slack:
-        'big preview - 3 rows + image: favicon + site name, og:title, og:description',
-    },
-  },
-  'complete-long': {
-    config: {
-      title: 'long',
-      desc: 'long',
-      og: {
-        title: 'long',
-        desc: 'long',
-        image: '1200/630',
-        type: 'website',
-      },
-      twitter: {
-        title: 'long',
-        card: 'summary_large_image',
-        description: 'long',
-        image: '1200/630',
-        site: '@example',
-      },
-    },
-    results: {
-      slack:
-        'big preview - 3 rows + image: favicon + site name, og:title, og:description. no limit on title, description limited to 700 characters and a show more and show less buttons shown to toggle',
-    },
-  },
   'no-og-title': {
     config: {
       title: 'short',
@@ -194,28 +262,6 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         'big preview - 3 rows + image: favicon + site name, og:title, description',
     },
   },
-  'no-og-image': {
-    config: {
-      title: 'short',
-      desc: 'short',
-      og: {
-        title: 'short',
-        desc: 'short',
-        image: 'none', // missing
-        type: 'website',
-      },
-      twitter: {
-        title: 'short',
-        card: 'summary_large_image',
-        description: 'none',
-        image: 'none', // missing
-      },
-    },
-    results: {
-      slack:
-        'small preview - 3 rows: favicon + site name, og:title, og:description',
-    },
-  },
   'no-twitter': {
     config: {
       title: 'short',
@@ -253,71 +299,6 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       slack: NOT_A_RELEVANT_TEST,
     },
   },
-  'og-image-broken': {
-    config: {
-      title: 'short',
-      desc: 'short',
-      og: {
-        title: 'short',
-        desc: 'short',
-        image: 'broken',
-        type: 'website',
-      },
-      twitter: {
-        title: 'short',
-        card: 'summary_large_image',
-        description: 'short',
-        image: 'broken',
-      },
-    },
-    results: {
-      slack:
-        'small preview - 3 rows: favicon + site name, og:title, og:description',
-    },
-  },
-  'og-square': {
-    config: {
-      title: 'short',
-      desc: 'short',
-      og: {
-        title: 'short',
-        desc: 'short',
-        image: '1/1',
-        type: 'website',
-      },
-      twitter: {
-        title: 'none',
-        card: 'none',
-        description: 'none',
-        image: 'none',
-      },
-    },
-    results: {
-      slack: 'image shown in original aspect ratio',
-    },
-  },
-  'twitter-only': {
-    config: {
-      title: 'short',
-      desc: 'none',
-      og: {
-        title: 'none',
-        desc: 'none',
-        image: 'none',
-        type: 'website',
-      },
-      twitter: {
-        title: 'short',
-        card: 'summary_large_image',
-        description: 'short',
-        image: '1200/630',
-      },
-    },
-    results: {
-      slack:
-        'big preview - 3 rows + image: favicon + domain, twitter:title, twitter:description',
-    },
-  },
   'og-only-no-twitter': {
     config: {
       title: 'short',
@@ -339,6 +320,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       slack: NOT_A_RELEVANT_TEST,
     },
   },
+  // Twitter Card variations
   'twitter-card-summary': {
     config: {
       title: 'short',

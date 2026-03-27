@@ -1,6 +1,6 @@
 import type { Story, StoryDefault } from '@ladle/react'
 import { SlackPreview } from '@/components/previews/slack-preview'
-import { OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
+import { NOT_A_RELEVANT_TEST, OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
 import { ogTestFixtureToPlatformPreviewsProps } from '@/lib/og-test-fixture-preview'
 import {
   completeData,
@@ -91,13 +91,15 @@ export const InvalidUrl: Story = () => <SlackPreview {...invalidUrlData} />
 
 export const SlackFullTestSuite: Story = () => (
   <div className="flex flex-col gap-14">
-    {Object.entries(OG_TEST_FIXTURES).map(([slug, fixture]) => (
-      <div key={slug}>
-        <StoryLabel>{slug}</StoryLabel>
-        <SlackPreview
-          {...ogTestFixtureToPlatformPreviewsProps(slug, fixture)}
-        />
-      </div>
-    ))}
+    {Object.entries(OG_TEST_FIXTURES)
+      .filter(([, fixture]) => fixture.results?.slack !== NOT_A_RELEVANT_TEST)
+      .map(([slug, fixture]) => (
+        <div key={slug}>
+          <StoryLabel>{slug}</StoryLabel>
+          <SlackPreview
+            {...ogTestFixtureToPlatformPreviewsProps(slug, fixture)}
+          />
+        </div>
+      ))}
   </div>
 )
