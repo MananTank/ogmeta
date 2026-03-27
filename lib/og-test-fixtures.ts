@@ -20,6 +20,7 @@ export type OgTestFixture = {
 }
 
 const RESULT_NO_PREVIEW = 'no preview, link shown'
+const NOT_A_RELEVANT_TEST = 'not a relevant test'
 
 export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
   'no-meta': {
@@ -55,7 +56,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
     },
     results: {
       twitter: RESULT_NO_PREVIEW,
-      slack: 'small preview, domain shown as title, description shown',
+      slack: 'small preview - 2 rows: domain, description',
     },
   },
   'only-meta': {
@@ -66,7 +67,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
-      twitter: RESULT_NO_PREVIEW,
+      slack: 'small preview - 3 rows: favicon + domain, title, description',
     },
   },
   'only-og': {
@@ -82,7 +83,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
-      twitter: RESULT_NO_PREVIEW,
+      slack:
+        'big preview - 3 rows + image: favicon + site name, og:title, og:description',
     },
   },
   'only-twitter': {
@@ -98,7 +100,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
-      twitter: RESULT_NO_PREVIEW,
+      slack:
+        'big preview - 3 rows + image: favicon + domain, twitter:title, twitter:description',
     },
   },
   'complete-short': {
@@ -119,6 +122,10 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         site: '@example',
       },
     },
+    results: {
+      slack:
+        'big preview - 3 rows + image: favicon + site name, og:title, og:description',
+    },
   },
   'complete-long': {
     config: {
@@ -138,6 +145,10 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         site: '@example',
       },
     },
+    results: {
+      slack:
+        'big preview - 3 rows + image: favicon + site name, og:title, og:description. no limit on title, description limited to 700 characters and a show more and show less buttons shown to toggle',
+    },
   },
   'no-og-title': {
     config: {
@@ -155,6 +166,10 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         description: 'short',
         image: '1200/630',
       },
+    },
+    results: {
+      slack:
+        'big preview - 3 rows + image: favicon + site name, title, og:description. no limit on title, description limited to 700 characters and a show more and show less buttons shown to toggle',
     },
   },
   'no-og-description': {
@@ -174,6 +189,10 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         image: '1200/630',
       },
     },
+    results: {
+      slack:
+        'big preview - 3 rows + image: favicon + site name, og:title, description',
+    },
   },
   'no-og-image': {
     config: {
@@ -192,6 +211,10 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         image: 'none', // missing
       },
     },
+    results: {
+      slack:
+        'small preview - 3 rows: favicon + site name, og:title, og:description',
+    },
   },
   'no-twitter': {
     config: {
@@ -204,6 +227,9 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         type: 'website',
       },
       twitter: 'none',
+    },
+    results: {
+      slack: NOT_A_RELEVANT_TEST,
     },
   },
   'no-twitter-description': {
@@ -223,6 +249,9 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         image: '1200/630',
       },
     },
+    results: {
+      slack: NOT_A_RELEVANT_TEST,
+    },
   },
   'og-image-broken': {
     config: {
@@ -240,6 +269,10 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         description: 'short',
         image: 'broken',
       },
+    },
+    results: {
+      slack:
+        'small preview - 3 rows: favicon + site name, og:title, og:description',
     },
   },
   'og-square': {
@@ -259,6 +292,9 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         image: 'none',
       },
     },
+    results: {
+      slack: 'image shown in original aspect ratio',
+    },
   },
   'twitter-only': {
     config: {
@@ -276,6 +312,10 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         description: 'short',
         image: '1200/630',
       },
+    },
+    results: {
+      slack:
+        'big preview - 3 rows + image: favicon + domain, twitter:title, twitter:description',
     },
   },
   'og-only-no-twitter': {
@@ -295,6 +335,9 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         image: 'none',
       },
     },
+    results: {
+      slack: NOT_A_RELEVANT_TEST,
+    },
   },
   'twitter-card-summary': {
     config: {
@@ -312,6 +355,9 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         description: 'short',
         image: '1200/630',
       },
+    },
+    results: {
+      slack: NOT_A_RELEVANT_TEST,
     },
   },
   'twitter-card-none': {
@@ -332,6 +378,9 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         site: '@example',
       },
     },
+    results: {
+      slack: NOT_A_RELEVANT_TEST,
+    },
   },
   'twitter-card-large-image': {
     config: {
@@ -349,6 +398,9 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
         description: 'short',
         image: '1200/630',
       },
+    },
+    results: {
+      slack: NOT_A_RELEVANT_TEST,
     },
   },
 }
