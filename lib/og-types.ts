@@ -35,6 +35,8 @@ export function effectiveTwitterPreview(data: OGMetadata): {
   description: string
   image: string
   isValidImage: boolean
+  /** Normalized `twitter:card` (e.g. `summary`, `summary_large_image`). */
+  card: string | undefined
 } {
   const og = data.openGraph
   const tw = data.twitter
@@ -46,5 +48,8 @@ export function effectiveTwitterPreview(data: OGMetadata): {
   const image = hasTwImage ? tw.image : og.image
   const isValidImage = hasTwImage ? tw.isValidImage : og.isValidImage
 
-  return { title, description, image, isValidImage }
+  const raw = tw.card?.trim().toLowerCase()
+  const card = raw || undefined
+
+  return { title, description, image, isValidImage, card }
 }

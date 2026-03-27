@@ -87,7 +87,7 @@ export function PlatformSection(props: {
 
   return (
     <section className="group bg-section-card squircle-2xl mx-auto w-full max-w-5xl">
-      <div className="mt-8 flex justify-center">
+      <div className="flex justify-center pt-8">
         <h2 className="text-muted-foreground bg-background flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-base font-semibold tracking-tight">
           {props.name}
         </h2>

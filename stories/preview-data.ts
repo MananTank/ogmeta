@@ -58,6 +58,22 @@ export const shortTitleData: PreviewData = {
   }),
 }
 
+/** `twitter:card` = summary — small square image left, text column right. */
+export const summaryCardData: PreviewData = {
+  ...completeData,
+  data: {
+    ...completeData.data!,
+    url: 'https://ogmeta.app/tests/twitter-card-summary',
+    twitter: {
+      title: 'Sample short title',
+      description: 'Sample short description for the fixture.',
+      image: SAMPLE_IMAGE,
+      isValidImage: true,
+      card: 'summary',
+    },
+  },
+}
+
 export const missingImageData: PreviewData = {
   ...completeData,
   data: baseMetadata({

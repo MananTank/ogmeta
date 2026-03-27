@@ -4,6 +4,7 @@ import {
   completeData,
   longTitleData,
   shortTitleData,
+  summaryCardData,
   missingImageData,
   invalidImageData,
   missingTitleData,
@@ -28,7 +29,7 @@ function StoryGroup(props: { children: React.ReactNode }) {
 
 function StoryLabel(props: { children: React.ReactNode }) {
   return (
-    <div className="text-muted-foreground mb-2 text-center text-sm font-medium">
+    <div className="text-muted-foreground mb-4 text-center text-sm font-medium">
       {props.children}
     </div>
   )
@@ -49,6 +50,11 @@ export const FullData: Story = () => (
     <div>
       <StoryLabel>Short Title</StoryLabel>
       <TwitterPreview {...shortTitleData} />
+    </div>
+
+    <div>
+      <StoryLabel>summary card</StoryLabel>
+      <TwitterPreview {...summaryCardData} />
     </div>
   </StoryGroup>
 )
