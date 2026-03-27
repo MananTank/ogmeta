@@ -20,7 +20,7 @@ import { FluidHeight } from 'fluid-height'
 import { Input } from '@/components/ui/input'
 import { DEFAULT_URL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import type { OGMetadata } from '@/lib/og'
+import type { OGMetadata } from '@/lib/og-types'
 
 const SAVE_DELAY_MS = 3000
 

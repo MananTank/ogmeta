@@ -1,5 +1,5 @@
 import type { Story, StoryDefault } from '@ladle/react'
-import { SlackPreview } from '@/components/platform-previews'
+import { SlackPreview } from '@/components/previews/slack-preview'
 import {
   completeData,
   longTitleData,

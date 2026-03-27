@@ -2,17 +2,18 @@
 
 import { unstable_cache } from 'next/cache'
 import * as cheerio from 'cheerio'
+import {
+  effectiveTwitterPreview,
+  type OGMetadata,
+  type OpenGraphSlice,
+  type TwitterTagsSlice,
+} from '@/lib/og-types'
 
-export interface OGMetadata {
-  title: string
-  description: string
-  image: string
-  isValidImage: boolean
-  url: string
-  siteName?: string
-  type?: string
-  favicon?: string
-}
+export type {
+  OGMetadata,
+  OpenGraphSlice,
+  TwitterTagsSlice,
+} from '@/lib/og-types'
 
 export type FetchOGDataResult =
   | { type: 'success'; data: OGMetadata }
@@ -35,8 +36,9 @@ function isTwitterUrl(urlString: string): boolean {
 }
 
 function needsTwitterSyntheticFallback(data: OGMetadata): boolean {
-  const noTitle = !data.title?.trim()
-  const noImage = !data.image?.trim() || !data.isValidImage
+  const t = effectiveTwitterPreview(data)
+  const noTitle = !t.title?.trim()
+  const noImage = !t.image?.trim() || !t.isValidImage
   return noTitle && noImage
 }
 
@@ -55,14 +57,24 @@ async function syntheticTwitterProfileMetadata(
   const handle = profileHandleFromUrl(pageUrl)
   const title = handle ? `@${handle} on X` : 'Profile on X'
   const description = handle ? `X profile @${handle}` : 'X profile'
-  const base: OGMetadata = {
-    title,
-    description,
+  const emptyTwitter: TwitterTagsSlice = {
+    title: '',
+    description: '',
     image: '',
     isValidImage: false,
+    card: undefined,
+  }
+  const base: OGMetadata = {
     url: pageUrl,
-    siteName: 'X',
-    type: 'profile',
+    openGraph: {
+      title,
+      description,
+      image: '',
+      isValidImage: false,
+      siteName: 'X',
+      type: 'profile',
+    },
+    twitter: emptyTwitter,
   }
   return withTwitterProfileAvatar(base, handle)
 }
@@ -71,10 +83,17 @@ async function withTwitterProfileAvatar(
   data: OGMetadata,
   handle: string
 ): Promise<OGMetadata> {
-  if (data.image || !handle) return data
+  if (data.openGraph.image || !handle) return data
   const avatar = `https://unavatar.io/twitter/${encodeURIComponent(handle)}`
   if (await validateImage(avatar)) {
-    return { ...data, image: avatar, isValidImage: true }
+    return {
+      ...data,
+      openGraph: {
+        ...data.openGraph,
+        image: avatar,
+        isValidImage: true,
+      },
+    }
   }
   return data
 }
@@ -125,58 +144,103 @@ async function validateImageAndFavicon(
   return { isValidImage, isValidFavicon }
 }
 
-async function parseOGMetadata(html: string, url: string): Promise<OGMetadata> {
-  const $ = cheerio.load(html)
-
-  const getMetaContent = (selectors: string[]): string => {
-    for (const selector of selectors) {
-      const content = $(selector).attr('content')
-      if (content) return content
-    }
-    return ''
+function getMetaContent($: cheerio.CheerioAPI, selectors: string[]): string {
+  for (const selector of selectors) {
+    const content = $(selector).attr('content')
+    if (content) return content
   }
+  return ''
+}
 
+function resolveMaybeRelative(image: string, pageUrl: string): string {
+  if (!image) return ''
+  if (image.startsWith('http')) return image
+  try {
+    return new URL(image, pageUrl).href
+  } catch {
+    return image
+  }
+}
+
+async function parseOpenGraphSlice(
+  $: cheerio.CheerioAPI,
+  pageUrl: string
+): Promise<OpenGraphSlice> {
   const title =
-    getMetaContent([
+    getMetaContent($, [
       'meta[property="og:title"]',
       'meta[name="og:title"]',
-      'meta[name="twitter:title"]',
-    ]) || $('title').text()
+    ]).trim() || $('title').text().trim()
 
-  const description = getMetaContent([
-    'meta[property="og:description"]',
-    'meta[name="og:description"]',
-    'meta[name="twitter:description"]',
-    'meta[name="description"]',
-  ])
+  const description =
+    getMetaContent($, [
+      'meta[property="og:description"]',
+      'meta[name="og:description"]',
+    ]).trim() || getMetaContent($, ['meta[name="description"]']).trim()
 
-  const image = getMetaContent([
+  const rawImage = getMetaContent($, [
     'meta[property="og:image"]',
     'meta[name="og:image"]',
-    'meta[name="twitter:image"]',
-    'meta[name="twitter:image:src"]',
   ])
+  const image = resolveMaybeRelative(rawImage, pageUrl)
 
-  const siteName = getMetaContent([
+  const siteName = getMetaContent($, [
     'meta[property="og:site_name"]',
     'meta[name="og:site_name"]',
   ])
 
   const type =
-    getMetaContent(['meta[property="og:type"]', 'meta[name="og:type"]']) ||
+    getMetaContent($, ['meta[property="og:type"]', 'meta[name="og:type"]']) ||
     'website'
 
-  // Resolve relative image URLs
-  let resolvedImage = image
-  if (image && !image.startsWith('http')) {
-    try {
-      resolvedImage = new URL(image, url).href
-    } catch {
-      resolvedImage = image
-    }
-  }
+  const { isValidImage } = await validateImageAndFavicon(image, '')
 
-  // Extract favicon
+  return {
+    title,
+    description,
+    image,
+    isValidImage,
+    siteName: siteName || undefined,
+    type,
+  }
+}
+
+async function parseTwitterSlice(
+  $: cheerio.CheerioAPI,
+  pageUrl: string
+): Promise<TwitterTagsSlice> {
+  const title = getMetaContent($, ['meta[name="twitter:title"]']).trim()
+
+  const description = getMetaContent($, [
+    'meta[name="twitter:description"]',
+  ]).trim()
+
+  const rawImage = getMetaContent($, [
+    'meta[name="twitter:image"]',
+    'meta[name="twitter:image:src"]',
+  ])
+  const image = resolveMaybeRelative(rawImage, pageUrl)
+
+  const card = getMetaContent($, ['meta[name="twitter:card"]']).trim()
+
+  const site = getMetaContent($, ['meta[name="twitter:site"]']).trim()
+
+  const { isValidImage } = await validateImageAndFavicon(image, '')
+
+  return {
+    title,
+    description,
+    image,
+    isValidImage,
+    card: card || undefined,
+    site: site || undefined,
+  }
+}
+
+async function extractFavicon(
+  $: cheerio.CheerioAPI,
+  pageUrl: string
+): Promise<string | undefined> {
   const faviconSelectors = [
     'link[rel="icon"]',
     'link[rel="shortcut icon"]',
@@ -193,17 +257,15 @@ async function parseOGMetadata(html: string, url: string): Promise<OGMetadata> {
     }
   }
 
-  // Fallback to /favicon.ico if no favicon found in HTML
   if (!faviconUrl) {
     try {
-      const baseUrl = new URL(url)
+      const baseUrl = new URL(pageUrl)
       faviconUrl = `${baseUrl.origin}/favicon.ico`
     } catch {
-      // ignore
+      return undefined
     }
   }
 
-  // Resolve relative favicon URL
   let resolvedFavicon = faviconUrl
   if (
     faviconUrl &&
@@ -211,26 +273,32 @@ async function parseOGMetadata(html: string, url: string): Promise<OGMetadata> {
     !faviconUrl.startsWith('data:')
   ) {
     try {
-      resolvedFavicon = new URL(faviconUrl, url).href
+      resolvedFavicon = new URL(faviconUrl, pageUrl).href
     } catch {
       resolvedFavicon = faviconUrl
     }
   }
 
-  const { isValidImage, isValidFavicon } = await validateImageAndFavicon(
-    resolvedImage,
-    resolvedFavicon
-  )
+  const { isValidFavicon } = await validateImageAndFavicon('', resolvedFavicon)
+  return isValidFavicon ? resolvedFavicon : undefined
+}
+
+async function parsePageMetadata(
+  html: string,
+  pageUrl: string
+): Promise<OGMetadata> {
+  const $ = cheerio.load(html)
+  const [openGraph, twitter, favicon] = await Promise.all([
+    parseOpenGraphSlice($, pageUrl),
+    parseTwitterSlice($, pageUrl),
+    extractFavicon($, pageUrl),
+  ])
 
   return {
-    title,
-    description,
-    image: resolvedImage,
-    isValidImage,
-    url,
-    siteName,
-    type,
-    favicon: isValidFavicon ? resolvedFavicon : undefined,
+    url: pageUrl,
+    openGraph,
+    twitter,
+    favicon,
   }
 }
 
@@ -251,7 +319,7 @@ async function fetchOGDataUncached(url: string): Promise<FetchOGDataResult> {
     }
 
     const html = await response.text()
-    let data = await parseOGMetadata(html, url)
+    let data = await parsePageMetadata(html, url)
 
     if (isTwitterUrl(url) && needsTwitterSyntheticFallback(data)) {
       data = await syntheticTwitterProfileMetadata(url)
@@ -266,7 +334,7 @@ async function fetchOGDataUncached(url: string): Promise<FetchOGDataResult> {
 
 const getCachedOGData = unstable_cache(
   async (url: string) => fetchOGDataUncached(url),
-  ['og-metadata', 'twitter-fetch-then-synthetic-v1'],
+  ['og-metadata', 'og-and-twitter-split-v1'],
   { revalidate: REVALIDATE_SECONDS, tags: ['og-metadata'] }
 )
 

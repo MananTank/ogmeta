@@ -1,5 +1,5 @@
 import type { Story, StoryDefault } from '@ladle/react'
-import { WhatsAppPreview } from '@/components/platform-previews'
+import { WhatsAppPreview } from '@/components/previews/whatsapp-preview'
 import {
   completeData,
   longTitleData,

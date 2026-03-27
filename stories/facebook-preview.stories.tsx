@@ -1,5 +1,5 @@
 import type { Story, StoryDefault } from '@ladle/react'
-import { FacebookPreview } from '@/components/platform-previews'
+import { FacebookPreview } from '@/components/previews/facebook-preview'
 import {
   completeData,
   longTitleData,

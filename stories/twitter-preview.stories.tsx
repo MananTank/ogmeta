@@ -1,5 +1,5 @@
 import type { Story, StoryDefault } from '@ladle/react'
-import { TwitterPreview } from '@/components/platform-previews'
+import { TwitterPreview } from '@/components/previews/twitter-preview'
 import {
   completeData,
   longTitleData,

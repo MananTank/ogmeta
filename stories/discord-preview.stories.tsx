@@ -1,5 +1,5 @@
 import type { Story, StoryDefault } from '@ladle/react'
-import { DiscordPreview } from '@/components/platform-previews'
+import { DiscordPreview } from '@/components/previews/discord-preview'
 import {
   completeData,
   longTitleData,

@@ -3,14 +3,15 @@
 import { useState } from 'react'
 import type { PreviewViewport } from '@/lib/preview-viewport'
 import { useQuery } from '@tanstack/react-query'
-import { PlatformPreviews } from '@/components/platform-previews'
+import { PlatformPreviews } from '@/components/previews/index'
 import {
   HomeUrlInput,
   isValidUrl,
   normalizeUrlForFetch,
 } from '@/components/home-url-input'
 import { DEFAULT_URL, SOURCE_REPO_URL } from '@/lib/constants'
-import { fetchOGData, type OGMetadata } from '@/lib/og'
+import { fetchOGData } from '@/lib/og'
+import type { OGMetadata } from '@/lib/og-types'
 import { PreviewControls } from './preview-controls'
 import { InspectionPanelIcon } from 'lucide-react'
 
@@ -96,16 +97,12 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
       </div>
 
       <PlatformPreviews
-        title={ogQuery.data?.title ?? ''}
-        description={ogQuery.data?.description ?? ''}
-        image={ogQuery.data?.image ?? ''}
-        isValidImage={ogQuery.data?.isValidImage ?? false}
-        favicon={ogQuery.data?.favicon}
-        url={ogQuery.data?.url ?? debouncedUrl}
+        data={ogQuery.data ?? null}
         isLoading={isLoading}
         isError={hasReadStoredUrl && !!ogQuery.error}
-        isValidUrl={urlIsValid}
         previewViewport={previewViewport}
+        urlInput={debouncedUrl}
+        isValidUrl={urlIsValid}
       />
 
       <footer className="text-muted-foreground mx-auto mt-40 max-w-2xl px-4 pb-6 text-center text-base">

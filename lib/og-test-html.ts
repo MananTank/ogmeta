@@ -1,53 +1,76 @@
-import type { NextRequest } from 'next/server'
-
-/** Escape text for HTML text nodes (title, body). */
-export function escapeHtmlText(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-}
-
-/** Escape for double-quoted HTML attributes (e.g. meta content). */
-export function escapeHtmlAttr(s: string): string {
-  return escapeHtmlText(s).replace(/"/g, '&quot;')
-}
-
-export function metaProperty(property: string, content: string): string {
-  return `<meta property="${escapeHtmlAttr(property)}" content="${escapeHtmlAttr(content)}">`
-}
-
-export function metaName(name: string, content: string): string {
-  return `<meta name="${escapeHtmlAttr(name)}" content="${escapeHtmlAttr(content)}">`
-}
+import type { Metadata } from 'next'
 
 export type Content = 'none' | 'short' | 'long'
 
-/** Standard aspect ratios; `relative`, `broken`, and `multiple` support extra fixture cases. */
-export type Image =
-  | 'none'
-  | '1/1'
-  | '1200/630'
-  | 'relative'
-  | 'broken'
-  | 'multiple'
+/** Standard aspect ratios; `relative` and `broken` support extra fixture cases. */
+export type Image = 'none' | '1/1' | '1200/630' | 'relative' | 'broken'
 
 export type OGType = 'website' | 'article'
 
 export type TwitterCardType = 'summary' | 'summary_large_image' | 'none'
 
+/** Full Open Graph block for a fixture. */
+export type OgTestHtmlOgOptions = {
+  title: Content
+  desc: Content
+  image: Image
+  type: OGType
+  url?: string
+}
+
+/** Full Twitter block for a fixture. */
+export type OgTestHtmlTwitterOptions = {
+  title: Content
+  card: TwitterCardType
+  /** Use `'none'` to omit the `twitter:description` tag. */
+  description: Content
+  /** Use `'none'` to omit the `twitter:image` tag. */
+  image: Image
+  url?: string
+  /** `twitter:site` — e.g. `@yourbrand` (optional). */
+  site?: string
+}
+
+/**
+ * Options for test fixtures. Use `og: 'none'` or `twitter: 'none'` as a
+ * shorthand for setting every field in that block to `'none'`.
+ */
 export type OgTestHtmlOptions = {
   title: Content
   desc: Content
-  og: {
-    title: Content
-    desc: Content
-    image: Image
-    type: OGType
-    url?: string
-  }
-  twitter: {
-    title: Content
-    card: TwitterCardType
-    description: Content
-    url?: string
+  og: OgTestHtmlOgOptions | 'none'
+  twitter: OgTestHtmlTwitterOptions | 'none'
+}
+
+type OgTestHtmlOptionsResolved = {
+  title: Content
+  desc: Content
+  og: OgTestHtmlOgOptions
+  twitter: OgTestHtmlTwitterOptions
+}
+
+const OG_NONE: OgTestHtmlOgOptions = {
+  title: 'none',
+  desc: 'none',
+  image: 'none',
+  type: 'website',
+}
+
+const TWITTER_NONE: OgTestHtmlTwitterOptions = {
+  title: 'none',
+  card: 'none',
+  description: 'none',
+  image: 'none',
+}
+
+function normalizeOgTestHtmlOptions(
+  options: OgTestHtmlOptions
+): OgTestHtmlOptionsResolved {
+  return {
+    title: options.title,
+    desc: options.desc,
+    og: options.og === 'none' ? OG_NONE : options.og,
+    twitter: options.twitter === 'none' ? TWITTER_NONE : options.twitter,
   }
 }
 
@@ -75,7 +98,7 @@ function resolveContent(
   return kind === 'title' ? LONG_OG_TITLE : LONG_OG_DESCRIPTION
 }
 
-function hasAnyOg(og: OgTestHtmlOptions['og']): boolean {
+function hasAnyOg(og: OgTestHtmlOgOptions): boolean {
   return og.title !== 'none' || og.desc !== 'none' || og.image !== 'none'
 }
 
@@ -91,121 +114,103 @@ function absoluteOgImageUrl(origin: string, image: Image): string | null {
       return '/og-test/rect-1200x630.jpg'
     case 'broken':
       return `${origin}/og-test/this-file-does-not-exist-ogmeta.png`
-    case 'multiple':
-      return null
     default:
       return null
   }
 }
 
-/** First og:image URL for Twitter when og:image is multiple or relative. */
-function twitterImageUrl(origin: string, og: OgTestHtmlOptions['og']): string {
-  if (og.image === 'none') {
+/** Absolute URL for `twitter:image`, or `null` when `image === 'none'`. */
+function twitterTagImageUrl(origin: string, image: Image): string | null {
+  if (image === 'none') return null
+  if (image === 'relative') {
     return `${origin}/og-test/rect-1200x630.jpg`
   }
-  if (og.image === 'relative') {
-    return `${origin}/og-test/rect-1200x630.jpg`
-  }
-  if (og.image === 'broken') {
+  if (image === 'broken') {
     return `${origin}/og-test/this-file-does-not-exist-ogmeta.png`
   }
-  if (og.image === 'multiple') {
-    return `${origin}/og-test/rect-1200x630.jpg`
-  }
-  const abs = absoluteOgImageUrl(origin, og.image)
+  const abs = absoluteOgImageUrl(origin, image)
   if (abs) return abs.startsWith('http') ? abs : new URL(abs, origin).href
   return `${origin}/og-test/rect-1200x630.jpg`
 }
 
-function buildHeadExtra(
+function ogImageAbsoluteForMetadata(
   origin: string,
-  path: string,
-  options: OgTestHtmlOptions
-): string[] {
-  const lines: string[] = []
-
-  const htmlDesc = resolveContent('description', options.desc)
-  if (htmlDesc) {
-    lines.push(metaName('description', htmlDesc))
-  }
-
-  const ogUrl = options.og.url ?? `${origin}${path}`
-
-  if (hasAnyOg(options.og)) {
-    const ogTitle = resolveContent('title', options.og.title)
-    if (ogTitle) lines.push(metaProperty('og:title', ogTitle))
-
-    const ogDesc = resolveContent('description', options.og.desc)
-    if (ogDesc) lines.push(metaProperty('og:description', ogDesc))
-
-    if (options.og.image === 'multiple') {
-      lines.push(
-        metaProperty('og:image', `${origin}/og-test/rect-1200x630.jpg`)
-      )
-      lines.push(
-        metaProperty('og:image', `${origin}/og-test/second-800x600.jpg`)
-      )
-    } else if (options.og.image !== 'none') {
-      const url = absoluteOgImageUrl(origin, options.og.image)
-      if (url) lines.push(metaProperty('og:image', url))
-    }
-
-    lines.push(metaProperty('og:type', options.og.type))
-    lines.push(metaProperty('og:url', ogUrl))
-    lines.push(metaProperty('og:site_name', 'OG Meta Fixtures'))
-  }
-
-  if (options.twitter.card !== 'none') {
-    lines.push(metaName('twitter:card', options.twitter.card))
-    const twTitle = resolveContent('title', options.twitter.title)
-    if (twTitle) lines.push(metaName('twitter:title', twTitle))
-    const twDesc = resolveContent('description', options.twitter.description)
-    if (twDesc) lines.push(metaName('twitter:description', twDesc))
-    lines.push(metaName('twitter:image', twitterImageUrl(origin, options.og)))
-    if (options.twitter.url) {
-      lines.push(metaName('twitter:url', options.twitter.url))
-    }
-  }
-
-  return lines
+  image: Image
+): string | null {
+  const url = absoluteOgImageUrl(origin, image)
+  if (!url) return null
+  return url.startsWith('http') ? url : new URL(url, origin).href
 }
 
-function visibleTitle(options: OgTestHtmlOptions): string {
+function visibleTitle(options: OgTestHtmlOptionsResolved): string {
   const t = resolveContent('title', options.title)
   if (t) return t
   return 'Untitled fixture'
 }
 
-export function ogTestHtml(
-  request: NextRequest,
-  path: string,
-  options: OgTestHtmlOptions
-): Response {
-  const origin = request.nextUrl.origin
-  const headExtra = buildHeadExtra(origin, path, options).join('\n    ')
-  const htmlTitle = visibleTitle(options)
-  const body = `<main style="font-family:system-ui,sans-serif;max-width:42rem;padding:1.5rem;line-height:1.5">
-      <h1>${escapeHtmlText(htmlTitle)}</h1>
-      <p>This page is an OG Meta test fixture. Path: <code>${escapeHtmlText(path)}</code></p>
-    </main>`
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex, nofollow">
-  <title>${escapeHtmlText(htmlTitle)}</title>
-    ${headExtra}
-</head>
-<body>
-${body}
-</body>
-</html>`
+/** Base URL for resolving absolute OG/Twitter image URLs in metadata (matches deployment). */
+export function getOgTestsMetadataBase(): URL {
+  const raw =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ??
+    'http://localhost:3000'
+  return new URL(raw)
+}
 
-  return new Response(html, {
-    headers: {
-      'Content-Type': 'text/html; charset=utf-8',
-      'X-Robots-Tag': 'noindex, nofollow',
-    },
-  })
+/**
+ * Maps a fixture config to Next.js `Metadata` (used by `generateMetadata` on `/tests/**`).
+ */
+export function ogTestOptionsToMetadata(
+  options: OgTestHtmlOptions,
+  pathname: string,
+  metadataBase: URL
+): Metadata {
+  const resolved = normalizeOgTestHtmlOptions(options)
+  const origin = metadataBase.origin
+
+  const title = visibleTitle(resolved)
+  const htmlDesc = resolveContent('description', resolved.desc)
+
+  const metadata: Metadata = {
+    title,
+    robots: { index: false, follow: false },
+  }
+  if (htmlDesc) metadata.description = htmlDesc
+
+  if (hasAnyOg(resolved.og)) {
+    const og = resolved.og
+    const ogUrl = og.url ?? `${origin}${pathname}`
+    const ogTitle = resolveContent('title', og.title)
+    const ogDesc = resolveContent('description', og.desc)
+
+    const ogImageUrl =
+      og.image !== 'none' ? ogImageAbsoluteForMetadata(origin, og.image) : null
+
+    metadata.openGraph = {
+      type: og.type,
+      url: ogUrl,
+      siteName: 'OG Meta Fixtures',
+      ...(ogTitle ? { title: ogTitle } : {}),
+      ...(ogDesc ? { description: ogDesc } : {}),
+      ...(ogImageUrl ? { images: [{ url: ogImageUrl }] } : {}),
+    }
+  }
+
+  const tw = resolved.twitter
+  if (tw.card !== 'none') {
+    const twTitle = resolveContent('title', tw.title)
+    const twDesc = resolveContent('description', tw.description)
+    const twImg = twitterTagImageUrl(origin, tw.image)
+
+    metadata.twitter = {
+      card: tw.card,
+      ...(twTitle ? { title: twTitle } : {}),
+      ...(twDesc ? { description: twDesc } : {}),
+      ...(twImg ? { images: [twImg] } : {}),
+      ...(tw.url ? { url: tw.url } : {}),
+      ...(tw.site?.trim() ? { site: tw.site.trim() } : {}),
+    }
+  }
+
+  return metadata
 }

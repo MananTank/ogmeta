@@ -1,5 +1,5 @@
 import type { Story, StoryDefault } from '@ladle/react'
-import { LinkedInPreview } from '@/components/platform-previews'
+import { LinkedInPreview } from '@/components/previews/linkedin-preview'
 import {
   completeData,
   longTitleData,
