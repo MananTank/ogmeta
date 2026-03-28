@@ -76,7 +76,14 @@ export function PlatformSection(props: {
   const viewport = props.previewViewport ?? 'desktop'
 
   return (
-    <section className="group bg-section-card squircle-2xl mx-auto w-full max-w-5xl">
+    <section
+      className={cn(
+        '@container/preview',
+        'group bg-section-card squircle-2xl mx-auto w-full max-w-5xl',
+        // Below theme `container-sm` (24rem) so `@sm/preview:` stays off in mobile preview mode.
+        props.previewViewport === 'mobile' && 'max-w-[380px]'
+      )}
+    >
       <div className="flex justify-center pt-8">
         <h2 className="text-muted-foreground bg-background flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-base font-semibold tracking-tight">
           {props.name}

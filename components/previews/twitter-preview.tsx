@@ -74,18 +74,14 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-foreground text-[15px] font-bold">
-              {UserName}
-            </span>
-            <span className="text-muted-foreground text-[15px]">
-              {UserHandle}
-            </span>
-            <span className="text-muted-foreground text-[15px]">·</span>
-            <span className="text-muted-foreground text-[15px]">2h</span>
+          <div className="flex flex-wrap items-center gap-1.5 text-[15px]">
+            <span className="text-foreground font-bold">{UserName}</span>
+            <span className="text-muted-foreground">{UserHandle}</span>
+            <span className="text-muted-foreground">·</span>
+            <span className="text-muted-foreground">2h</span>
           </div>
 
-          <div className="text-foreground mt-1 space-y-4 text-[15px] leading-snug">
+          <div className="text-foreground mt-1 space-y-3 text-[13px] leading-snug @sm/preview:space-y-4 @sm/preview:text-[15px]">
             <p>{PARAGRAPH_1}</p>
 
             <p>{PARAGRAPH_2}</p>
@@ -108,14 +104,14 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
                     skeletonClassName="bg-border"
                   />
                   {!props.isLoading && title && (
-                    <div className="absolute right-3 bottom-3 left-3">
-                      <span className="inline-block max-w-full truncate rounded bg-white/90 px-2 text-[13px] leading-[20px] font-semibold text-neutral-900 backdrop-blur-md dark:bg-black/75 dark:text-white">
+                    <div className="absolute right-3 bottom-3 left-3 flex">
+                      <span className="inline-block max-w-full truncate rounded bg-[#3a3a3a] px-2 text-[13px] leading-[16px] text-white backdrop-blur-md @sm/preview:leading-[20px] dark:bg-black/75 dark:text-white">
                         {title}
                       </span>
                     </div>
                   )}
                 </div>
-                <p className="text-muted-foreground mt-1 text-[13px]">
+                <p className="text-muted-foreground mt-0.5 text-[13px]">
                   From {domain(url)}
                 </p>
               </div>
