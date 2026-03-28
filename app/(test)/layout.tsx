@@ -1,6 +1,5 @@
 import localFont from 'next/font/local'
 import { Providers } from '@/components/providers'
-import { ThemeProvider } from '@/components/theme-provider'
 import '../globals.css'
 
 const openRunde = localFont({
@@ -35,15 +34,7 @@ export default function RootLayout(
       className={`${openRunde.variable}`}
     >
       <body className="bg-background text-foreground min-h-screen font-sans antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-          storageKey="ogmeta-theme"
-          disableTransitionOnChange
-        >
-          <Providers>{props.children}</Providers>
-        </ThemeProvider>
+        <Providers>{props.children}</Providers>
       </body>
     </html>
   )

@@ -2,7 +2,7 @@ import type { GlobalProvider } from '@ladle/react'
 import '../app/globals.css'
 import './styles.css'
 import React from 'react'
-import { ThemeProvider } from '../components/theme-provider'
+import { ThemeProvider } from 'next-themes'
 import { LadleThemeSync } from './ladle-theme-sync'
 
 export const Provider: GlobalProvider = function Provider({

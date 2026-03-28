@@ -1,4 +1,4 @@
-import { HomeClient } from '@/components/home-client'
+import { App } from '@/app/(app)/components/app-client'
 import { DEFAULT_URL } from '@/lib/constants'
 import { fetchOGData } from '@/lib/og'
 import { HomeFooter } from '@/components/footer'
@@ -9,7 +9,7 @@ export default async function Home() {
 
   return (
     <div>
-      <HomeClient defaultURLData={defaultURLData} />
+      <App defaultURLData={defaultURLData} />
       <HomeFooter />
     </div>
   )

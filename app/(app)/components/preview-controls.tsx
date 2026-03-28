@@ -7,20 +7,7 @@ import { useTheme } from 'next-themes'
 import { TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import type { PreviewViewport } from '@/lib/preview-viewport'
-import { TabButton, TabsContainer } from '@/components/tabs-pill'
-
-function TabTooltip(props: { label: string; children: React.ReactNode }) {
-  return (
-    <TooltipPrimitive.Root>
-      <TooltipPrimitive.Trigger asChild>
-        <span className="inline-flex">{props.children}</span>
-      </TooltipPrimitive.Trigger>
-      <TooltipContent side="bottom" sideOffset={6}>
-        {props.label}
-      </TooltipContent>
-    </TooltipPrimitive.Root>
-  )
-}
+import { TabButton, TabsContainer } from '@/components/ui/tabs-pill'
 
 export function PreviewControls(props: {
   viewport: PreviewViewport
@@ -90,5 +77,18 @@ export function PreviewControls(props: {
         </TabsContainer>
       </div>
     </TooltipProvider>
+  )
+}
+
+function TabTooltip(props: { label: string; children: React.ReactNode }) {
+  return (
+    <TooltipPrimitive.Root>
+      <TooltipPrimitive.Trigger asChild>
+        <span className="inline-flex">{props.children}</span>
+      </TooltipPrimitive.Trigger>
+      <TooltipContent side="bottom" sideOffset={6}>
+        {props.label}
+      </TooltipContent>
+    </TooltipPrimitive.Root>
   )
 }
