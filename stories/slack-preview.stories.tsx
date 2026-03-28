@@ -89,7 +89,7 @@ export const FailedToFetch: Story = () => (
 
 export const InvalidUrl: Story = () => <SlackPreview {...invalidUrlData} />
 
-export const SlackFullTestSuite: Story = () => (
+export const AllTests: Story = () => (
   <div className="flex flex-col gap-14">
     {Object.entries(OG_TEST_FIXTURES)
       .filter(([, fixture]) => fixture.results?.slack !== NOT_A_RELEVANT_TEST)

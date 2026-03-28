@@ -43,8 +43,11 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      discord:
+        'big preview - 3 rows + image: site name, og:title, og:description',
       slack:
         'big preview - 3 rows + image: favicon + site name, og:title, og:description',
+      facebook: 'big preview - image + 2 rows: domain, title',
     },
   },
   'complete-long': {
@@ -66,6 +69,10 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      facebook:
+        'big preview - image + 2 rows: domain, title. title max limit 2 lines',
+      discord:
+        'big preview - 3 rows + image: site name, og:title, og:description. title max limit: 70, description max limit: 350 and then ...',
       slack:
         'big preview - 3 rows + image: favicon + site name, og:title, og:description. no limit on title, description limited to 700 characters and a show more and show less buttons shown to toggle',
     },
@@ -89,7 +96,10 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      discord:
+        'image shown in original aspect ratio, max-width 300 instead of 400 for square',
       slack: 'image shown in original aspect ratio',
+      facebook: 'resized to 1200/630 aspect ratio',
     },
   },
   'image-broken': {
@@ -110,8 +120,10 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      discord: 'small preview - 3 rows: site name, og:title, og:description',
       slack:
         'small preview - 3 rows: favicon + site name, og:title, og:description',
+      facebook: 'invisible area shown instead of image',
     },
   },
   'image-none': {
@@ -132,8 +144,10 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      discord: 'small preview - 3 rows: site name, og:title, og:description',
       slack:
         'small preview - 3 rows: favicon + site name, og:title, og:description',
+      facebook: 'small preview - 2 rows: domain, og:title',
     },
   },
   // Partial Data
@@ -150,8 +164,11 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      discord:
+        'big preview - 2 rows + image: twitter:title, twitter:description',
       slack:
         'big preview - 3 rows + image: favicon + domain, twitter:title, twitter:description',
+      facebook: 'small preview - 2 rows: domain, domain (as title)',
     },
   },
   'no-meta': {
@@ -164,6 +181,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
     results: {
       twitter: RESULT_NO_PREVIEW,
       slack: RESULT_NO_PREVIEW,
+      discord: RESULT_NO_PREVIEW,
+      facebook: 'small preview - 2 rows: domain, domain (as title)',
     },
   },
   'only-title': {
@@ -176,6 +195,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
     results: {
       twitter: RESULT_NO_PREVIEW,
       slack: RESULT_NO_PREVIEW,
+      discord: RESULT_NO_PREVIEW,
+      facebook: 'small preview - 2 rows: domain, title',
     },
   },
   'only-desc': {
@@ -187,7 +208,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
     },
     results: {
       twitter: RESULT_NO_PREVIEW,
-      slack: 'small preview - 2 rows: domain, description',
+      discord: RESULT_NO_PREVIEW,
+      slack: 'small preview - 2 rows: domain, domain (as title)',
     },
   },
   'only-meta': {
@@ -198,7 +220,9 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
+      discord: 'small preview - 2 rows: title, description',
       slack: 'small preview - 3 rows: favicon + domain, title, description',
+      facebook: 'small preview - 2 rows: domain, title',
     },
   },
   'only-og': {
@@ -214,8 +238,11 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
+      discord:
+        'big preview - 3 rows + image: site name, og:title, og:description',
       slack:
         'big preview - 3 rows + image: favicon + site name, og:title, og:description',
+      facebook: 'preview - image + 2 rows: domain, og:title',
     },
   },
   'no-og-title': {
@@ -236,6 +263,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      facebook: 'preview - image + 2 rows: domain, title',
+      discord: 'big preview - 3 rows + image: site name, title, og:description',
       slack:
         'big preview - 3 rows + image: favicon + site name, title, og:description. no limit on title, description limited to 700 characters and a show more and show less buttons shown to toggle',
     },
@@ -258,6 +287,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      facebook: 'preview - image + 2 rows: domain, title',
+      discord: 'big preview - 3 rows + image: site name, title, og:description',
       slack:
         'big preview - 3 rows + image: favicon + site name, og:title, description',
     },

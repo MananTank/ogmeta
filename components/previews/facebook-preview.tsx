@@ -2,6 +2,7 @@
 
 import { MessageCircle } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { effectiveFacebookPreview } from '@/lib/og-types'
 import {
   OGImage,
   PlatformSection,
@@ -13,13 +14,8 @@ import type { PlatformPreviewsProps } from './types'
 
 export function FacebookPreview(props: PlatformPreviewsProps) {
   const url = props.data?.url ?? props.urlInput ?? ''
-  const og = props.data?.openGraph
-  const showPreview =
-    props.isValidUrl &&
-    !props.isError &&
-    !!og?.title &&
-    !!og?.image &&
-    og.isValidImage
+  const showLinkCard = Boolean(props.isValidUrl && !props.isError && props.data)
+  const fb = props.data ? effectiveFacebookPreview(props.data) : null
 
   return (
     <PlatformSection
@@ -51,7 +47,7 @@ export function FacebookPreview(props: PlatformPreviewsProps) {
 
             <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco</p>
 
-            {!showPreview && (
+            {!showLinkCard && (
               <a
                 className="text-link block font-medium hover:underline"
                 href={url}
@@ -64,22 +60,29 @@ export function FacebookPreview(props: PlatformPreviewsProps) {
           </div>
         </div>
 
-        {/* Link Preview Card */}
-        {showPreview && (
+        {/* Link Preview Card — big image, broken-image placeholder, or small (text-only) */}
+        {showLinkCard && fb && (
           <div className="border-t">
-            <OGImage
-              src={og?.image ?? ''}
-              isValidImage={og?.isValidImage ?? false}
-              className="aspect-[1.91/1] w-full object-cover"
-              isLoading={props.isLoading}
-              skeletonClassName="bg-secondary"
-            />
+            {fb.imageMode === 'large' && (
+              <OGImage
+                src={fb.imageSrc}
+                isValidImage
+                className="aspect-[1.91/1] w-full object-cover"
+                isLoading={props.isLoading}
+                skeletonClassName="bg-secondary"
+              />
+            )}
+            {fb.imageMode === 'broken' && (
+              <div
+                className="dark:bg-muted/40 aspect-[1.91/1] w-full bg-[#f2f3f5]"
+                aria-hidden
+              />
+            )}
             <div className="bg-secondary space-y-0.5 px-3 py-2.5">
               {props.isLoading ? (
                 <>
                   <Skeleton className="bg-border h-3 w-20" />
                   <Skeleton className="bg-border h-4 w-3/4" />
-                  <Skeleton className="bg-border h-3 w-1/2" />
                 </>
               ) : (
                 <>
@@ -87,7 +90,7 @@ export function FacebookPreview(props: PlatformPreviewsProps) {
                     {domain(url)}
                   </p>
                   <p className="text-foreground line-clamp-2 text-[17px] leading-snug font-semibold">
-                    {og?.title || '—'}
+                    {fb.title || domain(url)}
                   </p>
                 </>
               )}

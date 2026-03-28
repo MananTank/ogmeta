@@ -75,6 +75,8 @@ function normalizeOgTestHtmlOptions(
   }
 }
 
+const EXAMPLE_FAVICON = 'https://vercel.com/favicon.ico'
+
 /** `<title>` and standalone meta description, distinct from OG/Twitter strings. */
 const HTML_SHORT_TITLE = 'Document title (short)'
 const HTML_LONG_TITLE =
@@ -301,6 +303,7 @@ export function ogTestOptionsToOgMetadata(
     isValidImage: false,
     type: 'website',
   }
+
   if (hasAnyOg(og)) {
     openGraph.title = resolveContent('title', og.title, 'og') ?? ''
     openGraph.description = resolveContent('description', og.desc, 'og') ?? ''
@@ -320,6 +323,7 @@ export function ogTestOptionsToOgMetadata(
     image: '',
     isValidImage: false,
   }
+
   if (tw.card !== 'none') {
     twitter.title = resolveContent('title', tw.title, 'twitter') ?? ''
     twitter.description =
@@ -336,5 +340,6 @@ export function ogTestOptionsToOgMetadata(
     doc,
     openGraph,
     twitter,
+    favicon: EXAMPLE_FAVICON,
   }
 }

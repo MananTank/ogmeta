@@ -89,7 +89,7 @@ export const FailedToFetch: Story = () => (
 
 export const InvalidUrl: Story = () => <DiscordPreview {...invalidUrlData} />
 
-export const DiscordFullTestSuite: Story = () => (
+export const AllTests: Story = () => (
   <div className="flex flex-col gap-14">
     {Object.entries(OG_TEST_FIXTURES)
       .filter(([, fixture]) => fixture.results?.discord !== NOT_A_RELEVANT_TEST)
