@@ -121,54 +121,16 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
               </div>
             )}
 
-          {/* summary: square image left, domain + title + description right */}
-          {hasSummaryCard && showPreview && (
-            <div className="mt-3 flex overflow-hidden rounded-2xl border">
-              <div className="bg-secondary relative h-[124px] w-[124px] shrink-0">
-                <OGImage
-                  src={image}
-                  isValidImage={isValidImage}
-                  className="block h-full w-full object-cover"
-                  isLoading={props.isLoading}
-                  skeletonClassName="bg-border"
-                />
-              </div>
-              <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5 px-3 py-2.5">
-                <p className="text-muted-foreground text-[13px]">
-                  {domain(url)}
-                </p>
-                <p className="text-foreground truncate text-[15px] leading-snug font-semibold">
-                  {title}
-                </p>
-                {description && (
-                  <p className="text-muted-foreground line-clamp-2 text-[13px] leading-snug">
-                    {description}
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-
           {/* Compact: no valid image but has title (summary without image, etc.) */}
-          {hasCompactCard && showPreview && (
-            <div className="mt-3 flex overflow-hidden rounded-2xl border">
-              <div className="bg-secondary flex size-[130px] shrink-0 items-center justify-center border-r">
-                <TwitterBrokenImageIcon className="text-muted-foreground size-[30px]" />
-              </div>
-              <div className="bg-card flex min-w-0 flex-1 grow flex-col justify-center gap-0.5 p-3">
-                <p className="text-muted-foreground text-[15px]">
-                  {domain(url)}
-                </p>
-                <p className="text-foreground truncate text-[15px] leading-snug">
-                  {title}
-                </p>
-                {description && (
-                  <p className="text-muted-foreground line-clamp-2 text-[15px] leading-snug">
-                    {description}
-                  </p>
-                )}
-              </div>
-            </div>
+          {(hasCompactCard || hasSummaryCard) && showPreview && (
+            <TwitterSmallPreview
+              image={image}
+              isValidImage={isValidImage}
+              isLoading={props.isLoading}
+              url={url}
+              title={title}
+              description={description}
+            />
           )}
 
           {/* buttons */}
@@ -196,6 +158,49 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
         </div>
       </div>
     </PlatformSection>
+  )
+}
+
+function TwitterSmallPreview(props: {
+  image: string
+  isValidImage: boolean
+  isLoading: boolean
+  url: string
+  title: string
+  description: string
+}) {
+  const showImage = props.image && props.isValidImage && !props.isLoading
+
+  return (
+    <div className="mt-3 flex overflow-hidden rounded-2xl border">
+      {showImage ? (
+        <div className="bg-secondary relative size-[130px] shrink-0">
+          <OGImage
+            src={props.image}
+            isValidImage={props.isValidImage}
+            className="block h-full w-full object-cover"
+            isLoading={props.isLoading}
+            skeletonClassName="bg-border"
+          />
+        </div>
+      ) : (
+        <div className="bg-secondary flex size-[130px] shrink-0 items-center justify-center border-r">
+          <TwitterBrokenImageIcon className="text-muted-foreground size-[30px]" />
+        </div>
+      )}
+
+      <div className="bg-card flex min-w-0 flex-1 grow flex-col justify-center gap-0.5 p-3">
+        <p className="text-muted-foreground text-[15px]">{domain(props.url)}</p>
+        <p className="text-foreground truncate text-[15px] leading-snug">
+          {props.title}
+        </p>
+        {props.description && (
+          <p className="text-muted-foreground line-clamp-2 text-[15px] leading-snug">
+            {props.description}
+          </p>
+        )}
+      </div>
+    </div>
   )
 }
 
