@@ -74,6 +74,38 @@ export const PartialData: Story = () => (
   </StoryGroup>
 )
 
+export const TextOnly: Story = () => (
+  <StoryGroup>
+    <div>
+      <StoryLabel>image-none</StoryLabel>
+      <LinkedInPreview
+        {...ogTestFixtureToPlatformPreviewsProps(
+          'image-none',
+          OG_TEST_FIXTURES['image-none']
+        )}
+      />
+    </div>
+    <div>
+      <StoryLabel>only-title</StoryLabel>
+      <LinkedInPreview
+        {...ogTestFixtureToPlatformPreviewsProps(
+          'only-title',
+          OG_TEST_FIXTURES['only-title']
+        )}
+      />
+    </div>
+    <div>
+      <StoryLabel>no-meta</StoryLabel>
+      <LinkedInPreview
+        {...ogTestFixtureToPlatformPreviewsProps(
+          'no-meta',
+          OG_TEST_FIXTURES['no-meta']
+        )}
+      />
+    </div>
+  </StoryGroup>
+)
+
 export const Loading: Story = () => (
   <StoryGroup>
     <div>
@@ -89,7 +121,7 @@ export const FailedToFetch: Story = () => (
 
 export const InvalidUrl: Story = () => <LinkedInPreview {...invalidUrlData} />
 
-export const LinkedInFullTestSuite: Story = () => (
+export const AllTests: Story = () => (
   <div className="flex flex-col gap-14">
     {Object.entries(OG_TEST_FIXTURES)
       .filter(

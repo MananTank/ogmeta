@@ -2,6 +2,7 @@
 
 import { MessageCircle, Repeat2 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { effectiveLinkedInPreview } from '@/lib/og-types'
 import { LinkedInGlobeIcon } from '../icons/linkedin'
 import {
   OGImage,
@@ -16,9 +17,12 @@ import type { PlatformPreviewsProps } from './types'
 
 export function LinkedInPreview(props: PlatformPreviewsProps) {
   const url = props.data?.url ?? props.urlInput ?? ''
-  const og = props.data?.openGraph
-  const showPreview =
-    props.isValidUrl && !props.isError && og?.image && og.isValidImage
+  const effective = props.data
+    ? effectiveLinkedInPreview(props.data)
+    : null
+
+  const showLinkCard =
+    props.isValidUrl && !props.isError && (props.isLoading || props.data)
 
   return (
     <PlatformSection
@@ -62,33 +66,62 @@ export function LinkedInPreview(props: PlatformPreviewsProps) {
             </a>
           </div>
 
-          {/* Link Preview Card */}
-          {showPreview && (
-            <div className="bg-card mt-3 flex overflow-hidden rounded-lg border p-3">
-              <OGImage
-                src={og?.image ?? ''}
-                isValidImage={og?.isValidImage ?? false}
-                className="h-[72px] w-[128px] shrink-0 rounded-md object-cover"
-                isLoading={props.isLoading}
-                skeletonClassName="bg-secondary"
-              />
-              <div className="flex min-w-0 flex-1 flex-col justify-center px-3 py-2">
-                {props.isLoading ? (
-                  <>
-                    <Skeleton className="bg-secondary h-4 w-3/4" />
-                    <Skeleton className="bg-secondary mt-1 h-3 w-20" />
-                  </>
+          {/* Link preview: image + title + domain, or text-only (2–3 rows) */}
+          {showLinkCard && (
+            <div className="bg-card mt-3 overflow-hidden rounded-lg border">
+              {props.isLoading ? (
+                effective?.showImage ? (
+                  <div className="flex p-3">
+                    <Skeleton className="bg-secondary h-[72px] w-[128px] shrink-0 rounded-md" />
+                    <div className="flex min-w-0 flex-1 flex-col justify-center px-3 py-2">
+                      <Skeleton className="bg-secondary h-4 w-3/4" />
+                      <Skeleton className="bg-secondary mt-1 h-3 w-20" />
+                    </div>
+                  </div>
                 ) : (
-                  <>
+                  <div className="flex flex-col gap-2 p-3">
+                    <Skeleton className="bg-secondary h-4 w-3/4" />
+                    <Skeleton className="bg-secondary h-3 w-28" />
+                    {(!effective || effective.description) && (
+                      <Skeleton className="bg-secondary h-3 w-full" />
+                    )}
+                  </div>
+                )
+              ) : effective ? (
+                effective.showImage ? (
+                  <div className="flex p-3">
+                    <OGImage
+                      src={effective.imageSrc}
+                      isValidImage
+                      className="h-[72px] w-[128px] shrink-0 rounded-md object-cover"
+                      isLoading={false}
+                      skeletonClassName="bg-secondary"
+                    />
+                    <div className="flex min-w-0 flex-1 flex-col justify-center px-3 py-2">
+                      <p className="text-foreground line-clamp-2 text-sm leading-snug font-semibold">
+                        {effective.title}
+                      </p>
+                      <p className="text-muted-foreground mt-0.5 text-xs">
+                        {domain(url)}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-0.5 px-3 py-2.5">
                     <p className="text-foreground line-clamp-2 text-sm leading-snug font-semibold">
-                      {og?.title || domain(url)}
+                      {effective.title}
                     </p>
-                    <p className="text-muted-foreground mt-0.5 text-xs">
+                    <p className="text-muted-foreground text-xs leading-snug">
                       {domain(url)}
                     </p>
-                  </>
-                )}
-              </div>
+                    {effective.description ? (
+                      <p className="text-muted-foreground line-clamp-3 text-xs leading-snug">
+                        {effective.description}
+                      </p>
+                    ) : null}
+                  </div>
+                )
+              ) : null}
             </div>
           )}
         </div>
