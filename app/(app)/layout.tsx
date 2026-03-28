@@ -26,26 +26,21 @@ const openRunde = localFont({
   display: 'swap',
 })
 
+const title = 'og meta'
+const description = 'Preview links on social platforms'
+
 export const metadata: Metadata = {
-  title: 'og meta',
-  description: 'Preview links on social platforms',
-  // icons: {
-  //   icon: [
-  //     {
-  //       url: '/icon-light-32x32.png',
-  //       media: '(prefers-color-scheme: light)',
-  //     },
-  //     {
-  //       url: '/icon-dark-32x32.png',
-  //       media: '(prefers-color-scheme: dark)',
-  //     },
-  //     {
-  //       url: '/icon.svg',
-  //       type: 'image/svg+xml',
-  //     },
-  //   ],
-  //   apple: '/apple-icon.png',
-  // },
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+  },
+  twitter: {
+    title,
+    description,
+    card: 'summary_large_image',
+  },
 }
 
 export default function RootLayout(
