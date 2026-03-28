@@ -39,7 +39,8 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
   const card = twitter.card
 
   const hasValidImage = Boolean(image && isValidImage)
-  const cardIsNone = card === 'none'
+  /** No card value (fixture `card: 'none'` → empty; crawlers may omit tag). */
+  const cardIsNone = !card || card === 'none'
   const cardIsSummary = card === 'summary'
 
   /** Large image on top (`summary_large_image` or unset, default when an image exists). */
@@ -151,18 +152,18 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
           {/* Compact: no valid image but has title (summary without image, etc.) */}
           {hasCompactCard && showPreview && (
             <div className="mt-3 flex overflow-hidden rounded-2xl border">
-              <div className="bg-secondary flex w-[130px] shrink-0 items-center justify-center">
-                <LinkIcon className="text-muted-foreground size-8" />
+              <div className="bg-secondary flex size-[130px] shrink-0 items-center justify-center border-r">
+                <TwitterBrokenImageIcon className="text-muted-foreground size-[30px]" />
               </div>
-              <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5 px-3 py-2.5">
-                <p className="text-muted-foreground text-[13px]">
+              <div className="bg-card flex min-w-0 flex-1 grow flex-col justify-center gap-0.5 p-3">
+                <p className="text-muted-foreground text-[15px]">
                   {domain(url)}
                 </p>
                 <p className="text-foreground truncate text-[15px] leading-snug">
                   {title}
                 </p>
                 {description && (
-                  <p className="text-muted-foreground line-clamp-2 text-[13px] leading-snug">
+                  <p className="text-muted-foreground line-clamp-2 text-[15px] leading-snug">
                     {description}
                   </p>
                 )}
@@ -195,5 +196,15 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
         </div>
       </div>
     </PlatformSection>
+  )
+}
+
+function TwitterBrokenImageIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" {...props} fill="currentColor">
+      <g>
+        <path d="M1.998 5.5c0-1.38 1.119-2.5 2.5-2.5h15c1.381 0 2.5 1.12 2.5 2.5v13c0 1.38-1.119 2.5-2.5 2.5h-15c-1.381 0-2.5-1.12-2.5-2.5v-13zm2.5-.5c-.276 0-.5.22-.5.5v13c0 .28.224.5.5.5h15c.276 0 .5-.22.5-.5v-13c0-.28-.224-.5-.5-.5h-15zM6 7h6v6H6V7zm2 2v2h2V9H8zm10 0h-4V7h4v2zm0 4h-4v-2h4v2zm-.002 4h-12v-2h12v2z"></path>
+      </g>
+    </svg>
   )
 }

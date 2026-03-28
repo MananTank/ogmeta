@@ -95,7 +95,7 @@ export const FailedToFetch: Story = () => (
 
 export const InvalidUrl: Story = () => <TwitterPreview {...invalidUrlData} />
 
-export const TwitterFullTestSuite: Story = () => (
+export const AllTests: Story = () => (
   <div className="flex flex-col gap-14">
     {Object.entries(OG_TEST_FIXTURES)
       .filter(([, fixture]) => fixture.results?.twitter !== NOT_A_RELEVANT_TEST)

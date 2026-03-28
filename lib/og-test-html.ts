@@ -8,6 +8,7 @@ type Image = 'none' | '1/1' | '1200/630' | 'broken'
 
 type OGType = 'website' | 'article'
 
+/** `'none'` = no card value (empty), not the literal string `none` in HTML. */
 type TwitterCardType = 'summary' | 'summary_large_image' | 'none'
 
 /** Full Open Graph block for a fixture. */
@@ -22,6 +23,7 @@ export type OgTestHtmlOgOptions = {
 /** Full Twitter block for a fixture. */
 export type OgTestHtmlTwitterOptions = {
   title: Content
+  /** `'none'` = empty (no `twitter:card` value), not the word `none` in the document. */
   card: TwitterCardType
   /** Use `'none'` to omit the `twitter:description` tag. */
   description: Content
@@ -33,8 +35,8 @@ export type OgTestHtmlTwitterOptions = {
 }
 
 /**
- * Options for test fixtures. Use `og: 'none'` or `twitter: 'none'` as a
- * shorthand for setting every field in that block to `'none'`.
+ * Options for test fixtures. Use `og: 'none'` or `twitter: 'none'` to omit that block
+ * entirely (not expanded into placeholder objects).
  */
 export type OgTestHtmlOptions = {
   title: Content
@@ -43,36 +45,41 @@ export type OgTestHtmlOptions = {
   twitter: OgTestHtmlTwitterOptions | 'none'
 }
 
-type OgTestHtmlOptionsResolved = {
-  title: Content
-  desc: Content
-  og: OgTestHtmlOgOptions
-  twitter: OgTestHtmlTwitterOptions
-}
+/**
+ * Next.js `postProcessMetadata` copies Open Graph (and sometimes `metadata.description`) into
+ * `twitter:*` whenever a Twitter field is missing. We use zero-width space and empty `images`
+ * so "omitted" is truthy for Next's checks without meaningful visible content. See
+ * next/dist/lib/metadata/resolve-metadata.js `postProcessMetadata`.
+ *
+ * For `twitter:card`, empty must be truthy or `resolveTwitter` defaults to `summary` /
+ * `summary_large_image`; we use the same ZWSP so `content` is empty for practical purposes.
+ */
+const TWITTER_FIELD_SENTINEL_TITLE = { absolute: '\u200b' } as const
+const TWITTER_FIELD_SENTINEL_DESCRIPTION = '\u200b'
+const TWITTER_FIELD_SENTINEL_CARD = '\u200b'
 
-const OG_NONE: OgTestHtmlOgOptions = {
-  title: 'none',
-  desc: 'none',
-  image: 'none',
-  type: 'website',
-}
+/**
+ * When a fixture omits Twitter entirely (`twitter: 'none'` or `card: 'none'` with all fields
+ * `'none'`), set a full sentinel so Next does not invent tags from OG.
+ */
+const NEXT_METADATA_TWITTER_OMITTED_SENTINEL = {
+  card: TWITTER_FIELD_SENTINEL_CARD,
+  title: TWITTER_FIELD_SENTINEL_TITLE,
+  description: TWITTER_FIELD_SENTINEL_DESCRIPTION,
+  images: [],
+} as NonNullable<Metadata['twitter']>
 
-const TWITTER_NONE: OgTestHtmlTwitterOptions = {
-  title: 'none',
-  card: 'none',
-  description: 'none',
-  image: 'none',
-}
-
-function normalizeOgTestHtmlOptions(
-  options: OgTestHtmlOptions
-): OgTestHtmlOptionsResolved {
-  return {
-    title: options.title,
-    desc: options.desc,
-    og: options.og === 'none' ? OG_NONE : options.og,
-    twitter: options.twitter === 'none' ? TWITTER_NONE : options.twitter,
-  }
+/** Entire Twitter block omitted: shorthand or explicit object with only `'none'` fields. */
+function isTwitterEntirelyOmitted(
+  twitter: OgTestHtmlTwitterOptions | 'none'
+): boolean {
+  if (twitter === 'none') return true
+  return (
+    twitter.card === 'none' &&
+    twitter.title === 'none' &&
+    twitter.description === 'none' &&
+    twitter.image === 'none'
+  )
 }
 
 const EXAMPLE_FAVICON = 'https://vercel.com/favicon.ico'
@@ -164,7 +171,9 @@ function twitterImagePath(image: Image): string | null {
   return ogImagePath(image) ?? '/og-test/1200-630.png'
 }
 
-function visibleTitle(options: OgTestHtmlOptionsResolved): string {
+function visibleTitle(
+  options: Pick<OgTestHtmlOptions, 'title' | 'desc'>
+): string {
   const t = resolveContent('title', options.title, 'html')
   if (t) return t
   return ''
@@ -223,18 +232,16 @@ export function ogTestOptionsToMetadata(
   pathname: string,
   metadataBase: URL
 ): Metadata {
-  const resolved = normalizeOgTestHtmlOptions(options)
-
-  const title = visibleTitle(resolved)
-  const htmlDesc = resolveContent('description', resolved.desc, 'html')
+  const title = visibleTitle(options)
+  const htmlDesc = resolveContent('description', options.desc, 'html')
 
   const metadata: Metadata = {
     title,
   }
   if (htmlDesc) metadata.description = htmlDesc
 
-  if (hasAnyOg(resolved.og)) {
-    const og = resolved.og
+  if (options.og !== 'none' && hasAnyOg(options.og)) {
+    const og = options.og
     const ogUrl =
       og.url ??
       new URL(
@@ -256,19 +263,40 @@ export function ogTestOptionsToMetadata(
     }
   }
 
-  const tw = resolved.twitter
-  if (tw.card !== 'none') {
-    const twTitle = resolveContent('title', tw.title, 'twitter')
-    const twDesc = resolveContent('description', tw.description, 'twitter')
-    const twImgPath = twitterImagePath(tw.image)
+  if (options.twitter === 'none') {
+    metadata.twitter = NEXT_METADATA_TWITTER_OMITTED_SENTINEL
+  } else {
+    const tw = options.twitter
+    if (isTwitterEntirelyOmitted(tw)) {
+      metadata.twitter = NEXT_METADATA_TWITTER_OMITTED_SENTINEL
+    } else {
+      const twTitle = resolveContent('title', tw.title, 'twitter')
+      const twDesc = resolveContent('description', tw.description, 'twitter')
+      const twImgPath = twitterImagePath(tw.image)
+      const blockOgIntoTwitter = Boolean(metadata.openGraph)
 
-    metadata.twitter = {
-      card: tw.card,
-      ...(twTitle ? { title: twTitle } : {}),
-      ...(twDesc ? { description: twDesc } : {}),
-      ...(twImgPath ? { images: [twImgPath] } : {}),
-      ...(tw.url ? { url: tw.url } : {}),
-      ...(tw.site?.trim() ? { site: tw.site.trim() } : {}),
+      metadata.twitter = {
+        ...(tw.card === 'none'
+          ? { card: TWITTER_FIELD_SENTINEL_CARD }
+          : { card: tw.card }),
+        ...(twTitle
+          ? { title: twTitle }
+          : blockOgIntoTwitter
+            ? { title: TWITTER_FIELD_SENTINEL_TITLE }
+            : {}),
+        ...(twDesc
+          ? { description: twDesc }
+          : blockOgIntoTwitter
+            ? { description: TWITTER_FIELD_SENTINEL_DESCRIPTION }
+            : {}),
+        ...(twImgPath
+          ? { images: [twImgPath] }
+          : blockOgIntoTwitter
+            ? { images: [] }
+            : {}),
+        ...(tw.url ? { url: tw.url } : {}),
+        ...(tw.site?.trim() ? { site: tw.site.trim() } : {}),
+      } as Metadata['twitter']
     }
   }
 
@@ -284,16 +312,14 @@ export function ogTestOptionsToOgMetadata(
   pathname: string,
   metadataBase: URL
 ): DocumentMetadata {
-  const resolved = normalizeOgTestHtmlOptions(options)
   const pageUrl = new URL(
     pathname.startsWith('/') ? pathname : `/${pathname}`,
     metadataBase
   ).href
 
-  const og = resolved.og
   const doc = {
-    title: resolveContent('title', resolved.title, 'html') ?? '',
-    description: resolveContent('description', resolved.desc, 'html') ?? '',
+    title: resolveContent('title', options.title, 'html') ?? '',
+    description: resolveContent('description', options.desc, 'html') ?? '',
   }
 
   const openGraph: DocumentMetadata['openGraph'] = {
@@ -304,7 +330,8 @@ export function ogTestOptionsToOgMetadata(
     type: 'website',
   }
 
-  if (hasAnyOg(og)) {
+  if (options.og !== 'none' && hasAnyOg(options.og)) {
+    const og = options.og
     openGraph.title = resolveContent('title', og.title, 'og') ?? ''
     openGraph.description = resolveContent('description', og.desc, 'og') ?? ''
     const ogPath = og.image !== 'none' ? ogImagePath(og.image) : null
@@ -312,11 +339,8 @@ export function ogTestOptionsToOgMetadata(
     openGraph.isValidImage = og.image !== 'none' && og.image !== 'broken'
     openGraph.siteName = 'Site Name'
     openGraph.type = og.type
-  } else {
-    // openGraph.siteName = 'Site Name'
   }
 
-  const tw = resolved.twitter
   const twitter: DocumentMetadata['twitter'] = {
     title: '',
     description: '',
@@ -324,14 +348,18 @@ export function ogTestOptionsToOgMetadata(
     isValidImage: false,
   }
 
-  if (tw.card !== 'none') {
+  if (
+    options.twitter !== 'none' &&
+    !isTwitterEntirelyOmitted(options.twitter)
+  ) {
+    const tw = options.twitter
     twitter.title = resolveContent('title', tw.title, 'twitter') ?? ''
     twitter.description =
       resolveContent('description', tw.description, 'twitter') ?? ''
     const twPath = twitterImagePath(tw.image)
     twitter.image = twPath ? new URL(twPath, metadataBase).href : ''
     twitter.isValidImage = tw.image !== 'none' && tw.image !== 'broken'
-    twitter.card = tw.card
+    twitter.card = tw.card === 'none' ? '' : tw.card
     if (tw.site?.trim()) twitter.site = tw.site.trim()
   }
 

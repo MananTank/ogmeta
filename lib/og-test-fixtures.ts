@@ -48,6 +48,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       slack:
         'big preview - 3 rows + image: favicon + site name, og:title, og:description',
       facebook: 'big preview - image + 2 rows: domain, title',
+      twitter: 'big preview - image, twitter:title',
     },
   },
   'complete-long': {
@@ -69,6 +70,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      twitter: 'big preview - image, twitter:title',
       facebook:
         'big preview - image + 2 rows: domain, title. title max limit 2 lines',
       discord:
@@ -96,6 +98,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      twitter: 'resized to 1200/630 aspect ratio',
       discord:
         'image shown in original aspect ratio, max-width 300 instead of 400 for square',
       slack: 'image shown in original aspect ratio',
@@ -120,6 +123,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      twitter:
+        'small preview - 3 rows: domain, twitter:title, twitter:description',
       discord: 'small preview - 3 rows: site name, og:title, og:description',
       slack:
         'small preview - 3 rows: favicon + site name, og:title, og:description',
@@ -144,6 +149,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      twitter:
+        'small preview - 3 rows: domain, twitter:title, twitter:description',
       discord: 'small preview - 3 rows: site name, og:title, og:description',
       slack:
         'small preview - 3 rows: favicon + site name, og:title, og:description',
@@ -164,6 +171,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      twitter: NOT_A_RELEVANT_TEST,
       discord:
         'big preview - 2 rows + image: twitter:title, twitter:description',
       slack:
@@ -220,6 +228,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
+      twitter: RESULT_NO_PREVIEW,
       discord: 'small preview - 2 rows: title, description',
       slack: 'small preview - 3 rows: favicon + domain, title, description',
       facebook: 'small preview - 2 rows: domain, title',
@@ -238,6 +247,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
+      twitter: 'big preview - image, og:title',
       discord:
         'big preview - 3 rows + image: site name, og:title, og:description',
       slack:
@@ -263,6 +273,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      twitter: 'big preview - image, title',
       facebook: 'preview - image + 2 rows: domain, title',
       discord: 'big preview - 3 rows + image: site name, title, og:description',
       slack:
@@ -287,6 +298,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      twitter: 'big preview - image, title',
       facebook: 'preview - image + 2 rows: domain, title',
       discord: 'big preview - 3 rows + image: site name, title, og:description',
       slack:
