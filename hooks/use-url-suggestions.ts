@@ -6,7 +6,7 @@ import { DEFAULT_URL } from '@/lib/constants'
 import { isValidUrl, normalizeUrl } from '@/lib/url'
 import type { DocumentMetadata } from '@/lib/og-types'
 
-export const URL_HISTORY_KEY = 'og-meta-url-history'
+const URL_HISTORY_KEY = 'og-meta-url-history'
 
 const MAX_HISTORY_ITEMS = 20
 const SAVE_DELAY_MS = 3000

@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 import type { DocumentMetadata } from '@/lib/og-types'
 
-export type Content = 'none' | 'short' | 'long'
+type Content = 'none' | 'short' | 'long'
 
 /** Standard aspect ratios; `broken` is a deliberately missing file for error cases. */
-export type Image = 'none' | '1/1' | '1200/630' | 'broken'
+type Image = 'none' | '1/1' | '1200/630' | 'broken'
 
-export type OGType = 'website' | 'article'
+type OGType = 'website' | 'article'
 
-export type TwitterCardType = 'summary' | 'summary_large_image' | 'none'
+type TwitterCardType = 'summary' | 'summary_large_image' | 'none'
 
 /** Full Open Graph block for a fixture. */
 export type OgTestHtmlOgOptions = {
@@ -76,34 +76,34 @@ function normalizeOgTestHtmlOptions(
 }
 
 /** `<title>` and standalone meta description, distinct from OG/Twitter strings. */
-export const HTML_SHORT_TITLE = 'Document title (short)'
-export const HTML_LONG_TITLE =
+const HTML_SHORT_TITLE = 'Document title (short)'
+const HTML_LONG_TITLE =
   'Document title long: ' +
   'A long HTML document title for the <title> element. '.repeat(14).trim()
 
-export const HTML_SHORT_DESCRIPTION = 'Meta description (short)'
-export const HTML_LONG_DESCRIPTION =
+const HTML_SHORT_DESCRIPTION = 'Meta description (short)'
+const HTML_LONG_DESCRIPTION =
   'Meta description long: ' +
   'A long HTML meta description (name=description). '.repeat(18).trim()
 
 /** `og:title` / `og:description` */
-export const OG_SHORT_TITLE = 'og:title (short)'
-export const OG_LONG_TITLE =
+const OG_SHORT_TITLE = 'og:title (short)'
+const OG_LONG_TITLE =
   'og:title long: ' + 'A long Open Graph title for og:title. '.repeat(14).trim()
 
-export const OG_SHORT_DESCRIPTION = 'og:description (short)'
-export const OG_LONG_DESCRIPTION =
+const OG_SHORT_DESCRIPTION = 'og:description (short)'
+const OG_LONG_DESCRIPTION =
   'og:description long: ' +
   'A long Open Graph description for og:description. '.repeat(18).trim()
 
 /** `twitter:title` / `twitter:description` */
 export const TWITTER_SHORT_TITLE = 'twitter:title (short)'
-export const TWITTER_LONG_TITLE =
+const TWITTER_LONG_TITLE =
   'twitter:title long: ' +
   'A long Twitter Card title for twitter:title. '.repeat(14).trim()
 
 export const TWITTER_SHORT_DESCRIPTION = 'twitter:description (short)'
-export const TWITTER_LONG_DESCRIPTION =
+const TWITTER_LONG_DESCRIPTION =
   'twitter:description long: ' +
   'A long Twitter Card description for twitter:description. '.repeat(18).trim()
 

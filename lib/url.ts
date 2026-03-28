@@ -36,14 +36,6 @@ export function normalizeUrlForFetch(url: string): string {
   return finalUrl
 }
 
-export function readUrlParamFromWindow(): string {
-  if (typeof window === 'undefined') return ''
-  return (
-    new URLSearchParams(window.location.search).get(URL_SEARCH_PARAM)?.trim() ??
-    ''
-  )
-}
-
 export function normalizeUrl(url: string) {
   return url
     .trim()

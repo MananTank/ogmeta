@@ -10,14 +10,7 @@ import {
   type TwitterTagsSlice,
 } from '@/lib/og-types'
 
-export type {
-  DocumentMetaSlice,
-  DocumentMetadata,
-  OpenGraphSlice,
-  TwitterTagsSlice,
-} from '@/lib/og-types'
-
-export type FetchOGDataResult =
+type FetchOGDataResult =
   | { type: 'success'; data: DocumentMetadata }
   | { type: 'error'; error: string }
 

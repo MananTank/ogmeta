@@ -66,7 +66,7 @@ export function useURL(): {
   }
 }
 
-export function useStoreLastUsedUrl(props: { url: string; enabled: boolean }) {
+function useStoreLastUsedUrl(props: { url: string; enabled: boolean }) {
   const { url, enabled } = props
   useEffect(() => {
     if (!enabled) return
@@ -80,10 +80,7 @@ export function useStoreLastUsedUrl(props: { url: string; enabled: boolean }) {
   return null
 }
 
-export function useUpdateSearchParams(props: {
-  url: string
-  enabled: boolean
-}) {
+function useUpdateSearchParams(props: { url: string; enabled: boolean }) {
   const { url, enabled } = props
 
   useEffect(() => {
