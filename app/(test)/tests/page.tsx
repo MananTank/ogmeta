@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CopyTestSnippetButton } from '@/components/copy-test-snippet-button'
+import { CopyTestSnippetButton } from './components/copy-test-snippet-button'
 import { OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
 import { getOgTestsMetadataBase } from '@/lib/og-test-html'
 import { InspectionPanelIcon } from 'lucide-react'

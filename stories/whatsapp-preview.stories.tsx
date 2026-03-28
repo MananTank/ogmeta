@@ -92,7 +92,9 @@ export const InvalidUrl: Story = () => <WhatsAppPreview {...invalidUrlData} />
 export const WhatsAppFullTestSuite: Story = () => (
   <div className="flex flex-col gap-14">
     {Object.entries(OG_TEST_FIXTURES)
-      .filter(([, fixture]) => fixture.results?.whatsapp !== NOT_A_RELEVANT_TEST)
+      .filter(
+        ([, fixture]) => fixture.results?.whatsapp !== NOT_A_RELEVANT_TEST
+      )
       .map(([slug, fixture]) => (
         <div key={slug}>
           <StoryLabel>{slug}</StoryLabel>

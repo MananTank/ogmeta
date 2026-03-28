@@ -11,7 +11,6 @@ type Props = {
   className?: string
 }
 
-/** Copies `Testing opengraph {pathname}` + blank line + `{fullUrl}`. */
 export function CopyTestSnippetButton(props: Props) {
   const [copied, setCopied] = useState(false)
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)

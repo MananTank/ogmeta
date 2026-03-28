@@ -92,7 +92,9 @@ export const InvalidUrl: Story = () => <LinkedInPreview {...invalidUrlData} />
 export const LinkedInFullTestSuite: Story = () => (
   <div className="flex flex-col gap-14">
     {Object.entries(OG_TEST_FIXTURES)
-      .filter(([, fixture]) => fixture.results?.linkedin !== NOT_A_RELEVANT_TEST)
+      .filter(
+        ([, fixture]) => fixture.results?.linkedin !== NOT_A_RELEVANT_TEST
+      )
       .map(([slug, fixture]) => (
         <div key={slug}>
           <StoryLabel>{slug}</StoryLabel>

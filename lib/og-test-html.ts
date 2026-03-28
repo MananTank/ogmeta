@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import type { OGMetadata } from '@/lib/og-types'
+import type { Metadata } from '@/lib/og-types'
 import { siteNameLabelFromUrl } from '@/lib/site-name'
 
 export type Content = 'none' | 'short' | 'long'
@@ -275,14 +275,14 @@ export function ogTestOptionsToMetadata(
 }
 
 /**
- * Builds {@link OGMetadata} the same way fixture pages expose tags (doc / og / twitter),
+ * Builds {@link Metadata} the same way fixture pages expose tags (doc / og / twitter),
  * for previews and tests. Image URLs are absolute using `metadataBase`.
  */
 export function ogTestOptionsToOgMetadata(
   options: OgTestHtmlOptions,
   pathname: string,
   metadataBase: URL
-): OGMetadata {
+): Metadata {
   const resolved = normalizeOgTestHtmlOptions(options)
   const pageUrl = new URL(
     pathname.startsWith('/') ? pathname : `/${pathname}`,
@@ -295,7 +295,7 @@ export function ogTestOptionsToOgMetadata(
     description: resolveContent('description', resolved.desc, 'html') ?? '',
   }
 
-  const openGraph: OGMetadata['openGraph'] = {
+  const openGraph: Metadata['openGraph'] = {
     title: '',
     description: '',
     image: '',
@@ -315,7 +315,7 @@ export function ogTestOptionsToOgMetadata(
   }
 
   const tw = resolved.twitter
-  const twitter: OGMetadata['twitter'] = {
+  const twitter: Metadata['twitter'] = {
     title: '',
     description: '',
     image: '',

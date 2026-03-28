@@ -4,44 +4,42 @@ import { useState } from 'react'
 import type { PreviewViewport } from '@/lib/preview-viewport'
 import { useQuery } from '@tanstack/react-query'
 import { PlatformPreviews } from '@/components/previews/index'
-import {
-  HomeUrlInput,
-  isValidUrl,
-  normalizeUrlForFetch,
-} from '@/components/home-url-input'
-import { DEFAULT_URL, SOURCE_REPO_URL } from '@/lib/constants'
+import { URLInput } from '@/components/home-url-input'
+import { isValidUrl, normalizeUrlForFetch } from '@/lib/url'
+import { useURL } from '@/hooks/use-home-url-storage'
+import { DEFAULT_URL } from '@/lib/constants'
 import { fetchOGData } from '@/lib/og'
-import type { OGMetadata } from '@/lib/og-types'
+import type { Metadata } from '@/lib/og-types'
 import { PreviewControls } from './preview-controls'
-import { InspectionPanelIcon } from 'lucide-react'
+import { AlertTriangleIcon, InspectionPanelIcon } from 'lucide-react'
 
-export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
-  const [debouncedUrl, setDebouncedUrl] = useState(DEFAULT_URL)
-  const [hasReadStoredUrl, setHasReadStoredUrl] = useState(false)
+export function HomeClient(props: { defaultURLData: Metadata | null }) {
+  const { url, setUrl, isURLReady } = useURL()
   const [previewViewport, setPreviewViewport] =
     useState<PreviewViewport>('desktop')
-  const urlIsValid = isValidUrl(debouncedUrl)
+  const urlIsValid = isValidUrl(url)
+  const queryEnabled = isURLReady && urlIsValid
 
   const ogQuery = useQuery({
-    queryKey: ['og', debouncedUrl],
+    queryKey: ['og', url],
     queryFn: async () => {
-      const result = await fetchOGData(normalizeUrlForFetch(debouncedUrl))
+      const result = await fetchOGData(normalizeUrlForFetch(url))
       if (result.type === 'error') {
         throw new Error(result.error)
       }
       return result.data
     },
-    enabled: hasReadStoredUrl && urlIsValid,
+    enabled: queryEnabled,
     retry: false,
     initialData:
-      debouncedUrl === DEFAULT_URL && props.defaultURLData
+      url === DEFAULT_URL && props.defaultURLData
         ? props.defaultURLData
         : undefined,
   })
 
-  const isLoading = ogQuery.isFetching || !hasReadStoredUrl
+  const showLoadingState = ogQuery.isFetching || !isURLReady
 
-  const errorMessage = !debouncedUrl
+  const errorMessage = !url
     ? undefined
     : ogQuery.error
       ? 'Failed to fetch opengraph metadata'
@@ -50,7 +48,7 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
         : null
 
   return (
-    <main className="min-h-screen pb-8">
+    <main>
       <div className="mx-auto max-w-2xl px-6 py-32">
         <header className="text-center">
           <div className="flex items-center justify-center">
@@ -72,13 +70,12 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
 
         <div className="flex w-full flex-col gap-5 sm:flex-row sm:items-start sm:gap-2.5">
           <div className="min-w-0 flex-1">
-            <HomeUrlInput
-              debouncedUrl={debouncedUrl}
-              setDebouncedUrl={setDebouncedUrl}
-              hasReadStoredUrl={hasReadStoredUrl}
-              setHasReadStoredUrl={setHasReadStoredUrl}
-              fetchedOgMetadata={ogQuery.data}
-              isLoading={isLoading}
+            <URLInput
+              debouncedUrl={url}
+              setDebouncedUrl={setUrl}
+              isURLReady={isURLReady}
+              metadata={ogQuery.data}
+              isLoading={showLoadingState}
               isError={!!errorMessage}
             />
           </div>
@@ -90,47 +87,23 @@ export function HomeClient(props: { defaultURLData: OGMetadata | null }) {
         </div>
 
         {errorMessage && (
-          <p className="text-destructive fade-in-0 animate-in mt-3 text-center text-sm font-medium">
-            {errorMessage}
-          </p>
+          <div className="relative flex items-center justify-center">
+            <p className="text-destructive fade-in-0 border-destructive/10 animate-in bg-destructive/10 zoom-in-85 absolute top-5 flex items-center gap-2 rounded-full border px-3 py-1.5 text-center text-sm font-medium duration-300">
+              <AlertTriangleIcon className="text-destructive size-3.5" />
+              {errorMessage}
+            </p>
+          </div>
         )}
       </div>
 
       <PlatformPreviews
         data={ogQuery.data ?? null}
-        isLoading={isLoading}
-        isError={hasReadStoredUrl && !!ogQuery.error}
+        isLoading={showLoadingState}
+        isError={isURLReady && !!ogQuery.error}
         previewViewport={previewViewport}
-        urlInput={debouncedUrl}
+        urlInput={url}
         isValidUrl={urlIsValid}
       />
-
-      <footer className="text-muted-foreground mx-auto mt-40 max-w-2xl px-4 pb-6 text-center text-base">
-        <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-          <span>
-            Made by{' '}
-            <a
-              href="https://x.com/MananTank_"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground underline-offset-2 transition-colors hover:underline"
-            >
-              Manan Tank
-            </a>
-          </span>
-          <span aria-hidden className="text-muted-foreground/40">
-            ·
-          </span>
-          <a
-            href={SOURCE_REPO_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground underline-offset-2 transition-colors hover:underline"
-          >
-            GitHub
-          </a>
-        </p>
-      </footer>
     </main>
   )
 }
