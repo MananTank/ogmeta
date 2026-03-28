@@ -33,6 +33,9 @@ export default function RootLayout(
       suppressHydrationWarning
       className={`${openRunde.variable}`}
     >
+      <head>
+        <meta name="apple-mobile-web-app-title" content="og meta" />
+      </head>
       <body className="bg-background text-foreground min-h-screen font-sans antialiased">
         <Providers>{props.children}</Providers>
       </body>

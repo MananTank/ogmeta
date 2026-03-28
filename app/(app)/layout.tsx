@@ -27,26 +27,25 @@ const openRunde = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'OG Meta - Check OpenGraph Tags',
-  description:
-    'Preview how your URLs appear when shared on social media and messaging apps. Check OpenGraph metadata for any website.',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
+  title: 'og meta',
+  description: 'Preview links on social platforms',
+  // icons: {
+  //   icon: [
+  //     {
+  //       url: '/icon-light-32x32.png',
+  //       media: '(prefers-color-scheme: light)',
+  //     },
+  //     {
+  //       url: '/icon-dark-32x32.png',
+  //       media: '(prefers-color-scheme: dark)',
+  //     },
+  //     {
+  //       url: '/icon.svg',
+  //       type: 'image/svg+xml',
+  //     },
+  //   ],
+  //   apple: '/apple-icon.png',
+  // },
 }
 
 export default function RootLayout(
@@ -58,6 +57,9 @@ export default function RootLayout(
       suppressHydrationWarning
       className={`${openRunde.variable}`}
     >
+      <head>
+        <meta name="apple-mobile-web-app-title" content="og meta" />
+      </head>
       <body className="bg-background text-foreground min-h-screen font-sans antialiased">
         <Providers>{props.children}</Providers>
         <Analytics />
