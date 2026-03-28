@@ -182,11 +182,12 @@ async function parseOpenGraphSlice(
     'meta[property="og:site_name"]',
     'meta[name="og:site_name"]',
   ]).trim()
+
   const applicationName = getMetaContent($, [
     'meta[name="application-name"]',
   ]).trim()
-  const resolvedSiteName =
-    ogSiteName || applicationName || siteNameLabelFromUrl(pageUrl)
+
+  const resolvedSiteName = ogSiteName || applicationName
 
   const type =
     getMetaContent($, ['meta[property="og:type"]', 'meta[name="og:type"]']) ||
@@ -337,7 +338,7 @@ async function fetchOGDataUncached(url: string): Promise<FetchOGDataResult> {
 
 const getCachedOGData = unstable_cache(
   async (url: string) => fetchOGDataUncached(url),
-  ['og-metadata', 'og-and-twitter-split-v5'],
+  ['og-metadata'],
   { revalidate: REVALIDATE_SECONDS, tags: ['og-metadata'] }
 )
 

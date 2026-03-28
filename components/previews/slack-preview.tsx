@@ -132,7 +132,7 @@ export function SlackPreview(props: PlatformPreviewsProps) {
           </div>
 
           {/* Message content */}
-          <div className="text-foreground space-y-2 text-[15px] leading-relaxed">
+          <div className="text-foreground space-y-2 text-[15px] leading-[1.45]">
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -180,7 +180,7 @@ export function SlackPreview(props: PlatformPreviewsProps) {
                     </div>
                     <SlackUnfurlDescription
                       text={unfurlDescription}
-                      className="text-foreground text-[15px] leading-relaxed"
+                      className="text-foreground text-[15px] leading-[1.45]"
                     />
                   </>
                 ) : (
@@ -191,7 +191,7 @@ export function SlackPreview(props: PlatformPreviewsProps) {
                     />
                     <SlackUnfurlDescription
                       text={unfurlDescription}
-                      className="text-foreground text-[15px] leading-relaxed"
+                      className="text-foreground text-[15px] leading-[1.45]"
                     />
                   </>
                 )
@@ -224,7 +224,7 @@ export function SlackPreview(props: PlatformPreviewsProps) {
                   </div>
                   <SlackUnfurlDescription
                     text={unfurlDescription}
-                    className="text-foreground/80 mt-0.5 text-[15px] leading-relaxed"
+                    className="text-foreground/80 mt-0.5 text-[15px] leading-[1.45]"
                   />
                   <OGImage
                     src={unfurlImage}

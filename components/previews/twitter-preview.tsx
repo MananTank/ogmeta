@@ -132,23 +132,23 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
           {/* buttons */}
           <div className="text-muted-foreground mt-3 flex items-center justify-between">
             <button className="flex items-center gap-1.5 transition-colors hover:text-sky-400">
-              <TwitterReplyIcon className="size-5" />
-              <span className="text-xs">24</span>
+              <TwitterReplyIcon className="size-[19px]" />
+              <span className="text-[13px]">24</span>
             </button>
             <button className="flex items-center gap-1.5 transition-colors hover:text-green-400">
-              <TwitterRetweetIcon className="size-5" />
-              <span className="text-xs">8</span>
+              <TwitterRetweetIcon className="size-[19px]" />
+              <span className="text-[13px]">8</span>
             </button>
             <button className="flex items-center gap-1.5 transition-colors hover:text-pink-400">
-              <TwitterLikeIcon className="size-5" />
-              <span className="text-xs">142</span>
+              <TwitterLikeIcon className="size-[19px]" />
+              <span className="text-[13px]">142</span>
             </button>
             <button className="flex items-center gap-1.5 transition-colors hover:text-sky-400">
-              <TwitterViewsIcon className="size-5" />
-              <span className="text-xs">12.4K</span>
+              <TwitterViewsIcon className="size-[19px]" />
+              <span className="text-[13px]">12.4K</span>
             </button>
             <button className="flex items-center gap-1.5 transition-colors hover:text-sky-400">
-              <TwitterBookmarkIcon className="size-5" />
+              <TwitterBookmarkIcon className="size-[19px]" />
             </button>
           </div>
         </div>

@@ -17,9 +17,7 @@ import type { PlatformPreviewsProps } from './types'
 
 export function LinkedInPreview(props: PlatformPreviewsProps) {
   const url = props.data?.url ?? props.urlInput ?? ''
-  const effective = props.data
-    ? effectiveLinkedInPreview(props.data)
-    : null
+  const effective = props.data ? effectiveLinkedInPreview(props.data) : null
 
   const showLinkCard =
     props.isValidUrl && !props.isError && (props.isLoading || props.data)
@@ -30,7 +28,7 @@ export function LinkedInPreview(props: PlatformPreviewsProps) {
       containerClassName="linkedin"
       previewViewport={props.previewViewport}
     >
-      <div className="bg-card w-full max-w-[550px] overflow-hidden rounded-lg shadow-sm">
+      <div className="bg-card w-full max-w-[550px] overflow-hidden rounded-lg border">
         {/* Post Header */}
         <div className="p-4">
           <div className="flex gap-2">
@@ -52,7 +50,7 @@ export function LinkedInPreview(props: PlatformPreviewsProps) {
           </div>
 
           {/* Post Content */}
-          <div className="text-foreground mt-3 space-y-2 text-sm leading-relaxed">
+          <div className="text-foreground mt-3 space-y-2 text-sm leading-snug">
             <p>{PARAGRAPH_1}</p>
             <p>{PARAGRAPH_2}</p>
 
@@ -127,66 +125,204 @@ export function LinkedInPreview(props: PlatformPreviewsProps) {
         </div>
 
         {/* Engagement Stats */}
-        <div className="text-muted-foreground flex items-center gap-1 border-t px-4 py-2 text-xs">
-          <span className="flex -space-x-1">
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#378fe9] text-[8px] text-white">
-              👍
+        <div className="px-4">
+          <div className="text-muted-foreground flex items-center gap-1 border-b py-2 text-xs">
+            <span className="flex -space-x-1">
+              <LinkedinLikeIcon className="text-card size-4" />
+              <LinkedinHeartIcon className="text-card size-4" />
             </span>
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#df704d] text-[8px] text-white">
-              ❤️
-            </span>
-          </span>
-          <span className="ml-1">128</span>
-          <span className="mx-auto" />
-          <span>14 comments</span>
-          <span className="mx-1">•</span>
-          <span>3 reposts</span>
+            <span>128</span>
+            <span className="mx-auto" />
+            <span>14 comments</span>
+          </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-around border-t px-2 py-1">
-          <button className="text-muted-foreground hover:bg-secondary flex items-center gap-1.5 rounded px-4 py-3 transition-colors">
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z"
-              />
-            </svg>
-            <span className="text-sm font-medium">Like</span>
-          </button>
-          <button className="text-muted-foreground hover:bg-secondary flex items-center gap-1.5 rounded px-4 py-3 transition-colors">
-            <MessageCircle className="h-5 w-5" />
-            <span className="text-sm font-medium">Comment</span>
-          </button>
-          <button className="text-muted-foreground hover:bg-secondary flex items-center gap-1.5 rounded px-4 py-3 transition-colors">
-            <Repeat2 className="h-5 w-5" />
-            <span className="text-sm font-medium">Repost</span>
-          </button>
-          <button className="text-muted-foreground hover:bg-secondary flex items-center gap-1.5 rounded px-4 py-3 transition-colors">
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
-              />
-            </svg>
-            <span className="text-sm font-medium">Send</span>
-          </button>
+        <div className="flex items-center justify-around px-4 py-1.5">
+          <PostButton icon={LinkedInLikeButtonIcon} label="Like" />
+          <PostButton icon={LinkedInCommentButtonIcon} label="Comment" />
+          <PostButton icon={LinkedinReportIcon} label="Repost" />
+          <PostButton icon={LinkedinSendIcon} label="Send" />
         </div>
       </div>
     </PlatformSection>
+  )
+}
+
+function PostButton(props: {
+  icon: React.FC<{ className?: string }>
+  label: string
+}) {
+  return (
+    <button className="text-muted-foreground hover:bg-foreground/10 flex grow flex-col items-center gap-[2px] rounded px-2 py-1.5 transition-colors">
+      <props.icon className="size-4" />
+      <span className="text-sm font-semibold">{props.label}</span>
+    </button>
+  )
+}
+
+function LinkedinLikeIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      id="like-consumption-ring-small"
+      width="16"
+      height="16"
+      aria-hidden="true"
+      data-supported-dps="16x16"
+      viewBox="0 0 16 16"
+      data-token-id="17"
+      role="img"
+      aria-label=""
+      {...props}
+    >
+      <circle cx="8" cy="8" r="7.5" fill="#378fe9"></circle>
+      <path
+        fill="currentColor"
+        d="M8 1a7 7 0 1 1-7 7 7 7 0 0 1 7-7m0-1a8 8 0 1 0 5.66 2.34A8 8 0 0 0 8 0"
+      ></path>
+      <path
+        fill="#d0e8ff"
+        fill-rule="evenodd"
+        d="M11.93 7.25h-.55c-.05 0-.15-.19-.4-.46-.37-.4-.78-.91-1.07-1.19a7.1 7.1 0 0 1-1.73-2.24c-.24-.51-.26-.74-.75-.74a.78.78 0 0 0-.67.81c0 .14.07.63.1.8a7.5 7.5 0 0 0 1 2.2H4.12a.88.88 0 0 0-.65.28.84.84 0 0 0-.23.66.91.91 0 0 0 .93.85h.16a.82.82 0 0 0-.55.24.77.77 0 0 0-.21.54.81.81 0 0 0 .74.8.8.8 0 0 0 .33 1.42.76.76 0 0 0-.09.55.87.87 0 0 0 .85.63h2.29a3.8 3.8 0 0 0 .89-.11l1.42-.4h1.9c1.02-.04 1.29-4.64.03-4.64"
+      ></path>
+      <path
+        fill="none"
+        d="M7.3 3.72a6.4 6.4 0 0 0 1.15 2.71M5.94 11.9h2.18a16 16 0 0 0 1.9-.54h1.36"
+      ></path>
+      <path
+        fill="none"
+        stroke="#004182"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M7.43 6.43H4.11a.88.88 0 0 0-.88 1 .92.92 0 0 0 .93.84h.16a.82.82 0 0 0-.55.24.77.77 0 0 0-.21.56.83.83 0 0 0 .74.81.81.81 0 0 0-.31.63.81.81 0 0 0 .65.8.78.78 0 0 0-.09.56.86.86 0 0 0 .85.62h2.29a3.8 3.8 0 0 0 .89-.11l1.42-.47h1.9c1 0 1.27-4.64 0-4.64a5 5 0 0 1-.55 0s-.15-.19-.4-.46h0c-.37-.4-.78-.91-1.07-1.19a7.1 7.1 0 0 1-1.7-2.25 2.1 2.1 0 0 0-.32-.52.83.83 0 0 0-1.16.09 1.4 1.4 0 0 0-.25.38 1.7 1.7 0 0 0-.09.3 2.4 2.4 0 0 0 .07.84 4 4 0 0 0 .27.84 6.7 6.7 0 0 0 .66 1 .2.2 0 0 1 .07.08"
+      ></path>
+    </svg>
+  )
+}
+
+function LinkedinHeartIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      id="empathy-consumption-ring-small"
+      width="16"
+      height="16"
+      aria-hidden="true"
+      data-supported-dps="16x16"
+      viewBox="0 0 16 16"
+      data-token-id="23"
+      role="img"
+      aria-label=""
+      {...props}
+    >
+      <circle cx="8" cy="8" r="7.5" fill="#df704d"></circle>
+      <path
+        fill="currentColor"
+        d="M8 1a7 7 0 1 1-7 7 7 7 0 0 1 7-7m0-1a8 8 0 1 0 5.66 2.34A8 8 0 0 0 8 0"
+      ></path>
+      <path
+        fill="#fff3f0"
+        fill-rule="evenodd"
+        stroke="#77280c"
+        d="M7.71 5A2.64 2.64 0 0 0 4 8.75l4 4 4-4A2.64 2.64 0 0 0 12 5a2.6 2.6 0 0 0-1.85-.77A2.57 2.57 0 0 0 8.3 5l-.3.3z"
+      ></path>
+      <path
+        fill="none"
+        d="M11.43 5.18a2 2 0 0 1 .53.63c.9 1.67-.6 2.72-1.54 3.67-.6.61-1.22 1.22-1.85 1.8M5.79 4.81a2.1 2.1 0 0 0-.79.11 1.8 1.8 0 0 0-1 .82A2.6 2.6 0 0 0 3.77 7v.09"
+      ></path>
+      <path
+        fill="none"
+        stroke="#77280c"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M7.71 5A2.6 2.6 0 0 0 4 5a2.66 2.66 0 0 0 0 3.7l4 4 4-4A2.66 2.66 0 0 0 12 5a2.58 2.58 0 0 0-1.85-.78h0A2.58 2.58 0 0 0 8.3 5l-.3.25z"
+      ></path>
+    </svg>
+  )
+}
+
+function LinkedInLikeButtonIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      id="thumbs-up-outline-small"
+      fill="currentColor"
+      aria-hidden="true"
+      data-supported-dps="16x16"
+      viewBox="0 0 16 16"
+      data-token-id="289"
+      width="16"
+      height="16"
+      role="img"
+      {...props}
+      aria-label=""
+    >
+      <path d="m12.91 7-2.25-2.57a8.2 8.2 0 0 1-1.5-2.55L9 1.37A2.08 2.08 0 0 0 7 0a2.08 2.08 0 0 0-2.06 2.08v1.17a5.8 5.8 0 0 0 .31 1.89l.28.86H2.38A1.47 1.47 0 0 0 1 7.47a1.45 1.45 0 0 0 .64 1.21 1.48 1.48 0 0 0-.37 2.06 1.54 1.54 0 0 0 .62.51h.05a1.6 1.6 0 0 0-.19.71A1.47 1.47 0 0 0 3 13.42v.1A1.46 1.46 0 0 0 4.4 15h4.83a5.6 5.6 0 0 0 2.48-.58l1-.42H14V7zM12 12.11l-1.19.52a3.6 3.6 0 0 1-1.58.37H5.1a.55.55 0 0 1-.53-.4l-.14-.48-.49-.21a.56.56 0 0 1-.34-.6l.09-.56-.42-.42a.56.56 0 0 1-.09-.68L3.55 9l-.4-.61A.28.28 0 0 1 3.3 8h5L7.14 4.51a4.2 4.2 0 0 1-.2-1.26V2.08A.09.09 0 0 1 7 2a.1.1 0 0 1 .08 0l.18.51a10 10 0 0 0 1.9 3.24l2.84 3z"></path>
+    </svg>
+  )
+}
+
+function LinkedInCommentButtonIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      id="comment-small"
+      fill="currentColor"
+      aria-hidden="true"
+      data-supported-dps="16x16"
+      viewBox="0 0 16 16"
+      data-token-id="202"
+      width="16"
+      height="16"
+      role="img"
+      aria-label=""
+      {...props}
+    >
+      <path d="M5 8h5v1H5zm11-.5v.08a6 6 0 0 1-2.75 5L8 16v-3H5.5A5.51 5.51 0 0 1 0 7.5 5.62 5.62 0 0 1 5.74 2h4.76A5.5 5.5 0 0 1 16 7.5m-2 0A3.5 3.5 0 0 0 10.5 4H5.74A3.62 3.62 0 0 0 2 7.5 3.53 3.53 0 0 0 5.5 11H10v1.33l2.17-1.39A4 4 0 0 0 14 7.58zM5 7h6V6H5z"></path>
+    </svg>
+  )
+}
+
+function LinkedinReportIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      id="repost-small"
+      fill="currentColor"
+      aria-hidden="true"
+      data-supported-dps="16x16"
+      viewBox="0 0 16 16"
+      data-token-id="255"
+      width="16"
+      height="16"
+      role="img"
+      aria-label=""
+      {...props}
+    >
+      <path d="M4 10H2V5c0-1.66 1.34-3 3-3h3.85L7.42 0h2.44L12 3 9.86 6H7.42l1.43-2H5c-.55 0-1 .45-1 1zm8-4v5c0 .55-.45 1-1 1H7.15l1.43-2H6.14L4 13l2.14 3h2.44l-1.43-2H11c1.66 0 3-1.34 3-3V6z"></path>
+    </svg>
+  )
+}
+
+function LinkedinSendIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      id="send-privately-small"
+      fill="currentColor"
+      aria-hidden="true"
+      data-rtl="true"
+      data-supported-dps="16x16"
+      viewBox="0 0 16 16"
+      data-token-id="232"
+      width="16"
+      height="16"
+      {...props}
+      role="img"
+      aria-label=""
+    >
+      <path d="M14 2 0 6.67l5 2.64 5.67-3.98L6.7 11l2.63 5z"></path>
+    </svg>
   )
 }

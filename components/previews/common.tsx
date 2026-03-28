@@ -78,10 +78,7 @@ export function PlatformSection(props: {
   return (
     <section
       className={cn(
-        '@container/preview',
-        'group bg-section-card squircle-2xl mx-auto w-full max-w-5xl',
-        // Below theme `container-sm` (24rem) so `@sm/preview:` stays off in mobile preview mode.
-        props.previewViewport === 'mobile' && 'max-w-[380px]'
+        'group bg-section-card squircle-2xl mx-auto w-full max-w-5xl'
       )}
     >
       <div className="flex justify-center pt-8">
@@ -96,8 +93,11 @@ export function PlatformSection(props: {
       >
         <div
           className={cn(
-            'flex min-h-0 w-full flex-1 flex-col items-center justify-center',
-            props.containerClassName
+            '@container/preview',
+            'mx-auto flex min-h-0 w-full flex-1 flex-col items-center justify-center',
+            props.containerClassName,
+            // Below theme `container-sm` (24rem) so `@sm/preview:` stays off in mobile preview mode.
+            props.previewViewport === 'mobile' && 'max-w-[380px]'
           )}
         >
           {props.children}
