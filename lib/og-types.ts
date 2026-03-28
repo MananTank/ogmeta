@@ -25,7 +25,7 @@ export interface DocumentMetaSlice {
   description: string
 }
 
-export interface Metadata {
+export interface DocumentMetadata {
   url: string
   doc: DocumentMetaSlice
   openGraph: OpenGraphSlice
@@ -37,7 +37,7 @@ export interface Metadata {
  * X/Twitter preview: Twitter Card tags per field first, then Open Graph when
  * that field has no Twitter tag.
  */
-export function effectiveTwitterPreview(data: Metadata): {
+export function effectiveTwitterPreview(data: DocumentMetadata): {
   title: string
   description: string
   image: string
@@ -68,7 +68,7 @@ export function effectiveTwitterPreview(data: Metadata): {
  * Slack link unfurl: Open Graph first, then Twitter Card tags, then document HTML
  * (Slack falls back to Twitter metadata when OG is missing).
  */
-export function effectiveSlackPreview(data: Metadata): {
+export function effectiveSlackPreview(data: DocumentMetadata): {
   title: string
   description: string
   image: string

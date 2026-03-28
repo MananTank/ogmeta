@@ -1,5 +1,5 @@
 import type { PlatformPreviewsProps } from '@/components/previews/types'
-import type { Metadata } from '@/lib/og-types'
+import type { DocumentMetadata } from '@/lib/og-types'
 import {
   TWITTER_SHORT_DESCRIPTION,
   TWITTER_SHORT_TITLE,
@@ -12,14 +12,16 @@ const SAMPLE_URL = 'https://example.com/article/how-to-build-great-products'
 const SAMPLE_FAVICON =
   'https://www.google.com/s2/favicons?domain=example.com&sz=64'
 
-const emptyTwitter: Metadata['twitter'] = {
+const emptyTwitter: DocumentMetadata['twitter'] = {
   title: '',
   description: '',
   image: '',
   isValidImage: false,
 }
 
-function baseMetadata(openGraph: Metadata['openGraph']): Metadata {
+function baseMetadata(
+  openGraph: DocumentMetadata['openGraph']
+): DocumentMetadata {
   return {
     url: SAMPLE_URL,
     doc: {

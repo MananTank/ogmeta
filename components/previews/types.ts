@@ -1,10 +1,10 @@
 import type { PreviewViewport } from '@/lib/preview-viewport'
-import type { Metadata } from '@/lib/og-types'
+import type { DocumentMetadata } from '@/lib/og-types'
 
 export type { PreviewViewport }
 
 export type PlatformPreviewsProps = {
-  data: Metadata | null
+  data: DocumentMetadata | null
   isLoading: boolean
   isError: boolean
   previewViewport?: PreviewViewport

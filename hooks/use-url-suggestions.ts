@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { get, set } from 'idb-keyval'
 import { DEFAULT_URL } from '@/lib/constants'
 import { isValidUrl, normalizeUrl } from '@/lib/url'
-import type { Metadata } from '@/lib/og-types'
+import type { DocumentMetadata } from '@/lib/og-types'
 
 export const URL_HISTORY_KEY = 'og-meta-url-history'
 
@@ -18,7 +18,7 @@ export interface UrlHistoryItem {
 
 export function useUrlSuggestions(options: {
   debouncedUrl: string
-  fetchedOgMetadata?: Metadata | null
+  fetchedOgMetadata?: DocumentMetadata | null
   inputValue: string
 }) {
   const { debouncedUrl, fetchedOgMetadata, inputValue } = options

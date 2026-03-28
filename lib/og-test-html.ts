@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
-import type { Metadata } from '@/lib/og-types'
-import { siteNameLabelFromUrl } from '@/lib/site-name'
+import type { DocumentMetadata } from '@/lib/og-types'
 
 export type Content = 'none' | 'short' | 'long'
 
@@ -282,7 +281,7 @@ export function ogTestOptionsToOgMetadata(
   options: OgTestHtmlOptions,
   pathname: string,
   metadataBase: URL
-): Metadata {
+): DocumentMetadata {
   const resolved = normalizeOgTestHtmlOptions(options)
   const pageUrl = new URL(
     pathname.startsWith('/') ? pathname : `/${pathname}`,
@@ -295,7 +294,7 @@ export function ogTestOptionsToOgMetadata(
     description: resolveContent('description', resolved.desc, 'html') ?? '',
   }
 
-  const openGraph: Metadata['openGraph'] = {
+  const openGraph: DocumentMetadata['openGraph'] = {
     title: '',
     description: '',
     image: '',
@@ -315,7 +314,7 @@ export function ogTestOptionsToOgMetadata(
   }
 
   const tw = resolved.twitter
-  const twitter: Metadata['twitter'] = {
+  const twitter: DocumentMetadata['twitter'] = {
     title: '',
     description: '',
     image: '',

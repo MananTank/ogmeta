@@ -5,20 +5,20 @@ import * as cheerio from 'cheerio'
 import { siteNameLabelFromUrl } from '@/lib/site-name'
 import {
   effectiveTwitterPreview,
-  type Metadata,
+  type DocumentMetadata,
   type OpenGraphSlice,
   type TwitterTagsSlice,
 } from '@/lib/og-types'
 
 export type {
   DocumentMetaSlice,
-  Metadata as OGMetadata,
+  DocumentMetadata,
   OpenGraphSlice,
   TwitterTagsSlice,
 } from '@/lib/og-types'
 
 export type FetchOGDataResult =
-  | { type: 'success'; data: Metadata }
+  | { type: 'success'; data: DocumentMetadata }
   | { type: 'error'; error: string }
 
 /** Cached OG fetches (shared by RSC + server actions). */
@@ -37,7 +37,7 @@ function isTwitterUrl(urlString: string): boolean {
   }
 }
 
-function needsTwitterSyntheticFallback(data: Metadata): boolean {
+function needsTwitterSyntheticFallback(data: DocumentMetadata): boolean {
   const t = effectiveTwitterPreview(data)
   const noTitle = !t.title?.trim()
   const noImage = !t.image?.trim() || !t.isValidImage
@@ -55,7 +55,7 @@ function profileHandleFromUrl(urlString: string): string {
 
 async function syntheticTwitterProfileMetadata(
   pageUrl: string
-): Promise<Metadata> {
+): Promise<DocumentMetadata> {
   const handle = profileHandleFromUrl(pageUrl)
   const title = handle ? `@${handle} on X` : 'Profile on X'
   const description = handle ? `X profile @${handle}` : 'X profile'
@@ -66,7 +66,7 @@ async function syntheticTwitterProfileMetadata(
     isValidImage: false,
     card: undefined,
   }
-  const base: Metadata = {
+  const base: DocumentMetadata = {
     url: pageUrl,
     doc: { title, description },
     openGraph: {
@@ -83,9 +83,9 @@ async function syntheticTwitterProfileMetadata(
 }
 
 async function withTwitterProfileAvatar(
-  data: Metadata,
+  data: DocumentMetadata,
   handle: string
-): Promise<Metadata> {
+): Promise<DocumentMetadata> {
   if (data.openGraph.image || !handle) return data
   const avatar = `https://unavatar.io/twitter/${encodeURIComponent(handle)}`
   if (await validateImage(avatar)) {
@@ -292,7 +292,7 @@ async function extractFavicon(
 async function parsePageMetadata(
   html: string,
   pageUrl: string
-): Promise<Metadata> {
+): Promise<DocumentMetadata> {
   const $ = cheerio.load(html)
   const title = $('title').first().text().trim()
   const description = getMetaContent($, ['meta[name="description"]']).trim()

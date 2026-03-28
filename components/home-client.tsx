@@ -9,11 +9,11 @@ import { isValidUrl, normalizeUrlForFetch } from '@/lib/url'
 import { useURL } from '@/hooks/use-home-url-storage'
 import { DEFAULT_URL } from '@/lib/constants'
 import { fetchOGData } from '@/lib/og'
-import type { Metadata } from '@/lib/og-types'
+import type { DocumentMetadata } from '@/lib/og-types'
 import { PreviewControls } from './preview-controls'
 import { AlertTriangleIcon, InspectionPanelIcon } from 'lucide-react'
 
-export function HomeClient(props: { defaultURLData: Metadata | null }) {
+export function HomeClient(props: { defaultURLData: DocumentMetadata | null }) {
   const { url, setUrl, isURLReady } = useURL()
   const [previewViewport, setPreviewViewport] =
     useState<PreviewViewport>('desktop')

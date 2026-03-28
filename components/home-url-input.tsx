@@ -10,13 +10,13 @@ import {
   useUrlSuggestions,
   type UrlHistoryItem,
 } from '@/hooks/use-url-suggestions'
-import type { Metadata } from '@/lib/og-types'
+import type { DocumentMetadata } from '@/lib/og-types'
 
 export function URLInput(props: {
   debouncedUrl: string
   setDebouncedUrl: React.Dispatch<React.SetStateAction<string>>
   isURLReady: boolean
-  metadata: Metadata | undefined
+  metadata: DocumentMetadata | undefined
   isLoading: boolean
   isError: boolean
 }) {
