@@ -23,29 +23,6 @@ export interface DocumentMetadata {
   }
 }
 
-export function effectiveSlackPreview(data: DocumentMetadata): {
-  title: string
-  description: string
-  image: string
-  isValidImage: boolean
-} {
-  const og = data.openGraph
-  const tw = data.twitter
-  const docTitle = data.doc.title?.trim() ?? ''
-  const docDesc = data.doc.description?.trim() ?? ''
-
-  const title = og.title?.trim() || tw.title?.trim() || docTitle
-  const description =
-    og.description?.trim() || tw.description?.trim() || docDesc
-
-  const hasOgImage = Boolean(og.image?.trim()) && og.isValidImage
-  const hasTwImage = Boolean(tw.image?.trim()) && tw.isValidImage
-  const image = hasOgImage ? og.image : hasTwImage ? tw.image : ''
-  const isValidImage = hasOgImage || hasTwImage
-
-  return { title, description, image, isValidImage }
-}
-
 /**
  * Facebook link preview: Open Graph only (not Twitter Card). Title falls back to
  * document title, then hostname — matches observed behavior in OG test fixtures.

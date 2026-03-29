@@ -11,9 +11,9 @@ import {
   PlatformSection,
   UserAvatar,
   UserName,
-} from './common'
-import { effectiveSlackPreview } from '@/lib/og-types'
-import type { PlatformPreviewsProps } from './types'
+} from '../common'
+import { type DocumentMetadata } from '@/lib/og-types'
+import type { PlatformPreviewsProps } from '../types'
 
 /** Slack shows up to this many characters before "… Show more". */
 const SLACK_UNFURL_DESCRIPTION_MAX = 700
@@ -244,4 +244,27 @@ export function SlackPreview(props: PlatformPreviewsProps) {
       </div>
     </PlatformSection>
   )
+}
+
+function effectiveSlackPreview(data: DocumentMetadata): {
+  title: string
+  description: string
+  image: string
+  isValidImage: boolean
+} {
+  const og = data.openGraph
+  const tw = data.twitter
+  const docTitle = data.doc.title?.trim() ?? ''
+  const docDesc = data.doc.description?.trim() ?? ''
+
+  const title = og.title?.trim() || tw.title?.trim() || docTitle
+  const description =
+    og.description?.trim() || tw.description?.trim() || docDesc
+
+  const hasOgImage = Boolean(og.image?.trim()) && og.isValidImage
+  const hasTwImage = Boolean(tw.image?.trim()) && tw.isValidImage
+  const image = hasOgImage ? og.image : hasTwImage ? tw.image : ''
+  const isValidImage = hasOgImage || hasTwImage
+
+  return { title, description, image, isValidImage }
 }
