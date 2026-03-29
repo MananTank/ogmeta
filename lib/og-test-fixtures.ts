@@ -22,6 +22,9 @@ export type OgTestFixture = {
 const RESULT_NO_PREVIEW = 'no preview, link shown'
 export const NOT_A_RELEVANT_TEST = 'not a relevant test'
 
+/** Deliberately invalid input for URL validation in previews / UI tests. */
+export const OG_TEST_INVALID_URL_INPUT = 'not-a-valid-url'
+
 export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
   // Length variations
   'complete-short': {

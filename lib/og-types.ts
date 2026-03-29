@@ -95,10 +95,11 @@ export function effectiveSlackPreview(data: DocumentMetadata): {
  * Facebook link preview: Open Graph only (not Twitter Card). Title falls back to
  * document title, then hostname — matches observed behavior in OG test fixtures.
  */
-export type FacebookPreviewImageMode = 'large' | 'broken' | 'none'
+type FacebookPreviewImageMode = 'large' | 'broken' | 'none'
 
 export function effectiveFacebookPreview(data: DocumentMetadata): {
   title: string
+  description: string
   imageMode: FacebookPreviewImageMode
   /** Absolute og:image URL when mode is `large` or `broken` */
   imageSrc: string
@@ -116,15 +117,16 @@ export function effectiveFacebookPreview(data: DocumentMetadata): {
   }
 
   const title = og.title?.trim() || doc.title?.trim() || hostnameLabel()
+  const description = og.description?.trim() || doc.description?.trim() || ''
 
   const imageSrc = og.image?.trim() ?? ''
   if (!imageSrc) {
-    return { title, imageMode: 'none', imageSrc: '' }
+    return { title, description, imageMode: 'none', imageSrc: '' }
   }
   if (!og.isValidImage) {
-    return { title, imageMode: 'broken', imageSrc }
+    return { title, description, imageMode: 'broken', imageSrc }
   }
-  return { title, imageMode: 'large', imageSrc }
+  return { title, description, imageMode: 'large', imageSrc }
 }
 
 const LINKEDIN_FALLBACK_TITLE = 'Web Link'

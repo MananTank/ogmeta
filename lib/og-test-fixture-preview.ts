@@ -2,8 +2,12 @@ import type { PlatformPreviewsProps } from '@/components/previews/types'
 import type { OgTestFixture } from '@/lib/og-test-fixtures'
 import { ogTestOptionsToOgMetadata } from '@/lib/og-test-html'
 
-/** Browser-safe default (Ladle/Vite has no `process`); matches production canonical origin. */
-const DEFAULT_FIXTURE_METADATA_BASE = new URL('https://ogmeta.app/')
+/** Default `/tests/[slug]` slug for Ladle preview data and error-state stories. */
+export const OG_TEST_DEFAULT_FIXTURE_SLUG = 'complete-short' as const
+
+export function ogTestFixturePageUrl(fixtureSlug: string): string {
+  return `https://ogmeta.app/tests/${fixtureSlug}`
+}
 
 /**
  * Maps a fixture to {@link PlatformPreviewsProps} for Slack (and other) previews,
@@ -11,15 +15,15 @@ const DEFAULT_FIXTURE_METADATA_BASE = new URL('https://ogmeta.app/')
  */
 export function ogTestFixtureToPlatformPreviewsProps(
   fixtureSlug: string,
-  fixture: OgTestFixture,
-  metadataBase?: URL
+  fixture: OgTestFixture
 ): PlatformPreviewsProps {
-  const base = metadataBase ?? DEFAULT_FIXTURE_METADATA_BASE
-  const pathname = `/tests/${fixtureSlug}`
+  const url = ogTestFixturePageUrl(fixtureSlug)
+
   return {
-    data: ogTestOptionsToOgMetadata(fixture.config, pathname, base),
+    data: ogTestOptionsToOgMetadata(fixture.config, url),
     isLoading: false,
     isError: false,
     isValidUrl: true,
+    urlInput: url,
   }
 }

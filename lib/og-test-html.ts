@@ -106,12 +106,12 @@ const OG_LONG_DESCRIPTION =
   'A long Open Graph description for og:description. '.repeat(18).trim()
 
 /** `twitter:title` / `twitter:description` */
-export const TWITTER_SHORT_TITLE = 'twitter:title (short)'
+const TWITTER_SHORT_TITLE = 'twitter:title (short)'
 const TWITTER_LONG_TITLE =
   'twitter:title long: ' +
   'A long Twitter Card title for twitter:title. '.repeat(14).trim()
 
-export const TWITTER_SHORT_DESCRIPTION = 'twitter:description (short)'
+const TWITTER_SHORT_DESCRIPTION = 'twitter:description (short)'
 const TWITTER_LONG_DESCRIPTION =
   'twitter:description long: ' +
   'A long Twitter Card description for twitter:description. '.repeat(18).trim()
@@ -309,13 +309,9 @@ export function ogTestOptionsToMetadata(
  */
 export function ogTestOptionsToOgMetadata(
   options: OgTestHtmlOptions,
-  pathname: string,
-  metadataBase: URL
+  pageUrl: string
 ): DocumentMetadata {
-  const pageUrl = new URL(
-    pathname.startsWith('/') ? pathname : `/${pathname}`,
-    metadataBase
-  ).href
+  const metadataBase = new URL(pageUrl)
 
   const doc = {
     title: resolveContent('title', options.title, 'html') ?? '',

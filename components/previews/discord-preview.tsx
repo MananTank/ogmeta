@@ -81,69 +81,90 @@ export function DiscordPreview(props: PlatformPreviewsProps) {
 
           {/* Link embed: rich (title + image) or small (no hero image) */}
           {showEmbed && (
-            <div
-              className="bg-card mt-1.5 overflow-hidden rounded border border-l-5 p-3"
-              style={{ maxWidth: 432 }}
-            >
-              <div className="space-y-1">
-                {props.isLoading ? (
-                  <>
-                    <Skeleton className="bg-border h-3 w-24" />
-                    <Skeleton className="bg-border h-4 w-3/4" />
-                    <Skeleton className="bg-border h-3 w-full" />
-                    <Skeleton className="bg-border mt-4 aspect-[400/210] w-full max-w-[400px] rounded-md" />
-                  </>
-                ) : showSmallUnfurl ? (
-                  <>
-                    {ogSiteName && (
-                      <p className="text-foreground text-xs">{ogSiteName}</p>
-                    )}
-                    {hasTitle && (
-                      <p className="text-link cursor-pointer leading-snug font-semibold hover:underline">
-                        {truncateWithEllipsis(
-                          unfurlTitle,
-                          DISCORD_EMBED_TITLE_MAX
-                        )}
-                      </p>
-                    )}
-                    <p className="text-foreground text-sm leading-snug">
-                      {truncateWithEllipsis(
-                        unfurlDescription,
-                        DISCORD_EMBED_DESCRIPTION_MAX
-                      )}
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    {ogSiteName && (
-                      <p className="text-foreground text-xs">{ogSiteName}</p>
-                    )}
-                    <p className="text-link cursor-pointer leading-snug font-semibold hover:underline">
-                      {truncateWithEllipsis(
-                        unfurlTitle || 'No title',
-                        DISCORD_EMBED_TITLE_MAX
-                      )}
-                    </p>
-                    <p className="text-foreground text-sm leading-snug">
-                      {truncateWithEllipsis(
-                        unfurlDescription || 'No description',
-                        DISCORD_EMBED_DESCRIPTION_MAX
-                      )}
-                    </p>
-                    <OGImage
-                      src={unfurlImage}
-                      isValidImage={unfurlImageValid}
-                      className="mt-4 block w-full max-w-[400px] rounded-b object-cover"
-                      isLoading={false}
-                      skeletonClassName="bg-border"
-                    />
-                  </>
-                )}
-              </div>
-            </div>
+            <PreviewCard
+              isLoading={props.isLoading}
+              ogSiteName={ogSiteName}
+              unfurlTitle={unfurlTitle}
+              unfurlDescription={unfurlDescription}
+              unfurlImage={unfurlImage}
+              unfurlImageValid={unfurlImageValid}
+              showSmallUnfurl={showSmallUnfurl}
+              showRichUnfurl={showRichUnfurl}
+            />
           )}
         </div>
       </div>
     </PlatformSection>
+  )
+}
+
+function PreviewCard(props: {
+  isLoading: boolean
+  ogSiteName: string
+  unfurlTitle: string
+  unfurlDescription: string
+  unfurlImage: string
+  unfurlImageValid: boolean
+  showSmallUnfurl: boolean
+  showRichUnfurl: boolean
+}) {
+  return (
+    <div
+      className="bg-card mt-1.5 overflow-hidden rounded border border-l-5 p-3"
+      style={{ maxWidth: 432 }}
+    >
+      <div className="space-y-1">
+        {props.isLoading ? (
+          <>
+            <Skeleton className="bg-border h-4 w-24" />
+            <Skeleton className="bg-border h-[44px] w-[85%]" />
+            <Skeleton className="bg-border h-[38.5px] w-full" />
+            <Skeleton className="bg-border mt-4 aspect-1200/630 w-full max-w-[400px] rounded-md" />
+          </>
+        ) : props.showSmallUnfurl ? (
+          <>
+            {props.ogSiteName && (
+              <p className="text-foreground text-xs">{props.ogSiteName}</p>
+            )}
+            {props.unfurlTitle && (
+              <p className="text-link cursor-pointer leading-snug font-semibold hover:underline">
+                {truncateWithEllipsis(
+                  props.unfurlTitle,
+                  DISCORD_EMBED_TITLE_MAX
+                )}
+              </p>
+            )}
+            <p className="text-foreground text-sm leading-snug">
+              {truncateWithEllipsis(
+                props.unfurlDescription,
+                DISCORD_EMBED_DESCRIPTION_MAX
+              )}
+            </p>
+          </>
+        ) : (
+          <>
+            {props.ogSiteName && (
+              <p className="text-foreground text-xs">{props.ogSiteName}</p>
+            )}
+            <p className="text-link cursor-pointer leading-snug font-semibold hover:underline">
+              {truncateWithEllipsis(props.unfurlTitle, DISCORD_EMBED_TITLE_MAX)}
+            </p>
+            <p className="text-foreground text-sm leading-snug">
+              {truncateWithEllipsis(
+                props.unfurlDescription,
+                DISCORD_EMBED_DESCRIPTION_MAX
+              )}
+            </p>
+            <OGImage
+              src={props.unfurlImage}
+              isValidImage={props.unfurlImageValid}
+              className="mt-4 block min-h-[210px] w-full max-w-[400px] rounded-b object-cover"
+              isLoading={false}
+              skeletonClassName="bg-border"
+            />
+          </>
+        )}
+      </div>
+    </div>
   )
 }

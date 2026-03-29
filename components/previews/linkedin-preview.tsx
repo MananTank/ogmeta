@@ -183,7 +183,7 @@ function LinkedinLikeIcon(props: React.SVGProps<SVGSVGElement>) {
       ></path>
       <path
         fill="#d0e8ff"
-        fill-rule="evenodd"
+        fillRule="evenodd"
         d="M11.93 7.25h-.55c-.05 0-.15-.19-.4-.46-.37-.4-.78-.91-1.07-1.19a7.1 7.1 0 0 1-1.73-2.24c-.24-.51-.26-.74-.75-.74a.78.78 0 0 0-.67.81c0 .14.07.63.1.8a7.5 7.5 0 0 0 1 2.2H4.12a.88.88 0 0 0-.65.28.84.84 0 0 0-.23.66.91.91 0 0 0 .93.85h.16a.82.82 0 0 0-.55.24.77.77 0 0 0-.21.54.81.81 0 0 0 .74.8.8.8 0 0 0 .33 1.42.76.76 0 0 0-.09.55.87.87 0 0 0 .85.63h2.29a3.8 3.8 0 0 0 .89-.11l1.42-.4h1.9c1.02-.04 1.29-4.64.03-4.64"
       ></path>
       <path
@@ -193,8 +193,8 @@ function LinkedinLikeIcon(props: React.SVGProps<SVGSVGElement>) {
       <path
         fill="none"
         stroke="#004182"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         d="M7.43 6.43H4.11a.88.88 0 0 0-.88 1 .92.92 0 0 0 .93.84h.16a.82.82 0 0 0-.55.24.77.77 0 0 0-.21.56.83.83 0 0 0 .74.81.81.81 0 0 0-.31.63.81.81 0 0 0 .65.8.78.78 0 0 0-.09.56.86.86 0 0 0 .85.62h2.29a3.8 3.8 0 0 0 .89-.11l1.42-.47h1.9c1 0 1.27-4.64 0-4.64a5 5 0 0 1-.55 0s-.15-.19-.4-.46h0c-.37-.4-.78-.91-1.07-1.19a7.1 7.1 0 0 1-1.7-2.25 2.1 2.1 0 0 0-.32-.52.83.83 0 0 0-1.16.09 1.4 1.4 0 0 0-.25.38 1.7 1.7 0 0 0-.09.3 2.4 2.4 0 0 0 .07.84 4 4 0 0 0 .27.84 6.7 6.7 0 0 0 .66 1 .2.2 0 0 1 .07.08"
       ></path>
     </svg>
@@ -223,7 +223,7 @@ function LinkedinHeartIcon(props: React.SVGProps<SVGSVGElement>) {
       ></path>
       <path
         fill="#fff3f0"
-        fill-rule="evenodd"
+        fillRule="evenodd"
         stroke="#77280c"
         d="M7.71 5A2.64 2.64 0 0 0 4 8.75l4 4 4-4A2.64 2.64 0 0 0 12 5a2.6 2.6 0 0 0-1.85-.77A2.57 2.57 0 0 0 8.3 5l-.3.3z"
       ></path>
@@ -234,8 +234,8 @@ function LinkedinHeartIcon(props: React.SVGProps<SVGSVGElement>) {
       <path
         fill="none"
         stroke="#77280c"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         d="M7.71 5A2.6 2.6 0 0 0 4 5a2.66 2.66 0 0 0 0 3.7l4 4 4-4A2.66 2.66 0 0 0 12 5a2.58 2.58 0 0 0-1.85-.78h0A2.58 2.58 0 0 0 8.3 5l-.3.25z"
       ></path>
     </svg>

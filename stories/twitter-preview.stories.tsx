@@ -2,18 +2,8 @@ import type { Story, StoryDefault } from '@ladle/react'
 import { TwitterPreview } from '@/components/previews/twitter-preview'
 import { NOT_A_RELEVANT_TEST, OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
 import { ogTestFixtureToPlatformPreviewsProps } from '@/lib/og-test-fixture-preview'
-import {
-  completeData,
-  longTitleData,
-  shortTitleData,
-  summaryCardData,
-  missingImageData,
-  invalidImageData,
-  missingTitleData,
-  loadingData,
-  failedToFetchData,
-  invalidUrlData,
-} from './preview-data'
+import { StoryLoadingToggle } from './story-loading-toggle'
+import { completeData, failedToFetchData, invalidUrlData } from './preview-data'
 
 export default {
   decorators: [
@@ -25,10 +15,6 @@ export default {
   ],
 } satisfies StoryDefault
 
-function StoryGroup(props: { children: React.ReactNode }) {
-  return <div className="flex flex-col gap-16">{props.children}</div>
-}
-
 function StoryLabel(props: { children: React.ReactNode }) {
   return (
     <div className="text-muted-foreground mb-4 text-center text-sm font-medium">
@@ -37,56 +23,19 @@ function StoryLabel(props: { children: React.ReactNode }) {
   )
 }
 
-export const FullData: Story = () => (
-  <StoryGroup>
-    <div>
-      <StoryLabel>Complete OG Data</StoryLabel>
-      <TwitterPreview {...completeData} />
-    </div>
-
-    <div>
-      <StoryLabel>Long Title (truncated)</StoryLabel>
-      <TwitterPreview {...longTitleData} />
-    </div>
-
-    <div>
-      <StoryLabel>Short Title</StoryLabel>
-      <TwitterPreview {...shortTitleData} />
-    </div>
-
-    <div>
-      <StoryLabel>summary card</StoryLabel>
-      <TwitterPreview {...summaryCardData} />
-    </div>
-  </StoryGroup>
-)
-
-export const PartialData: Story = () => (
-  <StoryGroup>
-    <div>
-      <StoryLabel>Missing Image</StoryLabel>
-      <TwitterPreview {...missingImageData} />
-    </div>
-
-    <div>
-      <StoryLabel>Invalid Image</StoryLabel>
-      <TwitterPreview {...invalidImageData} />
-    </div>
-
-    <div>
-      <StoryLabel>Missing Title</StoryLabel>
-      <TwitterPreview {...missingTitleData} />
-    </div>
-  </StoryGroup>
-)
-
+/** Not covered by fixtures (which always use resolved `data`). */
 export const Loading: Story = () => (
-  <StoryGroup>
-    <div>
-      <StoryLabel>Loading State</StoryLabel>
-      <TwitterPreview {...loadingData} />
-    </div>
-  </StoryGroup>
+  <StoryLoadingToggle>
+    {(isLoading) => (
+      <TwitterPreview
+        {...completeData}
+        isLoading={isLoading}
+        isError={false}
+        data={isLoading ? null : completeData.data}
+        urlInput={completeData.urlInput}
+      />
+    )}
+  </StoryLoadingToggle>
 )
 
 export const FailedToFetch: Story = () => (

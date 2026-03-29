@@ -2,17 +2,8 @@ import type { Story, StoryDefault } from '@ladle/react'
 import { IMessagePreview } from '@/components/previews/imessage-preview'
 import { NOT_A_RELEVANT_TEST, OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
 import { ogTestFixtureToPlatformPreviewsProps } from '@/lib/og-test-fixture-preview'
-import {
-  completeData,
-  longTitleData,
-  shortTitleData,
-  missingImageData,
-  invalidImageData,
-  missingTitleData,
-  loadingData,
-  failedToFetchData,
-  invalidUrlData,
-} from './preview-data'
+import { StoryLoadingToggle } from './story-loading-toggle'
+import { completeData, failedToFetchData, invalidUrlData } from './preview-data'
 
 export default {
   decorators: [
@@ -24,10 +15,6 @@ export default {
   ],
 } satisfies StoryDefault
 
-function StoryGroup(props: { children: React.ReactNode }) {
-  return <div className="flex flex-col gap-16">{props.children}</div>
-}
-
 function StoryLabel(props: { children: React.ReactNode }) {
   return (
     <div className="text-muted-foreground mb-2 text-center text-sm font-medium">
@@ -36,51 +23,18 @@ function StoryLabel(props: { children: React.ReactNode }) {
   )
 }
 
-export const FullData: Story = () => (
-  <StoryGroup>
-    <div>
-      <StoryLabel>Complete OG Data</StoryLabel>
-      <IMessagePreview {...completeData} />
-    </div>
-
-    <div>
-      <StoryLabel>Long Title (truncated)</StoryLabel>
-      <IMessagePreview {...longTitleData} />
-    </div>
-
-    <div>
-      <StoryLabel>Short Title</StoryLabel>
-      <IMessagePreview {...shortTitleData} />
-    </div>
-  </StoryGroup>
-)
-
-export const PartialData: Story = () => (
-  <StoryGroup>
-    <div>
-      <StoryLabel>Missing Image</StoryLabel>
-      <IMessagePreview {...missingImageData} />
-    </div>
-
-    <div>
-      <StoryLabel>Invalid Image</StoryLabel>
-      <IMessagePreview {...invalidImageData} />
-    </div>
-
-    <div>
-      <StoryLabel>Missing Title</StoryLabel>
-      <IMessagePreview {...missingTitleData} />
-    </div>
-  </StoryGroup>
-)
-
 export const Loading: Story = () => (
-  <StoryGroup>
-    <div>
-      <StoryLabel>Loading State</StoryLabel>
-      <IMessagePreview {...loadingData} />
-    </div>
-  </StoryGroup>
+  <StoryLoadingToggle>
+    {(isLoading) => (
+      <IMessagePreview
+        {...completeData}
+        isLoading={isLoading}
+        isError={false}
+        data={isLoading ? null : completeData.data}
+        urlInput={completeData.urlInput}
+      />
+    )}
+  </StoryLoadingToggle>
 )
 
 export const FailedToFetch: Story = () => (
@@ -89,7 +43,7 @@ export const FailedToFetch: Story = () => (
 
 export const InvalidUrl: Story = () => <IMessagePreview {...invalidUrlData} />
 
-export const IMessageFullTestSuite: Story = () => (
+export const AllTests: Story = () => (
   <div className="flex flex-col gap-14">
     {Object.entries(OG_TEST_FIXTURES)
       .filter(

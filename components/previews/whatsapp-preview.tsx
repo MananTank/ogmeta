@@ -19,7 +19,7 @@ export function WhatsAppPreview(props: PlatformPreviewsProps) {
       previewViewport={props.previewViewport}
     >
       {/* Message Bubble with Link Preview */}
-      <div className="bg-card max-w-[230px] overflow-hidden rounded-xl p-1">
+      <div className="bg-card max-w-[230px] overflow-hidden rounded-xl p-1 shadow-sm">
         {/* Link Preview */}
         {showPreview && (
           <div className="bg-background/50 rounded-lg">

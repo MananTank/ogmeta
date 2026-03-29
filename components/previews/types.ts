@@ -9,6 +9,6 @@ export type PlatformPreviewsProps = {
   isError: boolean
   previewViewport?: PreviewViewport
   /** Shown when `data` is missing (e.g. current input before a successful fetch). */
-  urlInput?: string
-  isValidUrl?: boolean
+  urlInput: string
+  isValidUrl: boolean
 }
