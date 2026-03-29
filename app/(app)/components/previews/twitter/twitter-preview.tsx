@@ -69,7 +69,7 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
       containerClassName="twitter"
       previewViewport={props.previewViewport}
     >
-      <div className="font-chirp flex max-w-[566px] gap-3">
+      <div className="flex max-w-[566px] gap-3">
         <div className="shrink-0">
           <UserAvatar size={40} />
         </div>

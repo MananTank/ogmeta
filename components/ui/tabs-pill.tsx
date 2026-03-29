@@ -41,8 +41,8 @@ export function TabButton(props: {
       className={cn(
         'h-auto w-auto rounded-full p-2 [&_svg]:size-3',
         props.selected
-          ? 'bg-secondary text-foreground hover:bg-background'
-          : 'text-muted-foreground hover:text-foreground hover:bg-transparent'
+          ? 'bg-secondary! text-foreground'
+          : 'text-muted-foreground hover:text-foreground hover:bg-secondary/30'
       )}
       onClick={props.onClick}
     >

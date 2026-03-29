@@ -194,13 +194,15 @@ function UrlSuggestionsDropdown(props: {
   return (
     <div
       ref={containerRef}
-      className="border-border bg-popover text-popover-foreground absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-xl border shadow-lg"
+      className="bg-popover text-popover-foreground absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-xl shadow-lg"
       style={{
         display: props.visible && props.items.length > 0 ? 'block' : 'none',
       }}
     >
       <div className="p-1">
-        <p className="text-muted-foreground px-3 py-1.5 text-xs">Recent</p>
+        <p className="text-muted-foreground px-3 py-1.5 text-xs">
+          Recently Used
+        </p>
         <FluidHeight transitionDurationMs={150}>
           {props.items.map((item, index) => (
             <div

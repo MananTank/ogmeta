@@ -1,22 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@font-face {
-  font-family: 'Chirp';
-  src: url('/fonts/chirp-regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Chirp';
-  src: url('/fonts/chirp-bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -38,27 +22,14 @@
   --secondary-foreground: oklch(0.22 0.02 286);
   --muted: oklch(0.863 0 0);
   --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.94 0.01 286);
+  --accent: oklch(0.95 0 0 / 1);
   --accent-foreground: oklch(0.22 0.02 286);
   --destructive: oklch(0.55 0.2 25);
   --destructive-foreground: oklch(0.99 0 0);
   --border: var(--light-border);
   --input: oklch(0.863 0 0);
-  --ring: oklch(0.38 0 0);
+  --ring: hsl(0deg 0% 75%);
   --radius: 0.5rem;
-  --sidebar: oklch(0.98 0.005 286);
-  --sidebar-foreground: oklch(0.2 0.02 286);
-  --sidebar-primary: oklch(0.2 0.02 286);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.94 0.01 286);
-  --sidebar-accent-foreground: oklch(0.2 0.02 286);
-  --sidebar-border: oklch(0.9 0.01 286);
-  --sidebar-ring: oklch(0.42 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.55 0.08 227);
-  --chart-4: oklch(0.75 0.15 84);
-  --chart-5: oklch(0.65 0.18 70);
   --link: oklch(0.45 0.14 255);
 }
 
@@ -68,7 +39,7 @@
   --card: #262626;
   --section-card: oklch(0.13 0 0);
   --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.16 0 0);
+  --popover: #262626;
   --popover-foreground: oklch(0.95 0 0);
   --primary: oklch(0.95 0 0);
   --primary-foreground: oklch(0.13 0 0);
@@ -76,32 +47,18 @@
   --secondary-foreground: oklch(0.95 0 0);
   --muted: #262626;
   --muted-foreground: oklch(0.6 0 0);
-  --accent: oklch(0.18 0 0);
+  --accent: hsl(0deg 0% 20%);
   --accent-foreground: oklch(0.95 0 0);
   --destructive: oklch(0.65 0.22 25);
   --destructive-foreground: oklch(0.95 0 0);
   --border: var(--dark-border);
   --input: #262626;
   --ring: oklch(0.302 0 0);
-  --sidebar: oklch(0.16 0 0);
-  --sidebar-foreground: oklch(0.95 0 0);
-  --sidebar-primary: oklch(0.95 0 0);
-  --sidebar-primary-foreground: oklch(0.13 0 0);
-  --sidebar-accent: oklch(0.18 0 0);
-  --sidebar-accent-foreground: oklch(0.95 0 0);
-  --sidebar-border: oklch(0.22 0 0);
-  --sidebar-ring: oklch(0.35 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
   --link: oklch(0.65 0.15 255);
 }
 
 @theme inline {
   --font-sans: var(--font-open-runde), system-ui, sans-serif;
-  --font-chirp: 'Chirp', system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -122,31 +79,14 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
   --color-link: var(--link);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-link: var(--link);
-  --color-secondary: var(--secondary);
 }
 
-/* Platform preview skins — light (default) */
 .twitter {
-  /* --background: #ffffff; */
   --border: var(--light-border);
   --foreground: #0f1419;
   --muted-foreground: #536471;
@@ -156,7 +96,6 @@
 }
 
 html.dark .twitter {
-  /* --background: #000000; */
   --border: var(--dark-border);
   --foreground: oklch(0.95 0 0);
   --muted-foreground: oklch(0.6 0 0);
@@ -166,7 +105,6 @@ html.dark .twitter {
 }
 
 .linkedin {
-  /* --background: #f4f2ee; */
   --card: #ffffff;
   --foreground: #191919;
   --muted-foreground: #666666;
@@ -175,7 +113,6 @@ html.dark .twitter {
 }
 
 html.dark .linkedin {
-  /* --background: #000000; */
   --card: #1b1f23;
   --foreground: #e9e9ea;
   --muted-foreground: #a3a6a7;
@@ -204,7 +141,6 @@ html.dark .facebook {
 }
 
 .discord {
-  /* --background: #fbfbfb; */
   --card: #ffffff;
   --foreground: #2e2e34;
   --muted-foreground: #70717a;
@@ -213,7 +149,6 @@ html.dark .facebook {
 }
 
 html.dark .discord {
-  /* --background: #1a1a1e; */
   --card: #131416;
   --foreground: #dcdcdf;
   --muted-foreground: #dcdcdf;
@@ -222,7 +157,6 @@ html.dark .discord {
 }
 
 .slack {
-  /* --background: #ffffff; */
   --foreground: #1d1c1d;
   --muted-foreground: #616061;
   --border: #dddddd;
@@ -231,7 +165,6 @@ html.dark .discord {
 }
 
 html.dark .slack {
-  /* --background: #1b1d21; */
   --foreground: #d1d2d3;
   --muted-foreground: #ababad;
   --border: #36373b;
@@ -240,7 +173,6 @@ html.dark .slack {
 }
 
 .imessage {
-  /* --background: #e5e5ea; */
   --card: #ffffff;
   --card-foreground: #000000;
   --foreground: #000000;
@@ -252,7 +184,6 @@ html.dark .slack {
 }
 
 html.dark .imessage {
-  /* --background: black; */
   --card: #e9e9eb;
   --card-foreground: #171717;
   --border: #d1d1d6;
@@ -264,35 +195,21 @@ html.dark .imessage {
 }
 
 .whatsapp {
-  /* --background: #efeae2; */
   --card: #ffffff;
   --foreground: #111b21;
   --muted-foreground: #667781;
   --border: #d1d7db;
   --secondary: #d9fdd3;
   --link: #027eb5;
-  /* background-image:
-    linear-gradient(rgba(239, 234, 226, 0.92), rgba(239, 234, 226, 0.92)),
-    url('/whatsapp-bg.png');
-  background-size: 500px;
-  background-repeat: repeat;
-  background-position: center; */
 }
 
 html.dark .whatsapp {
-  /* --background: #0a0a0a; */
   --card: #242626;
   --foreground: #fafafa;
   --muted-foreground: #898a8a;
   --border: #222222;
   --secondary: #005c4b;
   --link: #22bf63;
-  /* background-image:
-    linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
-    url('/whatsapp-bg.png');
-  background-size: 500px;
-  background-repeat: repeat;
-  background-position: center; */
 }
 
 @layer base {
