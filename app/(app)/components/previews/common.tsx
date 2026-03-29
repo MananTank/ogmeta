@@ -89,7 +89,7 @@ export function PlatformSection(props: {
 
       <div
         data-preview-viewport={viewport}
-        className="relative flex w-full flex-col overflow-hidden px-4 py-40"
+        className="relative flex w-full flex-col overflow-hidden px-4 py-20 md:py-40"
       >
         <div
           className={cn(

@@ -49,7 +49,7 @@ export function App(props: { defaultURLData: DocumentMetadata | null }) {
 
   return (
     <main>
-      <div className="mx-auto max-w-2xl px-6 py-32">
+      <div className="mx-auto max-w-2xl px-6 py-24 md:py-32">
         <header className="text-center">
           <div className="flex items-center justify-center">
             <InspectionPanelIcon className="text-muted-foreground/50 size-12" />

@@ -55,7 +55,7 @@ export function PreviewControls(props: {
           </TabTooltip>
         </TabsContainer>
 
-        <TabsContainer aria-label="Preview size">
+        <TabsContainer aria-label="Preview size" className="hidden sm:flex">
           <TabTooltip label="Desktop">
             <TabButton
               aria-label="Desktop"

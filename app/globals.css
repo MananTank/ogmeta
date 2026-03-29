@@ -247,8 +247,8 @@ html.dark .slack {
   --muted-foreground: #8e8e93;
   --border: #d1d1d6;
   --link: #007aff;
-  --primary: #007aff;
-  --primary-foreground: #ffffff;
+  --primary: #e9e9eb;
+  --primary-foreground: #000000;
 }
 
 html.dark .imessage {
