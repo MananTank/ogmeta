@@ -2,11 +2,7 @@
 
 import { unstable_cache } from 'next/cache'
 import * as cheerio from 'cheerio'
-import {
-  type DocumentMetadata,
-  type OpenGraphSlice,
-  type TwitterTagsSlice,
-} from '@/lib/og-types'
+import { type DocumentMetadata } from '@/lib/og-types'
 import { effectiveTwitterPreview } from '../components/previews/twitter/utils'
 
 const REVALIDATE_SECONDS = 60 * 5 // 5 mins
@@ -50,7 +46,7 @@ async function syntheticTwitterProfileMetadata(
   const handle = profileHandleFromUrl(pageUrl)
   const title = handle ? `@${handle} on X` : 'Profile on X'
   const description = handle ? `X profile @${handle}` : 'X profile'
-  const emptyTwitter: TwitterTagsSlice = {
+  const emptyTwitter: DocumentMetadata['twitter'] = {
     title: '',
     description: '',
     image: '',
@@ -58,6 +54,7 @@ async function syntheticTwitterProfileMetadata(
     card: undefined,
   }
   const base: DocumentMetadata = {
+    favicon: null,
     url: pageUrl,
     doc: { title, description },
     openGraph: {
@@ -149,7 +146,7 @@ function getMetaContent($: cheerio.CheerioAPI, selectors: string[]): string {
 async function parseOpenGraphSlice(
   $: cheerio.CheerioAPI,
   pageUrl: string
-): Promise<OpenGraphSlice> {
+): Promise<DocumentMetadata['openGraph']> {
   const title = getMetaContent($, [
     'meta[property="og:title"]',
     'meta[name="og:title"]',
@@ -195,7 +192,7 @@ async function parseOpenGraphSlice(
 async function parseTwitterSlice(
   $: cheerio.CheerioAPI,
   pageUrl: string
-): Promise<TwitterTagsSlice> {
+): Promise<DocumentMetadata['twitter']> {
   const title = getMetaContent($, ['meta[name="twitter:title"]']).trim()
 
   const description = getMetaContent($, [
@@ -288,7 +285,7 @@ async function parsePageMetadata(
     doc: { title, description },
     openGraph,
     twitter,
-    favicon,
+    favicon: favicon || null,
   }
 }
 

@@ -5,7 +5,6 @@ export function effectiveTwitterPreview(data: DocumentMetadata): {
   description: string
   image: string
   isValidImage: boolean
-  /** Normalized `twitter:card` (e.g. `summary`, `summary_large_image`). */
   card: string | undefined
 } {
   const og = data.openGraph

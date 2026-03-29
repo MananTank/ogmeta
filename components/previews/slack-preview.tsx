@@ -61,7 +61,10 @@ function SlackUnfurlDescription({
   )
 }
 
-function SmallUnfurlSiteRow(props: { faviconUrl?: string; siteLabel: string }) {
+function SmallUnfurlSiteRow(props: {
+  faviconUrl: string | null | undefined
+  siteLabel: string
+}) {
   return (
     <div className="mb-0.5 flex min-w-0 items-center gap-1.5">
       {props.faviconUrl && (

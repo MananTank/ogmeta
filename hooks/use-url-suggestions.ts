@@ -55,7 +55,7 @@ export function useUrlSuggestions(options: {
     const meta = fetchedOgMetadata
     if (!meta || debouncedUrl === DEFAULT_URL) return
     const timer = setTimeout(() => {
-      void saveToHistory(debouncedUrl, meta.favicon)
+      void saveToHistory(debouncedUrl, meta.favicon ?? undefined)
     }, SAVE_DELAY_MS)
     return () => clearTimeout(timer)
   }, [fetchedOgMetadata, debouncedUrl, saveToHistory])

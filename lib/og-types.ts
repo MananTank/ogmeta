@@ -1,42 +1,28 @@
-/** Parsed from og:* tags (and HTML fallbacks where typical for OG consumers). */
-export interface OpenGraphSlice {
-  title: string
-  description: string
-  image: string
-  isValidImage: boolean
-  siteName?: string
-  type?: string
-}
-
-/** Parsed only from twitter:* tags; no OG mixed in. */
-export interface TwitterTagsSlice {
-  title: string
-  description: string
-  image: string
-  isValidImage: boolean
-  card?: string
-  /** From `twitter:site` (e.g. `@brand` or handle). */
-  site?: string
-}
-
-/** Document-level metadata: `<title>` and `meta[name="description"]` (not `og:*` / `twitter:*`). */
-export interface DocumentMetaSlice {
-  title: string
-  description: string
-}
-
 export interface DocumentMetadata {
   url: string
-  doc: DocumentMetaSlice
-  openGraph: OpenGraphSlice
-  twitter: TwitterTagsSlice
-  favicon?: string
+  favicon: string | null
+  doc: {
+    title: string
+    description: string
+  }
+  openGraph: {
+    title: string
+    description: string
+    image: string
+    isValidImage: boolean
+    siteName?: string
+    type?: string
+  }
+  twitter: {
+    title: string
+    description: string
+    image: string
+    isValidImage: boolean
+    card?: string
+    site?: string
+  }
 }
 
-/**
- * Slack link unfurl: Open Graph first, then Twitter Card tags, then document HTML
- * (Slack falls back to Twitter metadata when OG is missing).
- */
 export function effectiveSlackPreview(data: DocumentMetadata): {
   title: string
   description: string
