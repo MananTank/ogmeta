@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
 import {
   getOgTestsMetadataBase,
-  ogTestOptionsToMetadata,
+  generateNextjsMetadata,
 } from '@/lib/og-test-html'
 import Link from 'next/link'
 import { CornerUpLeftIcon } from 'lucide-react'
@@ -23,7 +23,7 @@ export async function generateMetadata({
   const fixture = OG_TEST_FIXTURES[slug]
   if (!fixture) return {}
   const pathname = `/tests/${slug}`
-  return ogTestOptionsToMetadata(
+  return generateNextjsMetadata(
     fixture.config,
     pathname,
     getOgTestsMetadataBase()

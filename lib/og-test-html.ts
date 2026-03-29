@@ -1,18 +1,11 @@
 import type { Metadata } from 'next'
-import type { DocumentMetadata } from '@/lib/og-types'
 
 type Content = 'none' | 'short' | 'long'
-
-/** Standard aspect ratios; `broken` is a deliberately missing file for error cases. */
 type Image = 'none' | '1/1' | '1200/630' | 'broken'
-
 type OGType = 'website' | 'article'
-
-/** `'none'` = no card value (empty), not the literal string `none` in HTML. */
 type TwitterCardType = 'summary' | 'summary_large_image' | 'none'
 
-/** Full Open Graph block for a fixture. */
-export type OgTestHtmlOgOptions = {
+type OGMetadataOptions = {
   title: Content
   desc: Content
   image: Image
@@ -20,29 +13,20 @@ export type OgTestHtmlOgOptions = {
   url?: string
 }
 
-/** Full Twitter block for a fixture. */
-export type OgTestHtmlTwitterOptions = {
+export type OGTwitterOptions = {
   title: Content
-  /** `'none'` = empty (no `twitter:card` value), not the word `none` in the document. */
   card: TwitterCardType
-  /** Use `'none'` to omit the `twitter:description` tag. */
   description: Content
-  /** Use `'none'` to omit the `twitter:image` tag. */
   image: Image
   url?: string
-  /** `twitter:site` e.g. `@yourbrand` (optional). */
   site?: string
 }
 
-/**
- * Options for test fixtures. Use `og: 'none'` or `twitter: 'none'` to omit that block
- * entirely (not expanded into placeholder objects).
- */
-export type OgTestHtmlOptions = {
+export type OGTestOptions = {
   title: Content
   desc: Content
-  og: OgTestHtmlOgOptions | 'none'
-  twitter: OgTestHtmlTwitterOptions | 'none'
+  og: OGMetadataOptions | 'none'
+  twitter: OGTwitterOptions | 'none'
 }
 
 /**
@@ -70,8 +54,8 @@ const NEXT_METADATA_TWITTER_OMITTED_SENTINEL = {
 } as NonNullable<Metadata['twitter']>
 
 /** Entire Twitter block omitted: shorthand or explicit object with only `'none'` fields. */
-function isTwitterEntirelyOmitted(
-  twitter: OgTestHtmlTwitterOptions | 'none'
+export function isTwitterEntirelyOmitted(
+  twitter: OGTwitterOptions | 'none'
 ): boolean {
   if (twitter === 'none') return true
   return (
@@ -81,8 +65,6 @@ function isTwitterEntirelyOmitted(
     twitter.image === 'none'
   )
 }
-
-const EXAMPLE_FAVICON = 'https://vercel.com/favicon.ico'
 
 /** `<title>` and standalone meta description, distinct from OG/Twitter strings. */
 const HTML_SHORT_TITLE = 'Document title (short)'
@@ -118,7 +100,7 @@ const TWITTER_LONG_DESCRIPTION =
 
 type ContentSource = 'html' | 'og' | 'twitter'
 
-function resolveContent(
+export function getContent(
   kind: 'title' | 'description',
   c: Content,
   source: ContentSource
@@ -144,12 +126,12 @@ function resolveContent(
   return TWITTER_LONG_DESCRIPTION
 }
 
-function hasAnyOg(og: OgTestHtmlOgOptions): boolean {
+export function hasAnyOg(og: OGMetadataOptions): boolean {
   return og.title !== 'none' || og.desc !== 'none' || og.image !== 'none'
 }
 
 /** Public path under `/public` for fixture images (resolved with `metadataBase`). */
-function ogImagePath(image: Image): string | null {
+export function ogImagePath(image: Image): string | null {
   switch (image) {
     case 'none':
       return null
@@ -165,16 +147,14 @@ function ogImagePath(image: Image): string | null {
 }
 
 /** Path for `twitter:image` metadata, or `null` when omitted. */
-function twitterImagePath(image: Image): string | null {
+export function twitterImagePath(image: Image): string | null {
   if (image === 'none') return null
   if (image === 'broken') return '/og-test/this-file-does-not-exist-ogmeta.png'
   return ogImagePath(image) ?? '/og-test/1200-630.png'
 }
 
-function visibleTitle(
-  options: Pick<OgTestHtmlOptions, 'title' | 'desc'>
-): string {
-  const t = resolveContent('title', options.title, 'html')
+function visibleTitle(options: Pick<OGTestOptions, 'title' | 'desc'>): string {
+  const t = getContent('title', options.title, 'html')
   if (t) return t
   return ''
 }
@@ -224,20 +204,18 @@ export function getOgTestsMetadataBase(): URL {
   return new URL('http://localhost:3000')
 }
 
-/**
- * Maps {@link OgTestHtmlOptions} to Next.js `Metadata` (used by `generateMetadata` on `/tests/**`).
- */
-export function ogTestOptionsToMetadata(
-  options: OgTestHtmlOptions,
+export function generateNextjsMetadata(
+  options: OGTestOptions,
   pathname: string,
   metadataBase: URL
 ): Metadata {
   const title = visibleTitle(options)
-  const htmlDesc = resolveContent('description', options.desc, 'html')
+  const htmlDesc = getContent('description', options.desc, 'html')
 
   const metadata: Metadata = {
     title,
   }
+
   if (htmlDesc) metadata.description = htmlDesc
 
   if (options.og !== 'none' && hasAnyOg(options.og)) {
@@ -248,8 +226,8 @@ export function ogTestOptionsToMetadata(
         pathname.startsWith('/') ? pathname : `/${pathname}`,
         metadataBase
       ).href
-    const ogTitle = resolveContent('title', og.title, 'og')
-    const ogDesc = resolveContent('description', og.desc, 'og')
+    const ogTitle = getContent('title', og.title, 'og')
+    const ogDesc = getContent('description', og.desc, 'og')
 
     const ogImagePathname = og.image !== 'none' ? ogImagePath(og.image) : null
 
@@ -270,8 +248,8 @@ export function ogTestOptionsToMetadata(
     if (isTwitterEntirelyOmitted(tw)) {
       metadata.twitter = NEXT_METADATA_TWITTER_OMITTED_SENTINEL
     } else {
-      const twTitle = resolveContent('title', tw.title, 'twitter')
-      const twDesc = resolveContent('description', tw.description, 'twitter')
+      const twTitle = getContent('title', tw.title, 'twitter')
+      const twDesc = getContent('description', tw.description, 'twitter')
       const twImgPath = twitterImagePath(tw.image)
       const blockOgIntoTwitter = Boolean(metadata.openGraph)
 
@@ -301,69 +279,4 @@ export function ogTestOptionsToMetadata(
   }
 
   return metadata
-}
-
-/**
- * Builds {@link Metadata} the same way fixture pages expose tags (doc / og / twitter),
- * for previews and tests. Image URLs are absolute using `metadataBase`.
- */
-export function ogTestOptionsToOgMetadata(
-  options: OgTestHtmlOptions,
-  pageUrl: string
-): DocumentMetadata {
-  const metadataBase = new URL(pageUrl)
-
-  const doc = {
-    title: resolveContent('title', options.title, 'html') ?? '',
-    description: resolveContent('description', options.desc, 'html') ?? '',
-  }
-
-  const openGraph: DocumentMetadata['openGraph'] = {
-    title: '',
-    description: '',
-    image: '',
-    isValidImage: false,
-    type: 'website',
-  }
-
-  if (options.og !== 'none' && hasAnyOg(options.og)) {
-    const og = options.og
-    openGraph.title = resolveContent('title', og.title, 'og') ?? ''
-    openGraph.description = resolveContent('description', og.desc, 'og') ?? ''
-    const ogPath = og.image !== 'none' ? ogImagePath(og.image) : null
-    openGraph.image = ogPath ? new URL(ogPath, metadataBase).href : ''
-    openGraph.isValidImage = og.image !== 'none' && og.image !== 'broken'
-    openGraph.siteName = 'Site Name'
-    openGraph.type = og.type
-  }
-
-  const twitter: DocumentMetadata['twitter'] = {
-    title: '',
-    description: '',
-    image: '',
-    isValidImage: false,
-  }
-
-  if (
-    options.twitter !== 'none' &&
-    !isTwitterEntirelyOmitted(options.twitter)
-  ) {
-    const tw = options.twitter
-    twitter.title = resolveContent('title', tw.title, 'twitter') ?? ''
-    twitter.description =
-      resolveContent('description', tw.description, 'twitter') ?? ''
-    const twPath = twitterImagePath(tw.image)
-    twitter.image = twPath ? new URL(twPath, metadataBase).href : ''
-    twitter.isValidImage = tw.image !== 'none' && tw.image !== 'broken'
-    twitter.card = tw.card === 'none' ? '' : tw.card
-    if (tw.site?.trim()) twitter.site = tw.site.trim()
-  }
-
-  return {
-    url: pageUrl,
-    doc,
-    openGraph,
-    twitter,
-    favicon: EXAMPLE_FAVICON,
-  }
 }

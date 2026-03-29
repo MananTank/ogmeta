@@ -1,4 +1,4 @@
-import type { OgTestHtmlOptions } from '@/lib/og-test-html'
+import type { OGTestOptions } from '@/lib/og-test-html'
 
 /**
  * Observed link-preview behavior per app when pasting the fixture URL.
@@ -15,7 +15,7 @@ export type OgTestFixtureAppResult = {
 }
 
 export type OgTestFixture = {
-  config: OgTestHtmlOptions
+  config: OGTestOptions
   results?: OgTestFixtureAppResult
 }
 

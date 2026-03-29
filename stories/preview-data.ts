@@ -2,22 +2,22 @@ import type { PlatformPreviewsProps } from '@/components/previews/types'
 import {
   ogTestFixturePageUrl,
   ogTestFixtureToPlatformPreviewsProps,
-  OG_TEST_DEFAULT_FIXTURE_SLUG,
-} from '@/lib/og-test-fixture-preview'
-import { OG_TEST_FIXTURES, OG_TEST_INVALID_URL_INPUT } from '@/lib/og-test-fixtures'
+} from '@/stories/og-test-fixture-preview'
+import {
+  OG_TEST_FIXTURES,
+  OG_TEST_INVALID_URL_INPUT,
+} from '@/lib/og-test-fixtures'
 
 type PreviewData = PlatformPreviewsProps
 
-/** Same as `/tests/complete-short` fixture metadata. */
 export const completeData: PreviewData = ogTestFixtureToPlatformPreviewsProps(
-  OG_TEST_DEFAULT_FIXTURE_SLUG,
-  OG_TEST_FIXTURES[OG_TEST_DEFAULT_FIXTURE_SLUG]
+  'complete-short',
+  OG_TEST_FIXTURES['complete-short']
 )
 
-/** Valid fixture URL but fetch failed before metadata exists. */
 export const failedToFetchData: PreviewData = {
   data: null,
-  urlInput: ogTestFixturePageUrl(OG_TEST_DEFAULT_FIXTURE_SLUG),
+  urlInput: ogTestFixturePageUrl('complete-short'),
   isLoading: false,
   isError: true,
   isValidUrl: true,
