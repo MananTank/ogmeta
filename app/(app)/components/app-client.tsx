@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { PreviewViewport } from '@/lib/preview-viewport'
 import { useQuery } from '@tanstack/react-query'
 import { PlatformPreviews } from './previews/index'
@@ -38,6 +38,8 @@ export function App(props: { defaultURLData: DocumentMetadata | null }) {
   })
 
   const showLoadingState = ogQuery.isFetching || !isURLReady
+
+  const normalizedUrl = useMemo(() => normalizeUrlForFetch(url), [url])
 
   const errorMessage = !url
     ? undefined
@@ -101,7 +103,7 @@ export function App(props: { defaultURLData: DocumentMetadata | null }) {
         isLoading={showLoadingState}
         isError={isURLReady && !!ogQuery.error}
         previewViewport={previewViewport}
-        urlInput={url}
+        urlInput={normalizedUrl}
         isValidUrl={urlIsValid}
         isURLReady={isURLReady}
       />
