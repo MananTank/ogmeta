@@ -1,7 +1,7 @@
 'use client'
 
 import type { PlatformPreviewsProps } from './types'
-import { DiscordPreview } from './discord-preview'
+import { DiscordPreview } from './discord/discord-preview'
 import { FacebookPreview } from './facebook-preview'
 import { IMessagePreview } from './imessage-preview'
 import { LinkedInPreview } from './linkedin-preview'

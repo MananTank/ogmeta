@@ -2,7 +2,7 @@
 
 import { cn, truncateWithEllipsis } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
-import { effectiveSlackPreview } from '@/lib/og-types'
+import { type DocumentMetadata } from '@/lib/og-types'
 import {
   OGImage,
   PARAGRAPH_1,
@@ -10,8 +10,8 @@ import {
   PlatformSection,
   UserAvatar,
   UserName,
-} from './common'
-import type { PlatformPreviewsProps } from './types'
+} from '../common'
+import type { PlatformPreviewsProps } from '../types'
 
 const DISCORD_EMBED_TITLE_MAX = 70
 const DISCORD_EMBED_DESCRIPTION_MAX = 350
@@ -19,12 +19,12 @@ const DISCORD_EMBED_DESCRIPTION_MAX = 350
 export function DiscordPreview(props: PlatformPreviewsProps) {
   const url = props.data?.url ?? props.urlInput ?? ''
   const og = props.data?.openGraph
-  const slack = props.data ? effectiveSlackPreview(props.data) : null
+  const data = props.data ? effectiveDiscordPreview(props.data) : null
 
-  const unfurlTitle = slack?.title?.trim() ?? ''
-  const unfurlDescription = slack?.description?.trim() ?? ''
-  const unfurlImage = slack?.image ?? ''
-  const unfurlImageValid = slack?.isValidImage ?? false
+  const unfurlTitle = data?.title?.trim() ?? ''
+  const unfurlDescription = data?.description?.trim() ?? ''
+  const unfurlImage = data?.image ?? ''
+  const unfurlImageValid = data?.isValidImage ?? false
 
   const ogSiteName = og?.siteName?.trim() ?? ''
 
@@ -167,4 +167,27 @@ function PreviewCard(props: {
       </div>
     </div>
   )
+}
+
+function effectiveDiscordPreview(data: DocumentMetadata): {
+  title: string
+  description: string
+  image: string
+  isValidImage: boolean
+} {
+  const og = data.openGraph
+  const tw = data.twitter
+  const docTitle = data.doc.title?.trim() ?? ''
+  const docDesc = data.doc.description?.trim() ?? ''
+
+  const title = og.title?.trim() || tw.title?.trim() || docTitle
+  const description =
+    og.description?.trim() || tw.description?.trim() || docDesc
+
+  const hasOgImage = Boolean(og.image?.trim()) && og.isValidImage
+  const hasTwImage = Boolean(tw.image?.trim()) && tw.isValidImage
+  const image = hasOgImage ? og.image : hasTwImage ? tw.image : ''
+  const isValidImage = hasOgImage || hasTwImage
+
+  return { title, description, image, isValidImage }
 }
