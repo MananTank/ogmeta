@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
+import { OG_TEST_FIXTURES } from '@/tests/og-test-fixtures'
 import {
   getOgTestsMetadataBase,
   generateNextjsMetadata,
-} from '@/lib/og-test-html'
+} from '@/tests/og-test-data'
 import Link from 'next/link'
 import { CornerUpLeftIcon } from 'lucide-react'
 

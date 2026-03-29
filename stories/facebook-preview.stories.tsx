@@ -1,6 +1,6 @@
 import type { Story, StoryDefault } from '@ladle/react'
 import { FacebookPreview } from '@/components/previews/facebook/facebook-preview'
-import { NOT_A_RELEVANT_TEST, OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
+import { NOT_A_RELEVANT_TEST, OG_TEST_FIXTURES } from '@/tests/og-test-fixtures'
 import { ogTestFixtureToPlatformPreviewsProps } from '@/stories/og-test-fixture-preview'
 import { StoryLoadingToggle } from './story-loading-toggle'
 import { completeData, failedToFetchData, invalidUrlData } from './preview-data'

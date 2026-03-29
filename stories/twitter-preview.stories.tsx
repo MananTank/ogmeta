@@ -1,6 +1,6 @@
 import type { Story, StoryDefault } from '@ladle/react'
 import { TwitterPreview } from '@/components/previews/twitter/twitter-preview'
-import { NOT_A_RELEVANT_TEST, OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
+import { NOT_A_RELEVANT_TEST, OG_TEST_FIXTURES } from '@/tests/og-test-fixtures'
 import { ogTestFixtureToPlatformPreviewsProps } from '@/stories/og-test-fixture-preview'
 import { StoryLoadingToggle } from './story-loading-toggle'
 import { completeData, failedToFetchData, invalidUrlData } from './preview-data'

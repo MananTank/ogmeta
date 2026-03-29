@@ -1,6 +1,6 @@
 'use client'
 
-import { cn, truncateWithEllipsis } from '@/lib/utils'
+import { cn, truncate } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { type DocumentMetadata } from '@/lib/og-types'
 import {
@@ -128,17 +128,11 @@ function PreviewCard(props: {
             )}
             {props.unfurlTitle && (
               <p className="text-link cursor-pointer leading-snug font-semibold hover:underline">
-                {truncateWithEllipsis(
-                  props.unfurlTitle,
-                  DISCORD_EMBED_TITLE_MAX
-                )}
+                {truncate(props.unfurlTitle, DISCORD_EMBED_TITLE_MAX)}
               </p>
             )}
             <p className="text-foreground text-sm leading-snug">
-              {truncateWithEllipsis(
-                props.unfurlDescription,
-                DISCORD_EMBED_DESCRIPTION_MAX
-              )}
+              {truncate(props.unfurlDescription, DISCORD_EMBED_DESCRIPTION_MAX)}
             </p>
           </>
         ) : (
@@ -147,13 +141,10 @@ function PreviewCard(props: {
               <p className="text-foreground text-xs">{props.ogSiteName}</p>
             )}
             <p className="text-link cursor-pointer leading-snug font-semibold hover:underline">
-              {truncateWithEllipsis(props.unfurlTitle, DISCORD_EMBED_TITLE_MAX)}
+              {truncate(props.unfurlTitle, DISCORD_EMBED_TITLE_MAX)}
             </p>
             <p className="text-foreground text-sm leading-snug">
-              {truncateWithEllipsis(
-                props.unfurlDescription,
-                DISCORD_EMBED_DESCRIPTION_MAX
-              )}
+              {truncate(props.unfurlDescription, DISCORD_EMBED_DESCRIPTION_MAX)}
             </p>
             <OGImage
               src={props.unfurlImage}

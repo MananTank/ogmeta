@@ -1,14 +1,14 @@
 import type { PlatformPreviewsProps } from '@/components/previews/types'
 import type { DocumentMetadata } from '@/lib/og-types'
-import type { OgTestFixture } from '@/lib/og-test-fixtures'
-import type { OGTestOptions } from '@/lib/og-test-html'
+import type { OgTestFixture } from '@/tests/og-test-fixtures'
+import type { OGTestOptions } from '@/tests/og-test-data'
 import {
   getContent,
   hasAnyOg,
   isTwitterEntirelyOmitted,
   ogImagePath,
   twitterImagePath,
-} from '@/lib/og-test-html'
+} from '@/tests/og-test-data'
 
 const EXAMPLE_FAVICON = 'https://vercel.com/favicon.ico'
 

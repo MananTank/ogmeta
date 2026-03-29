@@ -6,7 +6,7 @@ import {
 import {
   OG_TEST_FIXTURES,
   OG_TEST_INVALID_URL_INPUT,
-} from '@/lib/og-test-fixtures'
+} from '@/tests/og-test-fixtures'
 
 type PreviewData = PlatformPreviewsProps
 

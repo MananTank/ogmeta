@@ -1,25 +1,20 @@
-import type { OGTestOptions } from '@/lib/og-test-html'
-
-/**
- * Observed link-preview behavior per app when pasting the fixture URL.
- * Fill in as you test (Twitter, LinkedIn, etc.).
- */
-export type OgTestFixtureAppResult = {
-  twitter?: string
-  linkedin?: string
-  facebook?: string
-  discord?: string
-  slack?: string
-  whatsapp?: string
-  imessage?: string
-}
+import type { OGTestOptions } from '@/tests/og-test-data'
 
 export type OgTestFixture = {
   config: OGTestOptions
-  results?: OgTestFixtureAppResult
+  results: {
+    twitter: string
+    linkedin: string
+    facebook: string
+    discord: string
+    slack: string
+    whatsapp: string
+    imessage: string
+  }
 }
 
 const RESULT_NO_PREVIEW = 'no preview, link shown'
+const TODO_RESULT = 'todo'
 export const NOT_A_RELEVANT_TEST = 'not a relevant test'
 
 /** Deliberately invalid input for URL validation in previews / UI tests. */
@@ -46,6 +41,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       discord:
         'big preview - 3 rows + image: site name, og:title, og:description',
       slack:
@@ -74,6 +71,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       linkedin: 'perview - og:title, domain. title is max 2 lines',
       twitter: 'big preview - image, twitter:title',
       facebook:
@@ -103,6 +102,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       linkedin: 'resized to 1200/630 aspect ratio',
       twitter: 'resized to 1200/630 aspect ratio',
       discord:
@@ -129,6 +130,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       linkedin: 'text preview - 3 rows: og:title, domain, og:description',
       twitter:
         'small preview - 3 rows: domain, twitter:title, twitter:description',
@@ -156,6 +159,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       linkedin: 'text preview - 3 rows: og:title, domain, og:description',
       twitter:
         'small preview - 3 rows: domain, twitter:title, twitter:description',
@@ -179,6 +184,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       linkedin: 'text preview - 2 rows: hard coded title "Web Link", domain',
       twitter: NOT_A_RELEVANT_TEST,
       discord:
@@ -196,6 +203,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       linkedin: 'text preview - 2 rows: hard coded title "Web Link", domain',
       twitter: RESULT_NO_PREVIEW,
       slack: RESULT_NO_PREVIEW,
@@ -211,6 +220,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       linkedin: 'text preview - 2 rows: title, domain',
       twitter: RESULT_NO_PREVIEW,
       slack: RESULT_NO_PREVIEW,
@@ -226,6 +237,9 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
+      facebook: TODO_RESULT,
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       linkedin:
         'text preview - 3 rows: hard coded title "Web Link", domain, description',
       twitter: RESULT_NO_PREVIEW,
@@ -241,6 +255,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       linkedin: 'text preview - 3 rows: title, domain, description',
       twitter: RESULT_NO_PREVIEW,
       discord: 'small preview - 2 rows: title, description',
@@ -261,6 +277,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       linkedin: 'preview - image + 2 rows: og:title, domain',
       twitter: 'big preview - image, og:title',
       discord:
@@ -288,6 +306,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       linkedin: 'preview - image + 2 rows: title, domain',
       twitter: 'big preview - image, title',
       facebook: 'preview - image + 2 rows: domain, title',
@@ -314,6 +334,8 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      whatsapp: TODO_RESULT,
+      imessage: TODO_RESULT,
       linkedin: 'preview - image + 2 rows: og:title, domain',
       twitter: 'big preview - image, title',
       facebook: 'preview - image + 2 rows: domain, title',
@@ -335,6 +357,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       twitter: 'none',
     },
     results: {
+      twitter: TODO_RESULT,
       slack: NOT_A_RELEVANT_TEST,
       discord: NOT_A_RELEVANT_TEST,
       linkedin: NOT_A_RELEVANT_TEST,
@@ -361,6 +384,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      twitter: TODO_RESULT,
       slack: NOT_A_RELEVANT_TEST,
       discord: NOT_A_RELEVANT_TEST,
       linkedin: NOT_A_RELEVANT_TEST,
@@ -388,6 +412,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      twitter: TODO_RESULT,
       slack: NOT_A_RELEVANT_TEST,
       discord: NOT_A_RELEVANT_TEST,
       linkedin: NOT_A_RELEVANT_TEST,
@@ -415,6 +440,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      twitter: TODO_RESULT,
       slack: NOT_A_RELEVANT_TEST,
       discord: NOT_A_RELEVANT_TEST,
       linkedin: NOT_A_RELEVANT_TEST,
@@ -441,6 +467,7 @@ export const OG_TEST_FIXTURES: Record<string, OgTestFixture> = {
       },
     },
     results: {
+      twitter: TODO_RESULT,
       slack: NOT_A_RELEVANT_TEST,
       discord: NOT_A_RELEVANT_TEST,
       linkedin: NOT_A_RELEVANT_TEST,

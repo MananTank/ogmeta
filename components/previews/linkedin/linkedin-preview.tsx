@@ -1,7 +1,7 @@
 'use client'
 
 import { Skeleton } from '@/components/ui/skeleton'
-import { effectiveLinkedInPreview } from '@/lib/og-types'
+import { type DocumentMetadata } from '@/lib/og-types'
 import {
   OGImage,
   PARAGRAPH_1,
@@ -155,4 +155,25 @@ function PostButton(props: {
       <span className="text-sm font-semibold">{props.label}</span>
     </button>
   )
+}
+
+const LINKEDIN_FALLBACK_TITLE = 'Web Link'
+
+export function effectiveLinkedInPreview(data: DocumentMetadata): {
+  title: string
+  description: string
+  showImage: boolean
+  imageSrc: string
+} {
+  const og = data.openGraph
+  const doc = data.doc
+
+  const title = og.title?.trim() || doc.title?.trim() || LINKEDIN_FALLBACK_TITLE
+
+  const description = og.description?.trim() || doc.description?.trim() || ''
+
+  const imageSrc = og.image?.trim() ?? ''
+  const showImage = Boolean(imageSrc) && og.isValidImage
+
+  return { title, description, showImage, imageSrc }
 }
