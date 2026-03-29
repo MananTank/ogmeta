@@ -10,15 +10,14 @@ export interface DocumentMetadata {
     description: string
     image: string
     isValidImage: boolean
-    siteName?: string
-    type?: string
+    siteName: string
   }
   twitter: {
     title: string
     description: string
     image: string
     isValidImage: boolean
-    card?: string
-    site?: string
+    card: string
+    site: string
   }
 }

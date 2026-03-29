@@ -32,7 +32,7 @@ export function generateAPIData(
     description: '',
     image: '',
     isValidImage: false,
-    type: 'website',
+    siteName: '',
   }
 
   if (options.og !== 'none' && hasAnyOg(options.og)) {
@@ -43,7 +43,6 @@ export function generateAPIData(
     openGraph.image = ogPath ? new URL(ogPath, metadataBase).href : ''
     openGraph.isValidImage = og.image !== 'none' && og.image !== 'broken'
     openGraph.siteName = 'Site Name'
-    openGraph.type = og.type
   }
 
   const twitter: DocumentMetadata['twitter'] = {
@@ -51,6 +50,8 @@ export function generateAPIData(
     description: '',
     image: '',
     isValidImage: false,
+    card: '',
+    site: '',
   }
 
   if (

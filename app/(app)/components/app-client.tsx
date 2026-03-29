@@ -8,7 +8,7 @@ import { URLInput } from '@/app/(app)/components/url-input'
 import { isValidUrl, normalizeUrlForFetch } from '@/lib/url'
 import { useURL } from '@/app/(app)/hooks/use-url'
 import { DEFAULT_URL } from '@/lib/constants'
-import { fetchOGData } from '@/lib/og'
+import { fetchDocumentMetadata } from '@/lib/og'
 import type { DocumentMetadata } from '@/lib/og-types'
 import { PreviewControls } from './preview-controls'
 import { AlertTriangleIcon, InspectionPanelIcon } from 'lucide-react'
@@ -23,7 +23,7 @@ export function App(props: { defaultURLData: DocumentMetadata | null }) {
   const ogQuery = useQuery({
     queryKey: ['og', url],
     queryFn: async () => {
-      const result = await fetchOGData(normalizeUrlForFetch(url))
+      const result = await fetchDocumentMetadata(normalizeUrlForFetch(url))
       if (result.type === 'error') {
         throw new Error(result.error)
       }
