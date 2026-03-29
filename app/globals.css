@@ -31,6 +31,17 @@
   --ring: hsl(0deg 0% 75%);
   --radius: 0.5rem;
   --link: oklch(0.45 0.14 255);
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: color-mix(
+    in oklch,
+    var(--muted-foreground) 38%,
+    transparent
+  );
+  --scrollbar-thumb-hover: color-mix(
+    in oklch,
+    var(--muted-foreground) 58%,
+    transparent
+  );
 }
 
 .dark {
@@ -55,6 +66,16 @@
   --input: #262626;
   --ring: oklch(0.302 0 0);
   --link: oklch(0.65 0.15 255);
+  --scrollbar-thumb: color-mix(
+    in oklch,
+    var(--muted-foreground) 42%,
+    transparent
+  );
+  --scrollbar-thumb-hover: color-mix(
+    in oklch,
+    var(--muted-foreground) 62%,
+    transparent
+  );
 }
 
 @theme inline {
@@ -215,7 +236,28 @@ html.dark .whatsapp {
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 9999px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+
   body {
     @apply bg-background text-foreground;
   }
