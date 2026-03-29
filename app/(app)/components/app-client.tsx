@@ -54,7 +54,7 @@ export function App(props: { defaultURLData: DocumentMetadata | null }) {
 
   return (
     <main>
-      <div className="mx-auto max-w-2xl px-6 py-24 md:py-32">
+      <div className="mx-auto max-w-2xl px-6 py-24 md:pt-32">
         <header className="text-center">
           {/* <div className="flex items-center justify-center">
             <InspectionPanelIcon className="text-muted-foreground/50 size-12" />
@@ -93,7 +93,7 @@ export function App(props: { defaultURLData: DocumentMetadata | null }) {
 
         {errorMessage && (
           <div className="relative flex items-center justify-center">
-            <p className="text-destructive fade-in-0 border-destructive/10 animate-in bg-destructive/10 zoom-in-85 absolute top-5 flex items-center gap-2 rounded-full border px-3 py-1.5 text-center text-sm font-medium duration-300">
+            <p className="text-destructive fade-in-0 border-destructive/10 animate-in bg-destructive/10 zoom-in-95 slide-in-from-top-2 absolute top-4 flex items-center gap-2 rounded-full border px-3 py-1.5 text-center text-sm font-medium duration-300">
               <AlertTriangleIcon className="text-destructive size-3.5" />
               {errorMessage}
             </p>
