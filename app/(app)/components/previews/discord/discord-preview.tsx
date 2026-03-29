@@ -149,7 +149,7 @@ function PreviewCard(props: {
             <OGImage
               src={props.unfurlImage}
               isValidImage={props.unfurlImageValid}
-              className="mt-4 block min-h-[210px] w-full max-w-[400px] rounded-b object-cover"
+              className="mt-4 block w-full max-w-[400px] rounded-b object-cover"
               isLoading={false}
               skeletonClassName="bg-border"
             />

@@ -232,7 +232,7 @@ export function SlackPreview(props: PlatformPreviewsProps) {
                   <OGImage
                     src={unfurlImage}
                     isValidImage={unfurlImageValid}
-                    className="mt-2 min-h-[180px] w-full max-w-[360px] rounded-lg border object-cover"
+                    className="mt-2 w-full max-w-[360px] rounded-lg border object-cover"
                     isLoading={false}
                     skeletonClassName="bg-border"
                   />
