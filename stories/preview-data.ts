@@ -1,4 +1,4 @@
-import type { PlatformPreviewsProps } from '@/components/previews/types'
+import type { PlatformPreviewsProps } from '@/app/(app)/components/previews/types'
 import {
   ogTestFixturePageUrl,
   ogTestFixtureToPlatformPreviewsProps,

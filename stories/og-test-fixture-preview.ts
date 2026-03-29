@@ -1,4 +1,4 @@
-import type { PlatformPreviewsProps } from '@/components/previews/types'
+import type { PlatformPreviewsProps } from '@/app/(app)/components/previews/types'
 import type { DocumentMetadata } from '@/lib/og-types'
 import type { OgTestFixture } from '@/tests/og-test-fixtures'
 import type { OGTestOptions } from '@/tests/og-test-data'

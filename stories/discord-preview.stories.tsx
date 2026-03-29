@@ -1,5 +1,5 @@
 import type { Story, StoryDefault } from '@ladle/react'
-import { DiscordPreview } from '@/components/previews/discord/discord-preview'
+import { DiscordPreview } from '@/app/(app)/components/previews/discord/discord-preview'
 import { NOT_A_RELEVANT_TEST, OG_TEST_FIXTURES } from '@/tests/og-test-fixtures'
 import { ogTestFixtureToPlatformPreviewsProps } from '@/stories/og-test-fixture-preview'
 import { StoryLoadingToggle } from './story-loading-toggle'

@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 import {
   useUrlSuggestions,
   type UrlHistoryItem,
-} from '@/hooks/use-url-suggestions'
+} from '@/app/(app)/hooks/use-url-suggestions'
 import type { DocumentMetadata } from '@/lib/og-types'
 
 export function URLInput(props: {

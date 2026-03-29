@@ -1,4 +1,4 @@
-import type { DocumentMetadata } from '../../../lib/og-types'
+import type { DocumentMetadata } from '@/lib/og-types'
 
 export function effectiveTwitterPreview(data: DocumentMetadata): {
   title: string

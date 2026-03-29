@@ -3,7 +3,7 @@
 import { unstable_cache } from 'next/cache'
 import * as cheerio from 'cheerio'
 import { type DocumentMetadata } from '@/lib/og-types'
-import { effectiveTwitterPreview } from '../components/previews/twitter/utils'
+import { effectiveTwitterPreview } from '@/app/(app)/components/previews/twitter/utils'
 
 const REVALIDATE_SECONDS = 60 * 5 // 5 mins
 
