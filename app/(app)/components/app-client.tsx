@@ -39,7 +39,10 @@ export function App(props: { defaultURLData: DocumentMetadata | null }) {
 
   const showLoadingState = ogQuery.isFetching || !isURLReady
 
-  const normalizedUrl = useMemo(() => normalizeUrlForFetch(url), [url])
+  const normalizedUrl = useMemo(
+    () => (url ? normalizeUrlForFetch(url) : ''),
+    [url]
+  )
 
   const errorMessage = !url
     ? undefined
