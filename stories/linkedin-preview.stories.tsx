@@ -1,5 +1,5 @@
 import type { Story, StoryDefault } from '@ladle/react'
-import { LinkedInPreview } from '@/components/previews/linkedin-preview'
+import { LinkedInPreview } from '@/components/previews/linkedin/linkedin-preview'
 import { NOT_A_RELEVANT_TEST, OG_TEST_FIXTURES } from '@/lib/og-test-fixtures'
 import { ogTestFixtureToPlatformPreviewsProps } from '@/stories/og-test-fixture-preview'
 import { StoryLoadingToggle } from './story-loading-toggle'
