@@ -150,8 +150,8 @@ function ActionButton(props: {
   label: string | undefined
 }) {
   return (
-    <button className="flex items-center gap-1.5 transition-colors hover:text-sky-400">
-      <TwitterBookmarkIcon className="size-[19px]" />
+    <button className="flex items-center gap-1.5">
+      <props.icon className="size-[19px]" />
       {props.label && <span className="text-[13px]">{props.label}</span>}
     </button>
   )
