@@ -56,11 +56,11 @@ export function App(props: { defaultURLData: DocumentMetadata | null }) {
     <main>
       <div className="mx-auto max-w-2xl px-6 py-24 md:py-32">
         <header className="text-center">
-          <div className="flex items-center justify-center">
+          {/* <div className="flex items-center justify-center">
             <InspectionPanelIcon className="text-muted-foreground/50 size-12" />
-          </div>
+          </div> */}
           <h1 className="sr-only">og meta</h1>
-          <div className="h-12" />
+          {/* <div className="h-12" /> */}
           <p className="font-sans text-4xl font-semibold tracking-tight md:text-5xl">
             <span className="text-foreground">Preview links on</span>
             <br />

@@ -4,7 +4,7 @@ import { SOURCE_REPO_URL } from '@/lib/constants'
 
 export function HomeFooter() {
   return (
-    <footer className="text-muted-foreground mx-auto mt-40 max-w-2xl px-4 py-10 text-center text-base">
+    <footer className="text-muted-foreground mx-auto mt-28 max-w-2xl px-4 py-10 text-center text-base">
       <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
         <span>
           Made by{' '}

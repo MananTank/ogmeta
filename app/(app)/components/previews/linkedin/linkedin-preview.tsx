@@ -150,7 +150,7 @@ function PostButton(props: {
   label: string
 }) {
   return (
-    <button className="text-muted-foreground hover:bg-foreground/10 flex grow flex-col items-center gap-[2px] rounded px-2 py-1.5 transition-colors">
+    <button className="text-muted-foreground flex grow flex-col items-center gap-[2px] rounded px-2 py-1.5 transition-colors">
       <props.icon className="size-4" />
       <span className="text-sm font-semibold">{props.label}</span>
     </button>

@@ -38,7 +38,7 @@ async function fetchDocumentMetadata_Uncached(
     const html = await response.text()
     let data = await parsePageMetadata(html, url)
 
-    if (isTwitterUrl(url) && needsTwitterSyntheticFallback(data)) {
+    if (isTwitterProfileUrl(url) && needsTwitterSyntheticFallback(data)) {
       data = await twitterProfileDocumentMetadata(url)
     }
 
@@ -189,14 +189,20 @@ async function parseTwitterSlice(
   }
 }
 
-function isTwitterUrl(urlString: string): boolean {
+const TWITTER_PROFILE_HOSTS = new Set([
+  'x.com',
+  'twitter.com',
+  'mobile.twitter.com',
+])
+
+function isTwitterProfileUrl(urlString: string): boolean {
   try {
-    const hostname = new URL(urlString).hostname.replace(/^www\./, '')
-    return (
-      hostname === 'twitter.com' ||
-      hostname === 'x.com' ||
-      hostname === 'mobile.twitter.com'
-    )
+    const url = new URL(urlString)
+    const hostname = url.hostname.replace(/^www\./, '')
+    if (!TWITTER_PROFILE_HOSTS.has(hostname)) return false
+
+    const segments = url.pathname.split('/').filter(Boolean)
+    return segments.length === 1
   } catch {
     return false
   }

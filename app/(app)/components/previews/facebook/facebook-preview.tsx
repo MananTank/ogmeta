@@ -168,7 +168,7 @@ function ActionButton(props: {
   iconClassName?: string
 }) {
   return (
-    <button className="text-muted-foreground hover:bg-secondary flex flex-1 items-center justify-center gap-2 rounded py-2.5 transition-colors">
+    <button className="text-muted-foreground flex flex-1 items-center justify-center gap-2 rounded py-2.5 transition-colors">
       <props.icon className={cn('h-5 w-5', props.iconClassName)} />
       <span className="text-[15px] font-medium">Like</span>
     </button>
