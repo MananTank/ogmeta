@@ -30,7 +30,7 @@ export async function generateMetadata({
   )
 }
 
-export default async function TestsFixturePage({
+export default async function Page({
   params,
 }: {
   params: Promise<{ slug: string }>
@@ -41,7 +41,6 @@ export default async function TestsFixturePage({
 
   return (
     <main className="mx-auto max-w-xl px-6 pt-24 pb-32 font-sans">
-      {/* back link */}
       <Link
         href="/tests"
         className="text-muted-foreground hover:text-foreground mb-12 flex items-center gap-2 text-sm"
