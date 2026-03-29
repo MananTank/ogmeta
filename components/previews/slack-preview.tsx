@@ -157,18 +157,18 @@ export function SlackPreview(props: PlatformPreviewsProps) {
             <div className="border-border relative mt-2 pl-4">
               <span className="bg-border absolute top-0 bottom-0 left-0 h-full w-1 rounded-lg" />
               {props.isLoading ? (
-                <>
+                <div className="fade-in-0 animate-in duration-300">
                   <div className="mb-1 flex items-center gap-1.5">
-                    <Skeleton className="bg-border size-4 shrink-0 rounded-sm" />
-                    <Skeleton className="bg-border h-4 w-20" />
+                    <Skeleton className="size-4 shrink-0 rounded-sm" />
+                    <Skeleton className="h-5 w-20" />
                   </div>
-                  <Skeleton className="bg-border h-4 w-3/4" />
-                  <Skeleton className="bg-border mt-1 h-3 w-1/2" />
-                  <Skeleton className="bg-border mt-2 aspect-[1.91/1] w-full max-w-[360px] rounded-lg" />
-                </>
+                  <Skeleton className="h-5 w-3/4" />
+                  <Skeleton className="mt-1 h-5 w-1/2" />
+                  <Skeleton className="mt-2 aspect-[1.91/1] w-full max-w-[360px] rounded-lg border" />
+                </div>
               ) : showSmallUnfurl ? (
                 hasTitle ? (
-                  <>
+                  <div className="fade-in-0 animate-in duration-300">
                     <SmallUnfurlSiteRow
                       faviconUrl={props.data?.favicon}
                       siteLabel={displaySiteName}
@@ -182,9 +182,9 @@ export function SlackPreview(props: PlatformPreviewsProps) {
                       text={unfurlDescription}
                       className="text-foreground text-[15px] leading-[1.45]"
                     />
-                  </>
+                  </div>
                 ) : (
-                  <>
+                  <div className="fade-in-0 animate-in duration-300">
                     <SmallUnfurlSiteRow
                       faviconUrl={props.data?.favicon}
                       siteLabel={displaySiteName}
@@ -193,10 +193,10 @@ export function SlackPreview(props: PlatformPreviewsProps) {
                       text={unfurlDescription}
                       className="text-foreground text-[15px] leading-[1.45]"
                     />
-                  </>
+                  </div>
                 )
               ) : (
-                <>
+                <div className="fade-in-0 animate-in duration-300">
                   <div className="mb-1 flex items-center gap-1.5">
                     {props.data?.favicon && (
                       <Img
@@ -229,11 +229,11 @@ export function SlackPreview(props: PlatformPreviewsProps) {
                   <OGImage
                     src={unfurlImage}
                     isValidImage={unfurlImageValid}
-                    className="mt-2 w-full max-w-[360px] rounded-lg border object-cover"
+                    className="mt-2 min-h-[180px] w-full max-w-[360px] rounded-lg border object-cover"
                     isLoading={false}
                     skeletonClassName="bg-border"
                   />
-                </>
+                </div>
               )}
             </div>
           )}

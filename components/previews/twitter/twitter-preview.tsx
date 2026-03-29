@@ -1,7 +1,6 @@
 'use client'
 
-import { LinkIcon } from 'lucide-react'
-import { effectiveTwitterPreview } from '@/lib/og-types'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   OGImage,
   PARAGRAPH_1,
@@ -11,15 +10,16 @@ import {
   UserHandle,
   UserName,
   domain,
-} from './common'
+} from '../common'
 import {
   TwitterReplyIcon,
   TwitterRetweetIcon,
   TwitterLikeIcon,
   TwitterViewsIcon,
   TwitterBookmarkIcon,
-} from '../icons/twitter'
-import type { PlatformPreviewsProps } from './types'
+} from './icons'
+import type { PlatformPreviewsProps } from '../types'
+import { effectiveTwitterPreview } from './utils'
 
 export function TwitterPreview(props: PlatformPreviewsProps) {
   const url = props.data?.url ?? props.urlInput ?? ''
@@ -39,15 +39,12 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
   const card = twitter.card
 
   const hasValidImage = Boolean(image && isValidImage)
-  /** No card value (fixture `card: 'none'` → empty; crawlers may omit tag). */
   const cardIsNone = !card || card === 'none'
   const cardIsSummary = card === 'summary'
 
-  /** Large image on top (`summary_large_image` or unset, default when an image exists). */
   const hasLargeSummaryLargeImageCard =
     !props.isLoading && title && hasValidImage && !cardIsNone && !cardIsSummary
 
-  /** Small thumbnail left, text right when `twitter:card` is `summary`. */
   const hasSummaryCard =
     !props.isLoading && title && hasValidImage && !cardIsNone && cardIsSummary
 
@@ -61,6 +58,9 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
       hasLargeSummaryLargeImageCard ||
       hasSummaryCard ||
       hasCompactCard)
+
+  const showLargePreview =
+    (props.isLoading || hasLargeSummaryLargeImageCard) && showPreview
 
   return (
     <PlatformSection
@@ -83,7 +83,6 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
 
           <div className="text-foreground mt-1 space-y-3 text-[13px] leading-snug @sm/preview:space-y-4 @sm/preview:text-[15px]">
             <p>{PARAGRAPH_1}</p>
-
             <p>{PARAGRAPH_2}</p>
 
             {!showPreview && (
@@ -91,33 +90,36 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
             )}
           </div>
 
-          {/* summary_large_image (default): wide image + title overlay + “From domain” */}
-          {(props.isLoading || hasLargeSummaryLargeImageCard) &&
-            showPreview && (
-              <div className="mt-3">
-                <div className="relative overflow-hidden rounded-2xl border">
-                  <OGImage
-                    src={image}
-                    isValidImage={isValidImage}
-                    className="block aspect-[1.91/1] h-auto w-full object-cover"
-                    isLoading={props.isLoading}
-                    skeletonClassName="bg-border"
-                  />
-                  {!props.isLoading && title && (
-                    <div className="absolute right-3 bottom-3 left-3 flex">
-                      <span className="inline-block max-w-full truncate rounded bg-[#3a3a3a] px-2 text-[13px] leading-[16px] text-white backdrop-blur-md @sm/preview:leading-[20px] dark:bg-black/75 dark:text-white">
-                        {title}
-                      </span>
-                    </div>
-                  )}
-                </div>
-                <p className="text-muted-foreground mt-0.5 text-[13px]">
-                  From {domain(url)}
-                </p>
+          {showLargePreview && (
+            <div className="mt-3">
+              <div className="relative overflow-hidden rounded-2xl border">
+                <OGImage
+                  src={image}
+                  isValidImage={isValidImage}
+                  className="block aspect-[1.91/1] h-auto w-full object-cover"
+                  isLoading={props.isLoading}
+                  skeletonClassName="bg-border"
+                />
+                {!props.isLoading && title && (
+                  <div className="absolute right-3 bottom-3 left-3 flex">
+                    <span className="inline-block max-w-full truncate rounded bg-[#3a3a3a] px-2 text-[13px] leading-[16px] text-white backdrop-blur-md @sm/preview:leading-[20px] dark:bg-black/75 dark:text-white">
+                      {title}
+                    </span>
+                  </div>
+                )}
               </div>
-            )}
+              <div className="mt-0.5">
+                {!props.isURLReady ? (
+                  <Skeleton className="bg-border h-5 w-28" />
+                ) : (
+                  <p className="text-muted-foreground text-[13px]">
+                    From {domain(url)}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
-          {/* Compact: no valid image but has title (summary without image, etc.) */}
           {(hasCompactCard || hasSummaryCard) && showPreview && (
             <TwitterSmallPreview
               image={image}
@@ -129,31 +131,28 @@ export function TwitterPreview(props: PlatformPreviewsProps) {
             />
           )}
 
-          {/* buttons */}
           <div className="text-muted-foreground mt-3 flex items-center justify-between">
-            <button className="flex items-center gap-1.5 transition-colors hover:text-sky-400">
-              <TwitterReplyIcon className="size-[19px]" />
-              <span className="text-[13px]">24</span>
-            </button>
-            <button className="flex items-center gap-1.5 transition-colors hover:text-green-400">
-              <TwitterRetweetIcon className="size-[19px]" />
-              <span className="text-[13px]">8</span>
-            </button>
-            <button className="flex items-center gap-1.5 transition-colors hover:text-pink-400">
-              <TwitterLikeIcon className="size-[19px]" />
-              <span className="text-[13px]">142</span>
-            </button>
-            <button className="flex items-center gap-1.5 transition-colors hover:text-sky-400">
-              <TwitterViewsIcon className="size-[19px]" />
-              <span className="text-[13px]">12.4K</span>
-            </button>
-            <button className="flex items-center gap-1.5 transition-colors hover:text-sky-400">
-              <TwitterBookmarkIcon className="size-[19px]" />
-            </button>
+            <ActionButton icon={TwitterReplyIcon} label="24" />
+            <ActionButton icon={TwitterRetweetIcon} label="8" />
+            <ActionButton icon={TwitterLikeIcon} label="142" />
+            <ActionButton icon={TwitterViewsIcon} label="12.4K" />
+            <ActionButton icon={TwitterBookmarkIcon} label={undefined} />
           </div>
         </div>
       </div>
     </PlatformSection>
+  )
+}
+
+function ActionButton(props: {
+  icon: React.FC<{ className?: string }>
+  label: string | undefined
+}) {
+  return (
+    <button className="flex items-center gap-1.5 transition-colors hover:text-sky-400">
+      <TwitterBookmarkIcon className="size-[19px]" />
+      {props.label && <span className="text-[13px]">{props.label}</span>}
+    </button>
   )
 }
 

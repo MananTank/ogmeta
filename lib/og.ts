@@ -2,20 +2,18 @@
 
 import { unstable_cache } from 'next/cache'
 import * as cheerio from 'cheerio'
-import { siteNameLabelFromUrl } from '@/lib/site-name'
 import {
-  effectiveTwitterPreview,
   type DocumentMetadata,
   type OpenGraphSlice,
   type TwitterTagsSlice,
 } from '@/lib/og-types'
+import { effectiveTwitterPreview } from '../components/previews/twitter/utils'
+
+const REVALIDATE_SECONDS = 60 * 5 // 5 mins
 
 type FetchOGDataResult =
   | { type: 'success'; data: DocumentMetadata }
   | { type: 'error'; error: string }
-
-/** Cached OG fetches (shared by RSC + server actions). */
-const REVALIDATE_SECONDS = 60 * 5 // 5 mins
 
 function isTwitterHost(hostname: string): boolean {
   const h = hostname.replace(/^www\./, '')
@@ -148,16 +146,6 @@ function getMetaContent($: cheerio.CheerioAPI, selectors: string[]): string {
   return ''
 }
 
-function resolveMaybeRelative(image: string, pageUrl: string): string {
-  if (!image) return ''
-  if (image.startsWith('http')) return image
-  try {
-    return new URL(image, pageUrl).href
-  } catch {
-    return image
-  }
-}
-
 async function parseOpenGraphSlice(
   $: cheerio.CheerioAPI,
   pageUrl: string
@@ -172,11 +160,10 @@ async function parseOpenGraphSlice(
     'meta[name="og:description"]',
   ]).trim()
 
-  const rawImage = getMetaContent($, [
+  const image = getMetaContent($, [
     'meta[property="og:image"]',
     'meta[name="og:image"]',
-  ])
-  const image = resolveMaybeRelative(rawImage, pageUrl)
+  ]).trim()
 
   const ogSiteName = getMetaContent($, [
     'meta[property="og:site_name"]',
@@ -215,11 +202,10 @@ async function parseTwitterSlice(
     'meta[name="twitter:description"]',
   ]).trim()
 
-  const rawImage = getMetaContent($, [
+  const image = getMetaContent($, [
     'meta[name="twitter:image"]',
     'meta[name="twitter:image:src"]',
-  ])
-  const image = resolveMaybeRelative(rawImage, pageUrl)
+  ]).trim()
 
   const card = getMetaContent($, ['meta[name="twitter:card"]']).trim()
 

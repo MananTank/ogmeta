@@ -16,7 +16,9 @@ import { useId } from 'react'
 
 export function FacebookPreview(props: PlatformPreviewsProps) {
   const url = props.data?.url ?? props.urlInput ?? ''
-  const showLinkCard = Boolean(props.isValidUrl && !props.isError && props.data)
+  const showLinkCard = Boolean(
+    props.isValidUrl && !props.isError && (props.isLoading || props.data)
+  )
   const fb = props.data ? effectiveFacebookPreview(props.data) : null
 
   return (
@@ -63,43 +65,61 @@ export function FacebookPreview(props: PlatformPreviewsProps) {
         </div>
 
         {/* Link Preview Card — big image, broken-image placeholder, or small (text-only) */}
-        {showLinkCard && fb && (
+        {showLinkCard && (fb || props.isLoading) && (
           <div className="border-t dark:border-transparent">
-            {fb.imageMode === 'large' && (
-              <OGImage
-                src={fb.imageSrc}
-                isValidImage
-                className="aspect-[1.91/1] w-full object-cover"
-                isLoading={props.isLoading}
-                skeletonClassName="bg-secondary"
-              />
-            )}
-            {fb.imageMode === 'broken' && (
-              <div
-                className="dark:bg-muted/40 aspect-[1.91/1] w-full bg-[#f2f3f5]"
-                aria-hidden
-              />
-            )}
+            {props.isLoading
+              ? (!fb ||
+                  fb.imageMode === 'large' ||
+                  fb.imageMode === 'broken') && (
+                  <OGImage
+                    src={fb?.imageSrc ?? ''}
+                    isValidImage={fb?.imageMode !== 'broken'}
+                    className="aspect-[1.91/1] w-full rounded-none"
+                    isLoading
+                    skeletonClassName="bg-secondary"
+                  />
+                )
+              : fb && (
+                  <>
+                    {fb.imageMode === 'large' && (
+                      <OGImage
+                        src={fb.imageSrc}
+                        isValidImage
+                        className="aspect-[1.91/1] w-full object-cover"
+                        isLoading={false}
+                        skeletonClassName="bg-secondary"
+                      />
+                    )}
+                    {fb.imageMode === 'broken' && (
+                      <div
+                        className="dark:bg-muted/40 aspect-[1.91/1] w-full bg-[#f2f3f5]"
+                        aria-hidden
+                      />
+                    )}
+                  </>
+                )}
             <div className="bg-secondary space-y-0.5 border-t px-3 py-2.5 dark:border-transparent">
               {props.isLoading ? (
                 <>
-                  <Skeleton className="bg-border h-3 w-20" />
-                  <Skeleton className="bg-border h-4 w-3/4" />
+                  <Skeleton className="bg-border h-5 w-20" />
+                  <Skeleton className="bg-border h-6 w-3/4" />
                 </>
               ) : (
-                <>
-                  <p className="text-muted-foreground text-[12px] tracking-wide uppercase @sm/preview:text-[13px]">
-                    {domain(url)}
-                  </p>
-                  <p className="text-foreground line-clamp-2 text-base leading-snug font-semibold @sm/preview:text-[17px]">
-                    {fb.title || domain(url)}
-                  </p>
-                  {fb.description ? (
-                    <p className="text-muted-foreground line-clamp-1 text-base leading-snug @sm/preview:hidden">
-                      {fb.description}
+                fb && (
+                  <>
+                    <p className="text-muted-foreground text-[12px] tracking-wide uppercase @sm/preview:text-[13px]">
+                      {domain(url)}
                     </p>
-                  ) : null}
-                </>
+                    <p className="text-foreground line-clamp-2 text-base leading-snug font-semibold @sm/preview:text-[17px]">
+                      {fb.title || domain(url)}
+                    </p>
+                    {fb.description ? (
+                      <p className="text-muted-foreground line-clamp-1 text-base leading-snug @sm/preview:hidden">
+                        {fb.description}
+                      </p>
+                    ) : null}
+                  </>
+                )
               )}
             </div>
           </div>

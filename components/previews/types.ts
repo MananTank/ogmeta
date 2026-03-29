@@ -8,7 +8,7 @@ export type PlatformPreviewsProps = {
   isLoading: boolean
   isError: boolean
   previewViewport?: PreviewViewport
-  /** Shown when `data` is missing (e.g. current input before a successful fetch). */
   urlInput: string
   isValidUrl: boolean
+  isURLReady: boolean
 }

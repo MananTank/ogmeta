@@ -21,6 +21,7 @@ export const failedToFetchData: PreviewData = {
   isLoading: false,
   isError: true,
   isValidUrl: true,
+  isURLReady: true,
 }
 
 /** Input that does not pass URL validation ({@link OG_TEST_INVALID_URL_INPUT}). */
@@ -30,4 +31,5 @@ export const invalidUrlData: PreviewData = {
   isLoading: false,
   isError: false,
   isValidUrl: false,
+  isURLReady: true,
 }

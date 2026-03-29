@@ -152,6 +152,7 @@
   --muted-foreground: #536471;
   --secondary: #f8f9f9;
   --link: #1d9bf0;
+  --card: white;
 }
 
 html.dark .twitter {
@@ -160,6 +161,7 @@ html.dark .twitter {
   --foreground: oklch(0.95 0 0);
   --muted-foreground: oklch(0.6 0 0);
   --secondary: #16181c;
+  --card: black;
   --link: rgb(29, 155, 240);
 }
 
@@ -225,6 +227,7 @@ html.dark .discord {
   --muted-foreground: #616061;
   --border: #dddddd;
   --link: #1064a3;
+  --accent: #dddddd;
 }
 
 html.dark .slack {
@@ -232,6 +235,7 @@ html.dark .slack {
   --foreground: #d1d2d3;
   --muted-foreground: #ababad;
   --border: #36373b;
+  --accent: hsl(228deg 4.42% 14%);
   --link: #2aa5ce;
 }
 

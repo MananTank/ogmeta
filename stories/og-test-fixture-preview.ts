@@ -88,6 +88,7 @@ export function ogTestFixtureToPlatformPreviewsProps(
     isLoading: false,
     isError: false,
     isValidUrl: true,
+    isURLReady: true,
     urlInput: url,
   }
 }

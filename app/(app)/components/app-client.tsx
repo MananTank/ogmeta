@@ -103,6 +103,7 @@ export function App(props: { defaultURLData: DocumentMetadata | null }) {
         previewViewport={previewViewport}
         urlInput={url}
         isValidUrl={urlIsValid}
+        isURLReady={isURLReady}
       />
     </main>
   )

@@ -1,6 +1,5 @@
 'use client'
 
-import { MessageCircle, Repeat2 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { effectiveLinkedInPreview } from '@/lib/og-types'
 import { LinkedInGlobeIcon } from '../icons/linkedin'
@@ -64,30 +63,19 @@ export function LinkedInPreview(props: PlatformPreviewsProps) {
             </a>
           </div>
 
-          {/* Link preview: image + title + domain, or text-only (2–3 rows) */}
           {showLinkCard && (
             <div className="bg-card mt-3 overflow-hidden rounded-lg border">
               {props.isLoading ? (
-                effective?.showImage ? (
-                  <div className="flex p-3">
-                    <Skeleton className="bg-secondary h-[72px] w-[128px] shrink-0 rounded-md" />
-                    <div className="flex min-w-0 flex-1 flex-col justify-center px-3 py-2">
-                      <Skeleton className="bg-secondary h-4 w-3/4" />
-                      <Skeleton className="bg-secondary mt-1 h-3 w-20" />
-                    </div>
+                <div className="fade-in-0 animate-in flex p-3 duration-300">
+                  <Skeleton className="bg-border h-[72px] w-[128px] shrink-0 rounded-md" />
+                  <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5 px-3 py-2">
+                    <Skeleton className="bg-border h-4 w-3/4" />
+                    <Skeleton className="bg-border h-3 w-20" />
                   </div>
-                ) : (
-                  <div className="flex flex-col gap-2 p-3">
-                    <Skeleton className="bg-secondary h-4 w-3/4" />
-                    <Skeleton className="bg-secondary h-3 w-28" />
-                    {(!effective || effective.description) && (
-                      <Skeleton className="bg-secondary h-3 w-full" />
-                    )}
-                  </div>
-                )
+                </div>
               ) : effective ? (
                 effective.showImage ? (
-                  <div className="flex p-3">
+                  <div className="fade-in-0 animate-in flex p-3 duration-300">
                     <OGImage
                       src={effective.imageSrc}
                       isValidImage
@@ -105,7 +93,7 @@ export function LinkedInPreview(props: PlatformPreviewsProps) {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col gap-0.5 px-3 py-2.5">
+                  <div className="fade-in-0 animate-in flex flex-col gap-0.5 px-3 py-2.5 duration-300">
                     <p className="text-foreground line-clamp-2 text-sm leading-snug font-semibold">
                       {effective.title}
                     </p>
