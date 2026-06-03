@@ -1,17 +1,17 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import type { PreviewViewport } from '@/lib/preview-viewport'
 import { useQuery } from '@tanstack/react-query'
-import { PlatformPreviews } from './previews/index'
+import { AlertTriangleIcon } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { URLInput } from '@/app/(app)/components/url-input'
-import { isValidUrl, normalizeUrlForFetch } from '@/lib/url'
 import { useURL } from '@/app/(app)/hooks/use-url'
 import { DEFAULT_URL } from '@/lib/constants'
 import { fetchDocumentMetadata } from '@/lib/og'
 import type { DocumentMetadata } from '@/lib/og-types'
+import type { PreviewViewport } from '@/lib/preview-viewport'
+import { isValidUrl, normalizeUrlForFetch } from '@/lib/url'
 import { PreviewControls } from './preview-controls'
-import { AlertTriangleIcon, InspectionPanelIcon } from 'lucide-react'
+import { PlatformPreviews } from './previews/index'
 
 export function App(props: { defaultURLData: DocumentMetadata | null }) {
   const { url, setUrl, isURLReady } = useURL()
@@ -54,24 +54,18 @@ export function App(props: { defaultURLData: DocumentMetadata | null }) {
 
   return (
     <main>
-      <div className="mx-auto max-w-2xl px-6 pt-32 pb-24 md:pt-36">
-        <header className="text-center">
-          {/* <div className="flex items-center justify-center">
-            <InspectionPanelIcon className="text-muted-foreground/50 size-12" />
-          </div> */}
+      <div className="mx-auto max-w-2xl px-6 pt-24 pb-24 md:pt-32">
+        <header className="flex flex-col items-center text-center">
           <h1 className="sr-only">og meta</h1>
-          {/* <div className="h-12" /> */}
-          <p className="font-sans text-4xl font-semibold tracking-tight md:text-5xl">
-            <span className="text-foreground">Preview links on</span>
-            <br />
-            <span className="text-muted-foreground">social platforms</span>
+          <p className="text-foreground font-sans text-xl font-medium tracking-tight text-pretty md:text-3xl">
+            Preview links on social platforms
           </p>
-          <p className="text-muted-foreground mt-5 text-base font-medium">
+          <p className="text-muted-foreground mt-2 text-sm font-medium md:text-base">
             Fast, Accurate, Open Source
           </p>
         </header>
 
-        <div className="h-10" />
+        <div className="h-8" />
 
         <div className="flex w-full flex-col gap-5 sm:flex-row sm:items-start sm:gap-2.5">
           <div className="min-w-0 flex-1">
